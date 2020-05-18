@@ -1,0 +1,380 @@
+﻿-- Indien je bluswater al ingebruik hebt, kijk dan goed welke scripts je nog moet uitvoeren
+-- Ook al doe je niets met bluswater, schema is nodig om bluswater als referentie te laten dienen voor planvorming/objecten
+SET ROLE oiv_admin;
+--DROP SCHEMA IF EXISTS bluswater CASCADE;
+--CREATE SCHEMA bluswater;
+COMMENT ON SCHEMA bluswater IS 'OIV bluswater';
+
+GRANT USAGE ON SCHEMA bluswater TO GROUP oiv_read;
+
+SET search_path = bluswater, pg_catalog, public;
+
+CREATE TABLE bluswater.brandkraan_2017_1
+(
+  nummer       VARCHAR PRIMARY KEY,
+  geom         GEOMETRY(POINT, 28992),
+  type         VARCHAR,
+  diameter     SMALLINT,
+  postcode     VARCHAR,
+  straat       VARCHAR,
+  huisnummer   VARCHAR,
+  capaciteit   SMALLINT,
+  plaats       VARCHAR,
+  gemeentenaam VARCHAR
+);
+
+CREATE INDEX brandkraan_2017_1_geom_gist
+  ON bluswater.brandkraan_2017_1
+  USING GIST
+  (geom);
+
+CREATE TABLE bluswater.leiding_2017_1
+(
+  id        SERIAL NOT NULL PRIMARY KEY,
+  geom      GEOMETRY(LINESTRING, 28992),
+  materiaal VARCHAR,
+  diameter  NUMERIC
+);
+
+CREATE INDEX leiding_2017_1_geom_gist
+  ON bluswater.leiding_2017_1
+  USING GIST
+  (geom);
+
+-- Create table kavels t.b.v. de brandkraan controles
+CREATE TABLE bluswater.kavels
+(
+  kavel serial NOT NULL,
+  geom geometry(MultiPolygon,28992),
+  post character varying(50),
+  CONSTRAINT kavels_pkey PRIMARY KEY (kavel)
+);
+
+CREATE INDEX kavels_geom_gist
+  ON kavels
+  USING GIST
+  (geom);
+
+-- Create View kavels intersect brandkranen
+CREATE OR REPLACE VIEW bluswater.brandkraan_kavels AS 
+ SELECT b.nummer,
+    concat(lower(k.post::text), '@vrnhn.nl') AS inlognaam,
+    k.kavel
+   FROM bluswater.brandkraan_2017_1 b
+     JOIN bluswater.kavels k ON st_intersects(b.geom, k.geom);
+
+CREATE OR REPLACE VIEW bluswater.leiding_huidig AS
+  SELECT *
+  FROM bluswater.leiding_2017_1;
+
+CREATE OR REPLACE VIEW bluswater.brandkraan_huidig AS
+  SELECT *
+  FROM bluswater.brandkraan_2017_1;
+
+CREATE TABLE bluswater.plusinformatie
+(
+  id                SERIAL  NOT NULL PRIMARY KEY,
+  brandkraan_nummer VARCHAR NOT NULL,
+  datum_aangemaakt  TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  datum_gewijzigd   TIMESTAMP WITH TIME ZONE,
+  verwijderd        BOOLEAN                  DEFAULT FALSE,
+  frequentie        SMALLINT                 DEFAULT 24,
+  opmerking         TEXT,
+  kavel 			SMALLINT NOT NULL,
+  inlognaam 		text NOT NULL
+);
+CREATE UNIQUE INDEX plusinformatie_brandkraan_nummer_uindex
+  ON bluswater.plusinformatie (brandkraan_nummer);
+COMMENT ON COLUMN bluswater.plusinformatie.frequentie IS 'Inspectie frequentie in maanden';
+
+CREATE OR REPLACE VIEW bluswater.brandkraan_huidig_plus AS
+  SELECT
+    brandkraan_huidig.*,
+    COALESCE(plusinformatie.verwijderd, FALSE) verwijderd,
+    COALESCE(plusinformatie.frequentie, 24)    frequentie,
+    plusinformatie.opmerking,
+	plusinformatie.inlognaam
+  FROM bluswater.brandkraan_huidig
+    LEFT JOIN plusinformatie ON brandkraan_huidig.nummer = brandkraan_nummer;
+
+CREATE TABLE enum_conditie (
+  value TEXT NOT NULL PRIMARY KEY
+);
+
+INSERT INTO enum_conditie (value) VALUES ('goedgekeurd');
+INSERT INTO enum_conditie (value) VALUES ('afgekeurd');
+INSERT INTO enum_conditie (value) VALUES ('werkbaar');
+INSERT INTO enum_conditie (value) VALUES ('inspecteren');
+
+CREATE TABLE bluswater.inspectie
+(
+  id                      SERIAL  NOT NULL PRIMARY KEY,
+  brandkraan_nummer       VARCHAR NOT NULL,
+  datum_aangemaakt        TIMESTAMP WITH TIME ZONE                                                              DEFAULT now(),
+  datum_gewijzigd         TIMESTAMP WITH TIME ZONE,
+  conditie                TEXT    NOT NULL REFERENCES enum_conditie (value) ON UPDATE CASCADE ON DELETE CASCADE DEFAULT 'inspecteren',
+  inspecteur              TEXT,
+  plaatsaanduiding        TEXT,
+  plaatsaanduiding_anders TEXT,
+  toegankelijkheid        TEXT,
+  toegankelijkheid_anders TEXT,
+  klauw                   TEXT,
+  klauw_diepte            SMALLINT,
+  klauw_anders            TEXT,
+  werking                 TEXT,
+  werking_anders          TEXT,
+  opmerking               TEXT,
+  foto                    TEXT,
+  uitgezet_bij_pwn 		  BOOLEAN DEFAULT false,
+  uitgezet_bij_gemeente   BOOLEAN DEFAULT false,
+  opmerking_beheerder     TEXT
+);
+CREATE INDEX inspectie_brandkraan_nummer_uindex
+  ON bluswater.inspectie (brandkraan_nummer);
+
+CREATE TABLE bluswater.gt_pk_metadata_table
+(
+  table_schema  CHARACTER VARYING(32) NOT NULL,
+  table_name    CHARACTER VARYING(32) NOT NULL,
+  pk_column     CHARACTER VARYING(32) NOT NULL,
+  pk_column_idx INTEGER,
+  pk_policy     CHARACTER VARYING(32),
+  pk_sequence   CHARACTER VARYING(64),
+  CONSTRAINT gt_pk_metadata_table_table_schema_table_name_pk_column_key UNIQUE (table_schema, table_name, pk_column),
+  CONSTRAINT gt_pk_metadata_table_pk_policy_check CHECK (pk_policy :: TEXT = ANY
+                                                         (ARRAY ['sequence' :: CHARACTER VARYING, 'assigned' :: CHARACTER VARYING, 'autogenerated' :: CHARACTER VARYING] :: TEXT []))
+);
+
+INSERT INTO gt_pk_metadata_table VALUES ('bluswater', 'brandkraan_inspectie', 'nummer', 1, 'autogenerated', NULL);
+
+CREATE VIEW brandkraan_inspectie AS
+ SELECT 
+	brandkraan_huidig_plus.nummer AS id,
+    inspectie.id AS inspectie_id,
+    brandkraan_huidig_plus.nummer,
+    brandkraan_huidig_plus.geom,
+    inspectie.datum_aangemaakt,
+    inspectie.datum_gewijzigd,
+    COALESCE(inspectie.conditie, 'inspecteren'::text) AS conditie,
+    inspectie.inspecteur,
+    inspectie.plaatsaanduiding,
+    inspectie.plaatsaanduiding_anders,
+    inspectie.toegankelijkheid,
+    inspectie.toegankelijkheid_anders,
+    inspectie.klauw,
+    inspectie.klauw_diepte,
+    inspectie.klauw_anders,
+    inspectie.werking,
+    inspectie.werking_anders,
+    inspectie.opmerking,
+    inspectie.foto,
+	brandkraan_huidig_plus.inlognaam
+   FROM (brandkraan_huidig_plus
+     LEFT JOIN inspectie ON ((inspectie.id = ( SELECT leegfreq.id
+											   FROM inspectie leegfreq
+											   WHERE ((leegfreq.brandkraan_nummer)::text = 
+														(brandkraan_huidig_plus.nummer)::text)
+											   ORDER BY leegfreq.datum_aangemaakt DESC
+											   LIMIT 1))))
+  WHERE (brandkraan_huidig_plus.verwijderd = false);
+
+CREATE OR REPLACE RULE brandkraan_inspectie_del AS
+ON DELETE TO bluswater.brandkraan_inspectie DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE brandkraan_inspectie_ins AS
+ON INSERT TO bluswater.brandkraan_inspectie DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE brandkraan_inspectie_upd AS
+ON UPDATE TO bluswater.brandkraan_inspectie DO INSTEAD
+  INSERT INTO bluswater.inspectie (
+    brandkraan_nummer,
+    conditie,
+    inspecteur,
+    plaatsaanduiding,
+    plaatsaanduiding_anders,
+    toegankelijkheid,
+    toegankelijkheid_anders,
+    klauw,
+    klauw_diepte,
+    klauw_anders,
+    werking,
+    werking_anders,
+    opmerking,
+    foto
+  )
+  VALUES (
+    old.nummer,
+    new.conditie,
+    new.inspecteur,
+    new.plaatsaanduiding,
+    new.plaatsaanduiding_anders,
+    new.toegankelijkheid,
+    new.toegankelijkheid_anders,
+    new.klauw,
+    new.klauw_diepte,
+    new.klauw_anders,
+    new.werking,
+    new.werking_anders,
+    new.opmerking,
+    new.foto);
+
+-- Views t.b.v. Jasper Reports
+CREATE OR REPLACE VIEW bluswater.rapport_inspectie AS
+  SELECT
+    brandkraan_huidig_plus.nummer AS            id,
+    inspectie.id                  AS            inspectie_id,
+    brandkraan_huidig_plus.nummer,
+    brandkraan_huidig_plus.geom,
+    brandkraan_huidig_plus.type,
+    brandkraan_huidig_plus.diameter,
+    brandkraan_huidig_plus.postcode,
+    brandkraan_huidig_plus.straat,
+    brandkraan_huidig_plus.huisnummer,
+    brandkraan_huidig_plus.capaciteit,
+    brandkraan_huidig_plus.plaats,
+    brandkraan_huidig_plus.gemeentenaam,
+    inspectie.datum_aangemaakt,
+    inspectie.datum_gewijzigd,
+    GREATEST(datum_aangemaakt, datum_gewijzigd) mutatie,
+    inspectie.conditie,
+    inspectie.inspecteur,
+    inspectie.plaatsaanduiding,
+    inspectie.plaatsaanduiding_anders,
+    inspectie.toegankelijkheid,
+    inspectie.toegankelijkheid_anders,
+    inspectie.klauw,
+    inspectie.klauw_diepte,
+    inspectie.klauw_anders,
+    inspectie.werking,
+    inspectie.werking_anders,
+    inspectie.opmerking,
+    inspectie.foto,
+    inspectie.uitgezet_bij_pwn,
+    inspectie.uitgezet_bij_gemeente,
+    inspectie.opmerking_beheerder
+  FROM bluswater.brandkraan_huidig_plus
+    LEFT JOIN bluswater.inspectie ON inspectie.id = ((SELECT leegfreq.id
+                                                      FROM bluswater.inspectie leegfreq
+                                                      WHERE leegfreq.brandkraan_nummer :: TEXT =
+                                                            brandkraan_huidig_plus.nummer :: TEXT
+                                                      ORDER BY leegfreq.datum_aangemaakt DESC
+                                                      LIMIT 1))
+  WHERE brandkraan_huidig_plus.verwijderd = FALSE;
+COMMENT ON VIEW bluswater.rapport_inspectie
+IS 'Algemene view voor weergave in rapporten';
+
+CREATE OR REPLACE VIEW bluswater.rapport_weekoverzicht AS
+  SELECT
+    *,
+    btrim(
+        concat(plaatsaanduiding, ' ', plaatsaanduiding_anders, ' ', toegankelijkheid, ' ', toegankelijkheid_anders, ' ',
+               klauw, ' ', klauw_diepte, ' ', klauw_anders, ' ', werking, ' ', werking_anders)) AS resultaat
+  FROM bluswater.rapport_inspectie
+  WHERE date_part('week' :: TEXT, mutatie) = date_part('week' :: TEXT, now())
+  ORDER BY mutatie;
+
+CREATE OR REPLACE VIEW bluswater.rapport_inspectie_defect AS
+  SELECT *
+  FROM bluswater.rapport_inspectie
+  WHERE (conditie ~~* 'afgekeurd' OR conditie ~~* 'werkbaar');
+
+COMMENT ON VIEW bluswater.rapport_inspectie_defect
+IS 'View voor afgekeurd en werkbaar, basis voor rapport vandaag pwn en gemeente';
+
+CREATE OR REPLACE VIEW bluswater.rapport_inspectie_vandaag_pwn AS
+  SELECT *
+  FROM bluswater.rapport_inspectie_defect
+  WHERE mutatie :: DATE = now() :: DATE
+        AND (klauw IS NOT NULL
+             OR klauw_anders IS NOT NULL
+             OR werking IS NOT NULL
+             OR werking_anders IS NOT NULL);
+
+CREATE OR REPLACE VIEW bluswater.rapport_inspectie_vandaag_gemeente AS
+  SELECT *
+  FROM bluswater.rapport_inspectie_defect
+  WHERE mutatie :: DATE = now() :: DATE
+        AND (plaatsaanduiding IS NOT NULL
+             OR plaatsaanduiding_anders IS NOT NULL
+             OR toegankelijkheid IS NOT NULL
+             OR toegankelijkheid_anders IS NOT NULL);	
+
+-- Alternatieve bluswatervoorzieningen			 
+CREATE TABLE alternatieve_type
+(
+  id 			SMALLINT PRIMARY KEY NOT NULL,
+  naam		 	VARCHAR(25)
+);
+COMMENT ON TABLE alternatieve_type IS 'Opzoeklijst voor alternatieve bluswatervoorzieningen';
+
+CREATE TABLE alternatieve
+(
+  id 			SERIAL NOT NULL PRIMARY KEY,
+  datum_aangemaakt        TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  datum_gewijzigd         TIMESTAMP WITH TIME ZONE,
+  type_id		INTEGER,
+  liters_per 	INTEGER,
+  label			TEXT,
+  geom 			geometry(Point,28992),
+  CONSTRAINT 	altern_type_id_fk FOREIGN KEY (type_id) REFERENCES alternatieve_type (id)
+);
+
+CREATE INDEX alternatieve_geom_gist
+  ON alternatieve
+  USING btree
+  (geom);
+
+-- INSERT type alternatieve bluswatervoorzieningen
+INSERT INTO alternatieve_type (id, naam) VALUES (1, 'Geboorde Put met voordruk');
+INSERT INTO alternatieve_type (id, naam) VALUES (2, 'Geboorde Put');
+INSERT INTO alternatieve_type (id, naam) VALUES (3, 'Waterkelder');
+INSERT INTO alternatieve_type (id, naam) VALUES (4, 'Blusleiding afnamepunt');
+INSERT INTO alternatieve_type (id, naam) VALUES (5, 'Blusleiding vulpunt');
+INSERT INTO alternatieve_type (id, naam) VALUES (6, 'Bluswaterriool');
+INSERT INTO alternatieve_type (id, naam) VALUES (7, 'Openwater winput');
+INSERT INTO alternatieve_type (id, naam) VALUES (8, 'Afsluiter omloop');
+INSERT INTO alternatieve_type (id, naam) VALUES (9, 'Particuliere brandkraan');
+INSERT INTO alternatieve_type (id, naam) VALUES (10, 'Open water');
+INSERT INTO alternatieve_type (id, naam) VALUES (11, 'Opstelplaats WTS');
+
+-- Create view straal met 120m afgekeurde brandkranen
+CREATE OR REPLACE VIEW afgekeurd_binnen_straal AS 
+ SELECT row_number() OVER (ORDER BY tot.bk_nummer) AS gid,
+    tot.bk_nummer,
+    tot.count,
+    bk.geom
+   FROM ( SELECT nearest.bk_nummer,
+            count(nearest.bk_nummer) AS count
+           FROM ( SELECT i.id AS bk_nummer,
+                    i.b_gid,
+                    st_distance(i.geom, i.b_geom) AS dist,
+                    i.geom
+                   FROM ( SELECT a.id,
+                            b.id AS b_gid,
+                            a.geom,
+                            b.geom AS b_geom,
+                            rank() OVER (PARTITION BY a.id ORDER BY (st_distance(a.geom, b.geom))) AS pos
+                           FROM ( SELECT brandkraan_inspectie.id,
+                                    brandkraan_inspectie.geom
+                                   FROM brandkraan_inspectie
+                                  WHERE brandkraan_inspectie.conditie = 'afgekeurd'::text) a,
+                            ( SELECT brandkraan_inspectie.id,
+                                    brandkraan_inspectie.geom
+                                   FROM brandkraan_inspectie
+                                  WHERE brandkraan_inspectie.conditie = 'afgekeurd'::text) b
+                          WHERE a.id::text <> b.id::text) i
+                  WHERE i.pos <= 5) nearest
+          WHERE nearest.dist <= 120::double precision
+          GROUP BY nearest.bk_nummer) tot
+     JOIN brandkraan_2017_1 bk ON tot.bk_nummer::text = bk.nummer::text;
+
+-- Restricties voor opzoektabellen
+REVOKE ALL ON TABLE brandkraan_huidig FROM GROUP oiv_write;
+REVOKE ALL ON TABLE leiding_huidig FROM GROUP oiv_write;
+REVOKE ALL ON TABLE alternatieve_type FROM GROUP oiv_write;
+REVOKE ALL ON TABLE brandkraan_2017_1 FROM GROUP oiv_write;
+REVOKE ALL ON TABLE leiding_2017_1 FROM GROUP oiv_write;
+
+-- update db_versie
+UPDATE algemeen.applicatie SET revisie = 6;
+UPDATE algemeen.applicatie SET db_versie = 5;
