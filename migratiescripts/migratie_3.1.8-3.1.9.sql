@@ -543,6 +543,61 @@ CREATE OR REPLACE RULE object_grid_ins AS
     (SELECT datum_geldig_tot FROM object o WHERE o.id = grid.object_id),
     (SELECT typeobject FROM historie o WHERE o.object_id = grid.object_id LIMIT 1);
 
+CREATE OR REPLACE VIEW object_bgt AS 
+ SELECT object.*,
+    o.typeobject
+   FROM object
+  WHERE object.bron::text = 'BGT'::text
+   INNER JOIN ( SELECT object.id, historie.typeobject
+           FROM object
+             LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
+                   FROM historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))) o ON object.id = o.id;
+
+CREATE OR REPLACE VIEW object_objecten AS 
+ SELECT object.*,
+    o.typeobject
+   FROM object
+   INNER JOIN ( SELECT object.id, historie.typeobject
+           FROM object
+             LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
+                   FROM historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))) o ON object.id = o.id;
+
+CREATE OR REPLACE RULE object_del AS
+    ON DELETE TO object_objecten DO INSTEAD  DELETE FROM object
+  WHERE object.id = old.id;
+
+CREATE OR REPLACE RULE object_upd AS
+    ON UPDATE TO object_objecten DO INSTEAD  
+    UPDATE object SET geom = new.geom, basisreg_identifier = new.basisreg_identifier, formelenaam = new.formelenaam, pers_max = new.pers_max, pers_nietz_max = new.pers_nietz_max, datum_geldig_tot = new.datum_geldig_tot,
+                      datum_geldig_vanaf = new.datum_geldig_vanaf, bron = new.bron, bron_tabel = new.bron_tabel, fotografie_id = new.fotografie_id, bodemgesteldheid_type_id = new.bodemgesteldheid_type_id
+  WHERE object.id = new.id;
+
+CREATE OR REPLACE RULE object_ins AS
+    ON INSERT TO object_objecten DO INSTEAD INSERT INTO object (geom, basisreg_identifier, formelenaam, bron, bron_tabel)  
+  VALUES (new.geom, new.basisreg_identifier, new.formelenaam, new.bron, new.bron_tabel)
+  RETURNING object.id,
+    object.geom,
+    object.datum_aangemaakt,
+    object.datum_gewijzigd,
+    object.basisreg_identifier,
+    object.formelenaam,
+    object.bijzonderheden,
+    object.pers_max,
+    object.pers_nietz_max,
+    object.datum_geldig_tot,
+    object.datum_geldig_vanaf,
+    object.bron,
+    object.bron_tabel,
+    object.fotografie_id,
+    object.bodemgesteldheid_type_id,
+    (SELECT typeobject FROM historie o WHERE o.object_id = object.id LIMIT 1);
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 1;
 UPDATE algemeen.applicatie SET revisie = 9;
