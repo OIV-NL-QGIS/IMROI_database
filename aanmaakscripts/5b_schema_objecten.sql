@@ -59,9 +59,6 @@ CREATE TABLE object
 CREATE INDEX object_geom_gist
   ON object (geom);
 
-CREATE INDEX object_geovlak_gist
-  ON object USING GIST(geovlak);
-
 CREATE TABLE bouwlagen
 (
 	id 				SERIAL PRIMARY KEY 						 NOT NULL,
@@ -259,7 +256,7 @@ CREATE INDEX veiligh_bouwk_geom_gist
 
 CREATE TABLE ruimten_type
 (
-  id        SERIAL
+  id        SERIAL,
   naam      TEXT,
   CONSTRAINT ruimten_type_pk PRIMARY KEY (id),
   CONSTRAINT UC_naam UNIQUE (naam)

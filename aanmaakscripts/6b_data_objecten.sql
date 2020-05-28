@@ -78,9 +78,9 @@ INSERT INTO maatregel_type (id, naam) VALUES (22, 'Waterbeheerder / Havendienst'
 INSERT INTO maatregel_type (id, naam) VALUES (23, 'Waterbeheerder / Havendienst, Alarmeren boot'); 
 INSERT INTO maatregel_type (id, naam) VALUES (24, 'Zoek gebied vast stellen, stromingssnelheid, Boot stroomafwaarts met zuurstofkoffer'); 
 
-INSERT INTO sleutelkluis_type (id, naam) VALUES (148, 'sleutelkluis', 'sleutelkluis', 4);
-INSERT INTO sleutelkluis_type (id, naam) VALUES (1, 'sleutelbuis', 'sleutelbuis' , 4);
-INSERT INTO sleutelkluis_type (id, naam) VALUES (10, 'Sleutelkuis Havenbedrijf', 'sleutelkluis_havenbedrijf', 4);
+INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (148, 'sleutelkluis', 'sleutelkluis', 4);
+INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (1, 'sleutelbuis', 'sleutelbuis' , 4);
+INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (10, 'Sleutelkuis Havenbedrijf', 'sleutelkluis_havenbedrijf', 4);
 
 INSERT INTO sleuteldoel_type (id, naam) VALUES (1, 'generale hoofdsleutel');
 
