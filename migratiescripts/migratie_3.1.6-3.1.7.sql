@@ -417,7 +417,7 @@ ALTER TABLE ruimten_type ADD COLUMN id SERIAL PRIMARY KEY;
 ALTER TABLE ruimten_type ADD CONSTRAINT UC_naam UNIQUE (naam);
 
 ALTER TABLE ruimten ADD CONSTRAINT ruimten_type_id_fk FOREIGN KEY (ruimten_type_id)
-      REFERENCES ruimten_type (naam) MATCH SIMPLE
+      REFERENCES ruimten_type (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION ;
 
 -- Update versie van de applicatie
