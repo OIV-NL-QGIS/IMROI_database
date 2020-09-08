@@ -9,6 +9,7 @@ ALTER TABLE aanwezig ADD COLUMN bijzonderheid TEXT;
 ALTER TABLE veiligh_ruimtelijk ADD COLUMN bijzonderheid TEXT;
 ALTER TABLE veiligh_install ADD COLUMN bijzonderheid TEXT;
 ALTER TABLE bluswater.alternatieve ADD COLUMN opmerking TEXT;
+ALTER TABLE dreiging ADD COLUMN omschrijving TEXT;
 
 --LET OP VIEWS NOG AANPASSEN OP BASIS VAN TEBEL AANPASSINGEN
 
@@ -39,7 +40,9 @@ INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, 
 INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'object_terrein', 'id', 1, 'assigned');  
 INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
-        VALUES ('objecten', 'object_veiligh_ruimtelijk', 'id', 1, 'assigned');                                
+        VALUES ('objecten', 'object_veiligh_ruimtelijk', 'id', 1, 'assigned');
+INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_bereikbaarheid', 'id', 1, 'assigned');                               
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 1;
