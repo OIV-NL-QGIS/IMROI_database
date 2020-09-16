@@ -16,8 +16,6 @@ ALTER TABLE dreiging ADD COLUMN omschrijving TEXT;
 INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'bouwlagen', 'id', 1, 'assigned');
 INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
-        VALUES ('objecten', 'object_bgt', 'id', 1, 'assigned');
-INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'object_dreiging', 'id', 1, 'assigned');      
 INSERT INTO objecten.gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'object_grid', 'id', 1, 'assigned');
