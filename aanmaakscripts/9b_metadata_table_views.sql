@@ -87,3 +87,32 @@ INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column
         VALUES ('objecten', 'stavaza_volgende_update', 'id', 1, 'assigned');
 INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'status_objectgegevens', 'id', 1, 'assigned');
+
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'bouwlagen', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_dreiging', 'id', 1, 'assigned');      
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_grid', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_ingang', 'id', 1, 'assigned');      
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_isolijnen', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_label', 'id', 1, 'assigned');      
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_objecten', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_opslag', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_opstelplaats', 'id', 1, 'assigned'); 
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_sectoren', 'id', 1, 'assigned'); 
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_sleutelkluis', 'id', 1, 'assigned'); 
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_terrein', 'id', 1, 'assigned');  
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_veiligh_ruimtelijk', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_bereikbaarheid', 'id', 1, 'assigned');  

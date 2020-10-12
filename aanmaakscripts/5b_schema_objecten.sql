@@ -26,6 +26,7 @@ CREATE TYPE historie_aanpassing_type AS ENUM ('aanpassing', 'nieuw', 'update');
 CREATE TYPE historie_status_type AS ENUM ('concept', 'in gebruik', 'archief');
 CREATE TYPE sectoren_type       AS ENUM('persvak', 'podium', 'publieke sector', 'tent', 'parkeerzone');
 CREATE TYPE inzetfase_type      AS ENUM('uitrukfase', 'verkenfase', 'inzetfase', 'afbouwfase', 'nazorgfase');
+CREATE TYPE object_type         AS ENUM ('Gebouw', 'Evenement', 'Natuur', 'Waterongeval');
 
 CREATE TABLE bodemgesteldheid_type
 (
@@ -67,7 +68,7 @@ CREATE TABLE bouwlagen
   datum_gewijzigd   TIMESTAMP WITH TIME ZONE,
 	bouwlaag 		INTEGER 								 NOT NULL,
 	bouwdeel 		CHARACTER VARYING(25),
-	pand_id 		character varying(16) NOT NULL
+	pand_id 		character varying(40) NOT NULL
 );
 
 CREATE INDEX bouwlagen_geom_gist
@@ -182,7 +183,8 @@ CREATE TABLE veiligh_ruimtelijk_type
   id        SMALLINT PRIMARY KEY NOT NULL,
   naam      TEXT,
   categorie TEXT,
-  symbol_name TEXT
+  symbol_name TEXT,
+  size      INTEGER
 );
 COMMENT ON TABLE veiligh_ruimtelijk_type IS 'Enumeratie van de verschillende ruimtelijke veiligheidsvoorzieningen';
 REVOKE ALL ON TABLE veiligh_ruimtelijk_type FROM GROUP oiv_write;
@@ -198,6 +200,7 @@ CREATE TABLE veiligh_ruimtelijk
   object_id                 INTEGER         NOT NULL,
   rotatie                   INTEGER DEFAULT 0,
   fotografie_id             INTEGER,
+  bijzonderheid             TEXT,
   CONSTRAINT veiligh_ruimtelijk_type_id_fk FOREIGN KEY (veiligh_ruimtelijk_type_id) REFERENCES veiligh_ruimtelijk_type (id),
   CONSTRAINT veiligh_ruimtelijk_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT veiligh_ruimtelijk_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -228,6 +231,7 @@ CREATE TABLE veiligh_install
   bouwlaag_id               INTEGER         NOT NULL,
   rotatie                   INTEGER DEFAULT 0,
   fotografie_id             INTEGER,
+  bijzonderheid             TEXT,
   CONSTRAINT veiligh_install_type_id_fk FOREIGN KEY (veiligh_install_type_id) REFERENCES veiligh_install_type (id),
   CONSTRAINT veiligh_install_bouwlaag_id_fk  FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT veiligh_install_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -340,6 +344,7 @@ CREATE TABLE dreiging
   bouwlaag_id               INTEGER,
   object_id                 INTEGER,
   fotografie_id             INTEGER,
+  omschrijving              TEXT,
   CONSTRAINT dreiging_type_id_fk     FOREIGN KEY (dreiging_type_id)  REFERENCES dreiging_type (id),
   CONSTRAINT dreiging_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id)   REFERENCES bouwlagen (id)   ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT dreiging_object_id_fk   FOREIGN KEY (object_id)     REFERENCES object (id)    ON UPDATE CASCADE ON DELETE CASCADE,
@@ -435,6 +440,7 @@ CREATE TABLE aanwezig
   bouwlaag_id 		  INTEGER 				NOT NULL,
   aantal_personeel  SMALLINT,
   dieren            BOOLEAN,
+  bijzonderheid     TEXT,
   CONSTRAINT aanwezig_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT aanwezig_groep_id_fk FOREIGN KEY (aanwezig_type_id) REFERENCES aanwezig_type (id)
 );
