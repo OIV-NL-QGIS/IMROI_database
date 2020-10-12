@@ -37,6 +37,17 @@ AS SELECT v.id,
                  LIMIT 1))) o ON v.object_id = o.id
      JOIN objecten.opstelplaats_type st ON v.soort::text = st.naam;
 
+DROP RULE object_sectoren_upd ON object_sectoren;
+CREATE OR REPLACE RULE object_sectoren_upd AS
+    ON UPDATE TO object_sectoren DO INSTEAD  
+    UPDATE sectoren SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+  WHERE sectoren.id = new.id;
+
+DROP RULE object_opstelplaats_upd ON objecten.object_opstelplaats;
+CREATE OR REPLACE RULE object_opstelplaats_upd AS
+    ON UPDATE TO object_opstelplaats DO INSTEAD UPDATE opstelplaats SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+  WHERE opstelplaats.id = new.id;
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 2;
 UPDATE algemeen.applicatie SET revisie = 1;
