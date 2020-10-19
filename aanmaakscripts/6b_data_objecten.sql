@@ -46,10 +46,10 @@ INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', '', 25);
 INSERT INTO opstelplaats_type VALUES (6, 'UGS', '', 25);
 INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', '', 25);
 
-INSERT INTO schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
-INSERT INTO schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
-INSERT INTO schade_cirkel_type VALUES (3, 'secundaire branden treden op');
-INSERT INTO schade_cirkel_type VALUES (4, 'geen of lichte schade');
+INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
+INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
+INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (3, 'secundaire branden treden op');
+INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (4, 'geen of lichte schade');
 
 INSERT INTO sectoren_type VALUES (1, 'persvak');
 INSERT INTO sectoren_type VALUES (2, 'podium');
@@ -57,31 +57,31 @@ INSERT INTO sectoren_type VALUES (3, 'publieke sector');
 INSERT INTO sectoren_type VALUES (4, 'tent');
 INSERT INTO sectoren_type VALUES (5, 'parkeerzone');
 
-INSERT INTO labels_type VALUES (1, 'Algemeen', '', 3);
-INSERT INTO labels_type VALUES (2, 'Gevaar', '', 3);
-INSERT INTO labels_type VALUES (3, 'Voorzichtig', '', 3);
-INSERT INTO labels_type VALUES (4, 'Waarschuwing', '', 3);
-INSERT INTO labels_type VALUES (5, 'calamiteitendoorgang', '', 3);
-INSERT INTO labels_type VALUES (6, 'publieke ingang', '', 3);
-INSERT INTO labels_type VALUES (7, 'CCR', '', 3);
+INSERT INTO label_type VALUES (1, 'Algemeen', '', 3);
+INSERT INTO label_type VALUES (2, 'Gevaar', '', 3);
+INSERT INTO label_type VALUES (3, 'Voorzichtig', '', 3);
+INSERT INTO label_type VALUES (4, 'Waarschuwing', '', 3);
+INSERT INTO label_type VALUES (5, 'calamiteitendoorgang', '', 3);
+INSERT INTO label_type VALUES (6, 'publieke ingang', '', 3);
+INSERT INTO label_type VALUES (7, 'CCR', '', 3);
 
-INSERT INTO eenheid_type VALUES (1, 'cilinder');
-INSERT INTO eenheid_type VALUES (2, 'kg');
-INSERT INTO eenheid_type VALUES (3, 'liter');
-INSERT INTO eenheid_type VALUES (4, 'm3');
-INSERT INTO eenheid_type VALUES (5, 'stuks');
+INSERT INTO gevaarlijkestof_eenheid VALUES (1, 'cilinder');
+INSERT INTO gevaarlijkestof_eenheid VALUES (2, 'kg');
+INSERT INTO gevaarlijkestof_eenheid VALUES (3, 'liter');
+INSERT INTO gevaarlijkestof_eenheid VALUES (4, 'm3');
+INSERT INTO gevaarlijkestof_eenheid VALUES (5, 'stuks');
 
-INSERT INTO toestand_type VALUES (1, 'gas');
-INSERT INTO toestand_type VALUES (2, 'gas / vloeibaar');
-INSERT INTO toestand_type VALUES (3, 'vast');
-INSERT INTO toestand_type VALUES (4, 'vloeibaar');
-INSERT INTO toestand_type VALUES (5, 'vloeibaar / vast');
+INSERT INTO gevaarlijkestof_toestand VALUES (1, 'gas');
+INSERT INTO gevaarlijkestof_toestand VALUES (2, 'gas / vloeibaar');
+INSERT INTO gevaarlijkestof_toestand VALUES (3, 'vast');
+INSERT INTO gevaarlijkestof_toestand VALUES (4, 'vloeibaar');
+INSERT INTO gevaarlijkestof_toestand VALUES (5, 'vloeibaar / vast');
 
-INSERT INTO inzetfase_type VALUES (1, 'uitrukfase');
-INSERT INTO inzetfase_type VALUES (2, 'verkenfase');
-INSERT INTO inzetfase_type VALUES (3, 'inzetfase');
-INSERT INTO inzetfase_type VALUES (4, 'afbouwfase');
-INSERT INTO inzetfase_type VALUES (5, 'nazorgfase');
+INSERT INTO beheersmaatregelen_inzetfase VALUES (1, 'uitrukfase');
+INSERT INTO beheersmaatregelen_inzetfase VALUES (2, 'verkenfase');
+INSERT INTO beheersmaatregelen_inzetfase VALUES (3, 'inzetfase');
+INSERT INTO beheersmaatregelen_inzetfase VALUES (4, 'afbouwfase');
+INSERT INTO beheersmaatregelen_inzetfase VALUES (5, 'nazorgfase');
 
 INSERT INTO contactpersoon_type VALUES (1, 'Hoofd BHV');
 INSERT INTO contactpersoon_type VALUES (2, 'beheerder');

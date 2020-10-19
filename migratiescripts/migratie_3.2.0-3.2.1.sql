@@ -7,6 +7,9 @@ INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (3, 'slib');
 INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (4, 'zand');
 INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (5, 'n.v.t.');
 
+ALTER TABLE objecten.gevaarlijke_stof_eenheid RENAME TO gevaarlijkestof_eenheid;
+ALTER TABLE objecten.gevaarlijke_stof_toestand RENAME TO gevaarlijkestof_toestand;
+
 CREATE OR REPLACE VIEW objecten.object_opstelplaats
 AS SELECT v.id,
     v.geom,
