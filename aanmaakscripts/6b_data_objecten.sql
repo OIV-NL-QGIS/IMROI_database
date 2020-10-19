@@ -1,6 +1,109 @@
 ﻿-- Opzoektabellen vullen
-set role oiv_admin;
+SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
+
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (1, 'aanpassing');
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (2, 'nieuw');
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (3, 'update');
+
+INSERT INTO historie_status_type (id, naam) VALUES (1, 'concept');
+INSERT INTO historie_status_type (id, naam) VALUES (2, 'in gebruik');
+INSERT INTO historie_status_type (id, naam) VALUES (3, 'archief');
+
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (1, 'aanrijdroute');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (2, 'hekwerk');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (3, 'calamiteitenroute');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (4, 'vluchtroute publiek');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (5, 'wegen eigen terrein');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (6, 'oever-kade');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (7, 'evenementenroute');
+
+INSERT INTO afw_binnendekking_type VALUES (1, 'Dekkingsprobleem DMO', 'dekkingsprobleem_dmo', 2);
+INSERT INTO afw_binnendekking_type VALUES (2, 'Dekkingsprobleem TMO', 'dekkingsprobleem_tmo', 2);
+
+INSERT INTO object_type VALUES (1, 'Gebouw', '', 0);
+INSERT INTO object_type VALUES (2, 'Evenement', '', 0);
+INSERT INTO object_type VALUES (3, 'Natuur', '', 0);
+INSERT INTO object_type VALUES (4, 'Waterongeval', '', 0);
+
+INSERT INTO veiligh_bouwk_type VALUES (1, '30 min brandwerende scheiding');
+INSERT INTO veiligh_bouwk_type VALUES (2, '60 min brandwerende scheiding');
+INSERT INTO veiligh_bouwk_type VALUES (3, 'bouwdeelscheiding');
+INSERT INTO veiligh_bouwk_type VALUES (4, 'rookwerendescheiding');
+INSERT INTO veiligh_bouwk_type VALUES (5, '120 min brandwerende scheiding');
+
+INSERT INTO opstelplaats_type VALUES (1, 'Tankautospuit', '', 25);
+INSERT INTO opstelplaats_type VALUES (2, 'Redvoertuig', '', 25);
+INSERT INTO opstelplaats_type VALUES (3, 'Autoladder', '', 25);
+INSERT INTO opstelplaats_type VALUES (4, 'WTS', '', 25);
+INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', '', 25);
+INSERT INTO opstelplaats_type VALUES (6, 'UGS', '', 25);
+INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', '', 25);
+
+INSERT INTO schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
+INSERT INTO schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
+INSERT INTO schade_cirkel_type VALUES (3, 'secundaire branden treden op');
+INSERT INTO schade_cirkel_type VALUES (4, 'geen of lichte schade');
+
+INSERT INTO sectoren_type VALUES (1, 'persvak');
+INSERT INTO sectoren_type VALUES (2, 'podium');
+INSERT INTO sectoren_type VALUES (3, 'publieke sector');
+INSERT INTO sectoren_type VALUES (4, 'tent');
+INSERT INTO sectoren_type VALUES (5, 'parkeerzone');
+
+INSERT INTO labels_type VALUES (1, 'Algemeen', '', 3);
+INSERT INTO labels_type VALUES (2, 'Gevaar', '', 3);
+INSERT INTO labels_type VALUES (3, 'Voorzichtig', '', 3);
+INSERT INTO labels_type VALUES (4, 'Waarschuwing', '', 3);
+INSERT INTO labels_type VALUES (5, 'calamiteitendoorgang', '', 3);
+INSERT INTO labels_type VALUES (6, 'publieke ingang', '', 3);
+INSERT INTO labels_type VALUES (7, 'CCR', '', 3);
+
+INSERT INTO eenheid_type VALUES (1, 'cilinder');
+INSERT INTO eenheid_type VALUES (2, 'kg');
+INSERT INTO eenheid_type VALUES (3, 'liter');
+INSERT INTO eenheid_type VALUES (4, 'm3');
+INSERT INTO eenheid_type VALUES (5, 'stuks');
+
+INSERT INTO toestand_type VALUES (1, 'gas');
+INSERT INTO toestand_type VALUES (2, 'gas / vloeibaar');
+INSERT INTO toestand_type VALUES (3, 'vast');
+INSERT INTO toestand_type VALUES (4, 'vloeibaar');
+INSERT INTO toestand_type VALUES (5, 'vloeibaar / vast');
+
+INSERT INTO inzetfase_type VALUES (1, 'uitrukfase');
+INSERT INTO inzetfase_type VALUES (2, 'verkenfase');
+INSERT INTO inzetfase_type VALUES (3, 'inzetfase');
+INSERT INTO inzetfase_type VALUES (4, 'afbouwfase');
+INSERT INTO inzetfase_type VALUES (5, 'nazorgfase');
+
+INSERT INTO contactpersoon_type VALUES (1, 'Hoofd BHV');
+INSERT INTO contactpersoon_type VALUES (2, 'beheerder');
+INSERT INTO contactpersoon_type VALUES (3, 'brugwachter');
+INSERT INTO contactpersoon_type VALUES (4, 'eigenaar');
+INSERT INTO contactpersoon_type VALUES (5, 'gebruiker');
+INSERT INTO contactpersoon_type VALUES (6, 'gemeente');
+INSERT INTO contactpersoon_type VALUES (7, 'havendienst');
+INSERT INTO contactpersoon_type VALUES (8, 'hoogheemraadschap');
+INSERT INTO contactpersoon_type VALUES (9, 'kantine');
+INSERT INTO contactpersoon_type VALUES (10, 'kustwachtcentrum');
+INSERT INTO contactpersoon_type VALUES (11, 'provincie');
+INSERT INTO contactpersoon_type VALUES (12, 'PWN');
+INSERT INTO contactpersoon_type VALUES (13, 'receptie');
+INSERT INTO contactpersoon_type VALUES (14, 'reddingsbrigade');
+INSERT INTO contactpersoon_type VALUES (15, 'sluiswachter');
+INSERT INTO contactpersoon_type VALUES (16, 'staatsbosbeheer');
+INSERT INTO contactpersoon_type VALUES (17, 'zwemwatertelefoon');
+
+INSERT INTO veilighv_org_type VALUES (1, 'bedrijfsbrandweer');
+INSERT INTO veilighv_org_type VALUES (2, 'onderhoud');
+INSERT INTO veilighv_org_type VALUES (3, 'rampenbestrijdingsplan');
+INSERT INTO veilighv_org_type VALUES (4, 'regulering transitie (verladingen, venstertijden etc)');
+INSERT INTO veilighv_org_type VALUES (5, 'risicocommunicatie');
+INSERT INTO veilighv_org_type VALUES (6, 'sancties');
+INSERT INTO veilighv_org_type VALUES (7, 'supervisie');
+INSERT INTO veilighv_org_type VALUES (8, 'veiligheidsfunctionaris');
+INSERT INTO veilighv_org_type VALUES (9, 'veiligheidsovertredingenregister');
 
 INSERT INTO aanwezig_type (id, naam, omschrijving) VALUES (1, '', '');
 INSERT INTO aanwezig_type (id, naam, omschrijving) VALUES (2, 'Bewaking', '');

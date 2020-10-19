@@ -153,7 +153,7 @@ ALTER TABLE gevaarlijkestof RENAME toestand_new TO toestand;
 DROP TYPE toestand_type;
 ALTER TABLE gevaarlijke_stof_toestand_new RENAME TO gevaarlijke_stof_toestand_type;
 
-ALTER TABLE gevaarlijkestof ADD CONSTRAINT gevaarlijkestof__toestand_type_id_fk FOREIGN KEY (toestand)
+ALTER TABLE gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_toestand_type_id_fk FOREIGN KEY (toestand)
       REFERENCES objecten.gevaarlijke_stof_toestand_type (naam) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
