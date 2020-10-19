@@ -1,6 +1,115 @@
 ﻿-- Opzoektabellen vullen
-set role oiv_admin;
+SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
+
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (1, 'aanpassing');
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (2, 'nieuw');
+INSERT INTO historie_aanpassing_type (id, naam) VALUES (3, 'update');
+
+INSERT INTO historie_status_type (id, naam) VALUES (1, 'concept');
+INSERT INTO historie_status_type (id, naam) VALUES (2, 'in gebruik');
+INSERT INTO historie_status_type (id, naam) VALUES (3, 'archief');
+
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (1, 'aanrijdroute');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (2, 'hekwerk');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (3, 'calamiteitenroute');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (4, 'vluchtroute publiek');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (5, 'wegen eigen terrein');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (6, 'oever-kade');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES (7, 'evenementenroute');
+
+INSERT INTO afw_binnendekking_type VALUES (1, 'Dekkingsprobleem DMO', 'dekkingsprobleem_dmo', 2);
+INSERT INTO afw_binnendekking_type VALUES (2, 'Dekkingsprobleem TMO', 'dekkingsprobleem_tmo', 2);
+
+INSERT INTO object_type VALUES (1, 'Gebouw', '', 0);
+INSERT INTO object_type VALUES (2, 'Evenement', '', 0);
+INSERT INTO object_type VALUES (3, 'Natuur', '', 0);
+INSERT INTO object_type VALUES (4, 'Waterongeval', '', 0);
+
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (1, 'n.n.b.');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (2, 'klei');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (3, 'slib');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (4, 'zand');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (5, 'n.v.t.');
+
+INSERT INTO veiligh_bouwk_type VALUES (1, '30 min brandwerende scheiding');
+INSERT INTO veiligh_bouwk_type VALUES (2, '60 min brandwerende scheiding');
+INSERT INTO veiligh_bouwk_type VALUES (3, 'bouwdeelscheiding');
+INSERT INTO veiligh_bouwk_type VALUES (4, 'rookwerendescheiding');
+INSERT INTO veiligh_bouwk_type VALUES (5, '120 min brandwerende scheiding');
+
+INSERT INTO opstelplaats_type VALUES (1, 'Tankautospuit', '', 25);
+INSERT INTO opstelplaats_type VALUES (2, 'Redvoertuig', '', 25);
+INSERT INTO opstelplaats_type VALUES (3, 'Autoladder', '', 25);
+INSERT INTO opstelplaats_type VALUES (4, 'WTS', '', 25);
+INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', '', 25);
+INSERT INTO opstelplaats_type VALUES (6, 'UGS', '', 25);
+INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', '', 25);
+
+INSERT INTO schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
+INSERT INTO schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
+INSERT INTO schade_cirkel_type VALUES (3, 'secundaire branden treden op');
+INSERT INTO schade_cirkel_type VALUES (4, 'geen of lichte schade');
+
+INSERT INTO sectoren_type VALUES (1, 'persvak');
+INSERT INTO sectoren_type VALUES (2, 'podium');
+INSERT INTO sectoren_type VALUES (3, 'publieke sector');
+INSERT INTO sectoren_type VALUES (4, 'tent');
+INSERT INTO sectoren_type VALUES (5, 'parkeerzone');
+
+INSERT INTO labels_type VALUES (1, 'Algemeen', '', 3);
+INSERT INTO labels_type VALUES (2, 'Gevaar', '', 3);
+INSERT INTO labels_type VALUES (3, 'Voorzichtig', '', 3);
+INSERT INTO labels_type VALUES (4, 'Waarschuwing', '', 3);
+INSERT INTO labels_type VALUES (5, 'calamiteitendoorgang', '', 3);
+INSERT INTO labels_type VALUES (6, 'publieke ingang', '', 3);
+INSERT INTO labels_type VALUES (7, 'CCR', '', 3);
+
+INSERT INTO eenheid_type VALUES (1, 'cilinder');
+INSERT INTO eenheid_type VALUES (2, 'kg');
+INSERT INTO eenheid_type VALUES (3, 'liter');
+INSERT INTO eenheid_type VALUES (4, 'm3');
+INSERT INTO eenheid_type VALUES (5, 'stuks');
+
+INSERT INTO toestand_type VALUES (1, 'gas');
+INSERT INTO toestand_type VALUES (2, 'gas / vloeibaar');
+INSERT INTO toestand_type VALUES (3, 'vast');
+INSERT INTO toestand_type VALUES (4, 'vloeibaar');
+INSERT INTO toestand_type VALUES (5, 'vloeibaar / vast');
+
+INSERT INTO inzetfase_type VALUES (1, 'uitrukfase');
+INSERT INTO inzetfase_type VALUES (2, 'verkenfase');
+INSERT INTO inzetfase_type VALUES (3, 'inzetfase');
+INSERT INTO inzetfase_type VALUES (4, 'afbouwfase');
+INSERT INTO inzetfase_type VALUES (5, 'nazorgfase');
+
+INSERT INTO contactpersoon_type VALUES (1, 'Hoofd BHV');
+INSERT INTO contactpersoon_type VALUES (2, 'beheerder');
+INSERT INTO contactpersoon_type VALUES (3, 'brugwachter');
+INSERT INTO contactpersoon_type VALUES (4, 'eigenaar');
+INSERT INTO contactpersoon_type VALUES (5, 'gebruiker');
+INSERT INTO contactpersoon_type VALUES (6, 'gemeente');
+INSERT INTO contactpersoon_type VALUES (7, 'havendienst');
+INSERT INTO contactpersoon_type VALUES (8, 'hoogheemraadschap');
+INSERT INTO contactpersoon_type VALUES (9, 'kantine');
+INSERT INTO contactpersoon_type VALUES (10, 'kustwachtcentrum');
+INSERT INTO contactpersoon_type VALUES (11, 'provincie');
+INSERT INTO contactpersoon_type VALUES (12, 'PWN');
+INSERT INTO contactpersoon_type VALUES (13, 'receptie');
+INSERT INTO contactpersoon_type VALUES (14, 'reddingsbrigade');
+INSERT INTO contactpersoon_type VALUES (15, 'sluiswachter');
+INSERT INTO contactpersoon_type VALUES (16, 'staatsbosbeheer');
+INSERT INTO contactpersoon_type VALUES (17, 'zwemwatertelefoon');
+
+INSERT INTO veilighv_org_type VALUES (1, 'bedrijfsbrandweer');
+INSERT INTO veilighv_org_type VALUES (2, 'onderhoud');
+INSERT INTO veilighv_org_type VALUES (3, 'rampenbestrijdingsplan');
+INSERT INTO veilighv_org_type VALUES (4, 'regulering transitie (verladingen, venstertijden etc)');
+INSERT INTO veilighv_org_type VALUES (5, 'risicocommunicatie');
+INSERT INTO veilighv_org_type VALUES (6, 'sancties');
+INSERT INTO veilighv_org_type VALUES (7, 'supervisie');
+INSERT INTO veilighv_org_type VALUES (8, 'veiligheidsfunctionaris');
+INSERT INTO veilighv_org_type VALUES (9, 'veiligheidsovertredingenregister');
 
 INSERT INTO aanwezig_type (id, naam, omschrijving) VALUES (1, '', '');
 INSERT INTO aanwezig_type (id, naam, omschrijving) VALUES (2, 'Bewaking', '');
@@ -84,61 +193,61 @@ INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (10, 'Sleutel
 
 INSERT INTO sleuteldoel_type (id, naam) VALUES (1, 'generale hoofdsleutel');
 
-INSERT INTO veiligh_ruimtelijk_type VALUES (1001, 'Activering blussysteem', NULL, 'activering_blussysteem');
-INSERT INTO veiligh_ruimtelijk_type VALUES (201, 'aed', 'evenement', 'aed');
-INSERT INTO veiligh_ruimtelijk_type VALUES (7, 'Afsluiter CV', 'Afsluiter', 'afsluiter_cv');
-INSERT INTO veiligh_ruimtelijk_type VALUES (8, 'Afsluiter elektra', 'Afsluiter', 'afsluiter_elektra');
-INSERT INTO veiligh_ruimtelijk_type VALUES (9, 'Afsluiter gas', 'Afsluiter', 'afsluiter_gas');
-INSERT INTO veiligh_ruimtelijk_type VALUES (164, 'Afsluiter luchtbehandeling', 'Afsluiter', 'afsluiter_luchtbehandeling');
-INSERT INTO veiligh_ruimtelijk_type VALUES (11, 'Afsluiter neon', 'Afsluiter', 'afsluiter_neon');
-INSERT INTO veiligh_ruimtelijk_type VALUES (12, 'Afsluiter noodstop', 'Afsluiter', 'afsluiter_noodstop');
-INSERT INTO veiligh_ruimtelijk_type VALUES (13, 'Afsluiter omloop', 'Afsluiter', 'afsluiter_omloop');
-INSERT INTO veiligh_ruimtelijk_type VALUES (14, 'Afsluiter rwa', 'Afsluiter', 'afsluiter_rwa');
-INSERT INTO veiligh_ruimtelijk_type VALUES (15, 'Afsluiter sprinkler', 'Afsluiter', 'afsluiter_sprinkler');
-INSERT INTO veiligh_ruimtelijk_type VALUES (16, 'Afsluiter water', 'Afsluiter', 'afsluiter_water');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1021, 'Antidote of tegengif', NULL, 'antidote_tegengif');
-INSERT INTO veiligh_ruimtelijk_type VALUES (172, 'Blussysteem afff', 'Blussysteem', 'blussysteem_afff');
-INSERT INTO veiligh_ruimtelijk_type VALUES (171, 'Blussysteem hifog', 'Blussysteem', 'blussysteem_hifog');
-INSERT INTO veiligh_ruimtelijk_type VALUES (23, 'Blussysteem koolstofdioxide', 'Blussysteem', 'blussysteem_koolstofdioxide');
-INSERT INTO veiligh_ruimtelijk_type VALUES (25, 'Blussysteem schuim', 'Blussysteem', 'blussysteem_schuim');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1013, 'Blussysteem stikstof', NULL, 'blussysteem_stikstof');
-INSERT INTO veiligh_ruimtelijk_type VALUES (26, 'Blussysteem water', 'Blussysteem', 'blussysteem_water');
-INSERT INTO veiligh_ruimtelijk_type VALUES (205, 'Kraam elektra', 'evenement', 'kraam_elektra');
-INSERT INTO veiligh_ruimtelijk_type VALUES (204, 'Kraam gas', 'evenement', 'kraam_gas');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1018, 'Brandbestrijdingsmateriaal', NULL, 'brandbestrijdings_materiaal');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1014, 'Brandbluspomp', NULL, 'brandbluspomp');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1002, 'Brandblusser', NULL, 'brandblusser');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1003, 'Brandslanghaspel', NULL, 'brandslanghaspel');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1022, 'Calamiteiten coördinatiecentrum', NULL, 'calamiteiten_coördinatiecentrum');
-INSERT INTO veiligh_ruimtelijk_type VALUES (202, 'ehbo', 'evenement', 'ehbo');
-INSERT INTO veiligh_ruimtelijk_type VALUES (203, 'generator', 'evenement', 'generator');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1009, 'Heli landplaats', NULL, 'heli_vmc');
-INSERT INTO veiligh_ruimtelijk_type VALUES (9999, 'Installatie defect', NULL, 'installatie_defect');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1017, 'Kade aansluiting', NULL, 'kade_aansluiting');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1005, 'Nooddouche', NULL, 'nooddouche');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1007, 'Oilboom_afzet', NULL, 'oilboom_afzet');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1006, 'Oilboom_opstel', NULL, 'oilboom_opstel');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1004, 'Oogdouche', NULL, 'oogdouche');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1010, 'Opstapplaats RPA', NULL, 'opstapplaats_rpa');
-INSERT INTO veiligh_ruimtelijk_type VALUES (206, 'parkeerplaats', 'evenement', 'parkeerplaats');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1020, 'Reduceer of drukbegerenzer', NULL, 'reduceer_drukbegerenzer');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1019, 'Schacht of kanaal', NULL, 'schacht_kanaal');
+INSERT INTO veiligh_ruimtelijk_type VALUES (1001, 'Activering blussysteem', NULL, 'activering_blussysteem', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (201, 'aed', 'evenement', 'aed', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (7, 'Afsluiter CV', 'Afsluiter', 'afsluiter_cv', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (8, 'Afsluiter elektra', 'Afsluiter', 'afsluiter_elektra', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (9, 'Afsluiter gas', 'Afsluiter', 'afsluiter_gas', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (164, 'Afsluiter luchtbehandeling', 'Afsluiter', 'afsluiter_luchtbehandeling', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (11, 'Afsluiter neon', 'Afsluiter', 'afsluiter_neon', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (12, 'Afsluiter noodstop', 'Afsluiter', 'afsluiter_noodstop', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (13, 'Afsluiter omloop', 'Afsluiter', 'afsluiter_omloop', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (14, 'Afsluiter rwa', 'Afsluiter', 'afsluiter_rwa', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (15, 'Afsluiter sprinkler', 'Afsluiter', 'afsluiter_sprinkler', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (16, 'Afsluiter water', 'Afsluiter', 'afsluiter_water', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1021, 'Antidote of tegengif', NULL, 'antidote_tegengif', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (172, 'Blussysteem afff', 'Blussysteem', 'blussysteem_afff', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (171, 'Blussysteem hifog', 'Blussysteem', 'blussysteem_hifog', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (23, 'Blussysteem koolstofdioxide', 'Blussysteem', 'blussysteem_koolstofdioxide', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (25, 'Blussysteem schuim', 'Blussysteem', 'blussysteem_schuim', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1013, 'Blussysteem stikstof', NULL, 'blussysteem_stikstof', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (26, 'Blussysteem water', 'Blussysteem', 'blussysteem_water', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (205, 'Kraam elektra', 'evenement', 'kraam_elektra', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (204, 'Kraam gas', 'evenement', 'kraam_gas', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1018, 'Brandbestrijdingsmateriaal', NULL, 'brandbestrijdings_materiaal', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1014, 'Brandbluspomp', NULL, 'brandbluspomp', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1002, 'Brandblusser', NULL, 'brandblusser', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1003, 'Brandslanghaspel', NULL, 'brandslanghaspel', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1022, 'Calamiteiten coördinatiecentrum', NULL, 'calamiteiten_coördinatiecentrum', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (202, 'ehbo', 'evenement', 'ehbo', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (203, 'generator', 'evenement', 'generator', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1009, 'Heli landplaats', NULL, 'heli_vmc', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (9999, 'Installatie defect', NULL, 'installatie_defect', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1017, 'Kade aansluiting', NULL, 'kade_aansluiting', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1005, 'Nooddouche', NULL, 'nooddouche', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1007, 'Oilboom_afzet', NULL, 'oilboom_afzet', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1006, 'Oilboom_opstel', NULL, 'oilboom_opstel', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1004, 'Oogdouche', NULL, 'oogdouche', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1010, 'Opstapplaats RPA', NULL, 'opstapplaats_rpa', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (206, 'parkeerplaats', 'evenement', 'parkeerplaats', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1020, 'Reduceer of drukbegerenzer', NULL, 'reduceer_drukbegerenzer', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1019, 'Schacht of kanaal', NULL, 'schacht_kanaal', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (1008, 'Schermenponton', NULL, 'schermenponton');
-INSERT INTO veiligh_ruimtelijk_type VALUES (151, 'Stijgleiding HD afnamepunt', 'Voorziening', 'stijgleiding_hd_afnamepunt');
-INSERT INTO veiligh_ruimtelijk_type VALUES (152, 'Stijgleiding HD vulpunt', 'Voorziening', 'stijgleiding_hd_vulpunt');
-INSERT INTO veiligh_ruimtelijk_type VALUES (149, 'Stijgleiding LD afnamepunt', 'Voorziening', 'stijgleiding_ld_afnamepunt');
-INSERT INTO veiligh_ruimtelijk_type VALUES (150, 'Stijgleiding LD vulpunt', 'Voorziening', 'stijgleiding_ld_vulpunt');
-INSERT INTO veiligh_ruimtelijk_type VALUES (160, 'Verzamelplaats', 'Toetreding', 'verzamelplaats');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1016, 'Voedingspunt SVM', NULL, 'voedingspunt_schuim');
-INSERT INTO veiligh_ruimtelijk_type VALUES (154, 'Waterkanon', 'Voorziening', 'waterkanon');
-INSERT INTO veiligh_ruimtelijk_type VALUES (1015, 'Waterkanon SVM', NULL, 'waterkanon_schuim');
-INSERT INTO veiligh_ruimtelijk_type VALUES (207, 'attractie', 'evenement', 'attractie');
-INSERT INTO veiligh_ruimtelijk_type VALUES (208, 'feesttent', 'evenement', 'feesttent');
-INSERT INTO veiligh_ruimtelijk_type VALUES (209, 'straattheater', 'evenement', 'straattheater');
-INSERT INTO veiligh_ruimtelijk_type VALUES (210, 'kleedkamer', 'evenement', 'kleedkamer');
-INSERT INTO veiligh_ruimtelijk_type VALUES (211, 'vuurwerkafsteekplaats', 'evenement', 'vuurwerkafsteekplaats');
-INSERT INTO veiligh_ruimtelijk_type VALUES (212, 'restaurant', 'evenement', 'restaurant');
-INSERT INTO veiligh_ruimtelijk_type VALUES (213, 'tijdelijke wegafsluiting', 'evenement', 'tijdelijke_wegafsluiting');
+INSERT INTO veiligh_ruimtelijk_type VALUES (151, 'Stijgleiding HD afnamepunt', 'Voorziening', 'stijgleiding_hd_afnamepunt', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (152, 'Stijgleiding HD vulpunt', 'Voorziening', 'stijgleiding_hd_vulpunt', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (149, 'Stijgleiding LD afnamepunt', 'Voorziening', 'stijgleiding_ld_afnamepunt', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (150, 'Stijgleiding LD vulpunt', 'Voorziening', 'stijgleiding_ld_vulpunt', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (160, 'Verzamelplaats', 'Toetreding', 'verzamelplaats', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1016, 'Voedingspunt SVM', NULL, 'voedingspunt_schuim', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (154, 'Waterkanon', 'Voorziening', 'waterkanon', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1015, 'Waterkanon SVM', NULL, 'waterkanon_schuim', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (207, 'attractie', 'evenement', 'attractie', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (208, 'feesttent', 'evenement', 'feesttent', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (209, 'straattheater', 'evenement', 'straattheater', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (210, 'kleedkamer', 'evenement', 'kleedkamer', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (211, 'vuurwerkafsteekplaats', 'evenement', 'vuurwerkafsteekplaats', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (212, 'restaurant', 'evenement', 'restaurant', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (213, 'tijdelijke wegafsluiting', 'evenement', 'tijdelijke_wegafsluiting', 6);
 
 INSERT INTO veiligh_install_type VALUES (7, 'Afsluiter CV', 'afsluiter_cv', 4);
 INSERT INTO veiligh_install_type VALUES (8, 'Afsluiter elektra', 'afsluiter_elektra', 4);
@@ -178,6 +287,7 @@ INSERT INTO veiligh_install_type VALUES (1006, 'Overdruk ventilatie', 'overdruk_
 INSERT INTO veiligh_install_type VALUES (1013, 'Blussysteem stikstof', 'blussysteem_stikstof', 4);
 INSERT INTO veiligh_install_type VALUES (1021, 'Antidote of tegengif', 'antidote_tegengif', 4);
 INSERT INTO veiligh_install_type VALUES (1022, 'Calamiteiten coördinatiecentrum', 'calamiteiten_coördinatiecentrum', 4);
+INSERT INTO veiligh_install_type VALUES (1019, 'Schacht of kanaal', 'schacht_kanaal', 4);
 INSERT INTO veiligh_install_type VALUES (9999, 'Installatie defect', 'installatie_defect', 4);
 
 INSERT INTO ruimten_type (id, naam) VALUES (1, 'bijzondere ruimte');

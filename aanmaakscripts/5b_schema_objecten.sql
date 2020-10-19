@@ -9,30 +9,20 @@ GRANT USAGE ON SCHEMA objecten TO GROUP oiv_read;
 
 SET search_path = objecten, pg_catalog, public;
 
---Create types
-CREATE TYPE bereikbaarheid_type AS ENUM ('aanrijdroute', 'hekwerk', 'calamiteitenroute', 'vluchtroute publiek', 'wegen eigen terrein', 'oever-kade', 'evenementenroute');
-CREATE TYPE contactpersoon_type AS ENUM ('Hoofd BHV','beheerder', 'brugwachter', 'eigenaar', 'gebruiker', 'gemeente', 'havendienst', 'hoogheemraadschap', 
-                                          'kantine', 'kustwachtcentrum', 'provincie', 'PWN', 'receptie', 'reddingsbrigade', 'sluiswachter', 'staatsbosbeheer', 'zwemwatertelefoon');
-CREATE TYPE opstelplaats_type   AS ENUM ('Tankautospuit','Redvoertuig','Autoladder','WTS','Schuimblusvoertuig', 'UGS', 'Boot te water laat plaats');
-CREATE TYPE veilighv_org_type   AS ENUM ('bedrijfsbrandweer', 'onderhoud', 'rampenbestrijdingsplan', 'regulering transitie (verladingen, venstertijden etc)',
-                                          'risicocommunicatie', 'sancties', 'supervisie', 'veiligheidsfunctionaris', 'veiligheidsovertredingenregister');
-CREATE TYPE veiligh_bouwk_type  AS ENUM ('30 min brandwerende scheiding', '60 min brandwerende scheiding', 'bouwdeelscheiding', 'rookwerendescheiding', '120 min brandwerende scheiding');
-CREATE TYPE afw_binnendekking_type AS ENUM('Dekkingsprobleem DMO', 'Dekkingsprobleem TMO');
-CREATE TYPE labels_type         AS ENUM ('Algemeen', 'Gevaar', 'Voorzichtig', 'Waarschuwing', 'calamiteitendoorgang', 'publieke ingang');
-CREATE TYPE eenheid_type        AS ENUM ('cilinder', 'kg', 'liter', 'm3', 'stuks');
-CREATE TYPE toestand_type       AS ENUM ('gas', 'gas / vloeibaar', 'vast', 'vloeibaar', 'vloeibaar / vast');
-CREATE TYPE schade_cirkel_type  AS ENUM ('onherstelbare schade en branden', 'zware schade en secundaire branden', 'secundaire branden treden op', 'geen of lichte schade');
-CREATE TYPE historie_aanpassing_type AS ENUM ('aanpassing', 'nieuw', 'update');
-CREATE TYPE historie_status_type AS ENUM ('concept', 'in gebruik', 'archief');
-CREATE TYPE sectoren_type       AS ENUM('persvak', 'podium', 'publieke sector', 'tent', 'parkeerzone');
-CREATE TYPE inzetfase_type      AS ENUM('uitrukfase', 'verkenfase', 'inzetfase', 'afbouwfase', 'nazorgfase');
-
 CREATE TABLE bodemgesteldheid_type
 (
   id            smallint NOT NULL,
   naam          text,
   omschrijving  text,
   CONSTRAINT bodemgesteldheid_type_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE object_type 
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE,
+ symbol_name text,
+ size integer
 );
 
 CREATE TABLE object
@@ -67,12 +57,19 @@ CREATE TABLE bouwlagen
   datum_gewijzigd   TIMESTAMP WITH TIME ZONE,
 	bouwlaag 		INTEGER 								 NOT NULL,
 	bouwdeel 		CHARACTER VARYING(25),
-	pand_id 		character varying(16) NOT NULL
+	pand_id 		character varying(40) NOT NULL
 );
 
 CREATE INDEX bouwlagen_geom_gist
   ON bouwlagen USING GIST(geom);
 COMMENT ON TABLE bouwlagen IS 'Vlakken laag om bouwlagen in te tekenen';
+
+CREATE TABLE bereikbaarheid_type 
+(
+  id smallint PRIMARY KEY,
+  naam CHARACTER VARYING(50) UNIQUE
+);
+COMMENT ON TABLE bereikbaarheid_type IS 'Enumeratie tabel voor types bereikbaarheid';
 
 CREATE TABLE bereikbaarheid
 (
@@ -82,30 +79,39 @@ CREATE TABLE bereikbaarheid
   datum_gewijzigd        TIMESTAMP WITH TIME ZONE,
   obstakels              CHARACTER VARYING(50),
   wegafzetting           CHARACTER VARYING(50),
-  soort                  bereikbaarheid_type,
+  soort                  CHARACTER VARYING(50) NOT NULL,
   object_id              INTEGER NOT NULL,
   fotografie_id          INTEGER,
   label                  CHARACTER VARYING(254),
   CONSTRAINT bereikbaarheid_object_id_fk FOREIGN KEY (object_id)     REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT bereikbaarheid_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT bereikbaarheid_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id),
+  CONSTRAINT soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.bereikbaarheid_type (naam)
 );
 
 CREATE INDEX bereikbaarheid_geom_gist
   ON bereikbaarheid USING GIST(geom);
 COMMENT ON TABLE bereikbaarheid IS 'Bereikbaarheids bijzonderheden per repressief object';
 
+CREATE TABLE contactpersoon_type
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON TABLE contactpersoon_type IS 'Enumeratie tabel voor type Contactpersonen';
+
 CREATE TABLE contactpersoon
 (
   id                        SERIAL PRIMARY KEY      NOT NULL,
   datum_aangemaakt          TIMESTAMP DEFAULT now(),
   datum_gewijzigd           TIMESTAMP,
-  soort                     contactpersoon_type,
+  soort                     varchar(50),
   dagen                     TEXT,
   tijdvakbegin              TIMESTAMP WITHOUT TIME ZONE,
   tijdvakeind               TIMESTAMP WITHOUT TIME ZONE,
-  telefoonnummer             CHARACTER VARYING(11),
-  object_id             INTEGER         NOT NULL,
-  CONSTRAINT contactpersoon_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE
+  telefoonnummer            CHARACTER VARYING(11),
+  object_id                 INTEGER NOT NULL,
+  CONSTRAINT contactpersoon_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT contactpersoon_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.contactpersoon_type (naam)
 );
 COMMENT ON TABLE contactpersoon IS 'Contactpersonen';
 
@@ -146,18 +152,28 @@ CREATE TABLE scenario
 );
 COMMENT ON TABLE bedrijfshulpverlening IS 'scenarios';
 
+CREATE TABLE opstelplaats_type
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE,
+ symbol_name text,
+ size integer
+);
+COMMENT ON TABLE opstelplaats_type IS 'Enumeratie voor type Opstelplaatsen t.b.v. brandweervoertuigen';
+
 CREATE TABLE opstelplaats
 (
   id                        SERIAL PRIMARY KEY      NOT NULL,
   geom                      GEOMETRY(Point, 28992),
   datum_aangemaakt          TIMESTAMP DEFAULT now(),
   datum_gewijzigd           TIMESTAMP,
-  soort                     opstelplaats_type,
+  soort                     varchar(100),
   rotatie                   INTEGER DEFAULT 0,  
   object_id                 INTEGER NOT NULL,
   fotografie_id             INTEGER,
   label                     CHARACTER VARYING(50),
   CONSTRAINT opstelplaats_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT opstelplaats_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.opstelplaats_type (naam),
   CONSTRAINT opstelplaats_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 COMMENT ON TABLE opstelplaats IS 'Opstelplaatsen t.b.v. brandweervoertuigen';
@@ -165,15 +181,23 @@ COMMENT ON TABLE opstelplaats IS 'Opstelplaatsen t.b.v. brandweervoertuigen';
 CREATE INDEX opstelplaats_geom_gist
   ON opstelplaats USING GIST(geom);
 
+CREATE TABLE veilighv_org_type
+(
+  id smallint PRIMARY KEY,
+  naam varchar(100) UNIQUE
+);
+COMMENT ON TABLE veilighv_org_type IS 'Enumeratie voor type Organisatorische veiligheidsvoorzieningen';
+
 CREATE TABLE veilighv_org
 (
   id                        SERIAL PRIMARY KEY      NOT NULL,
   datum_aangemaakt          TIMESTAMP DEFAULT now(),
   datum_gewijzigd           TIMESTAMP,
-  soort                     veilighv_org_type,
+  soort                     varchar(100),
   omschrijving              TEXT,
   object_id                 INTEGER NOT NULL,
-  CONSTRAINT veilighv_org_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT veilighv_org_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT veilighv_org_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.veilighv_org_type (naam)
 );
 COMMENT ON TABLE veilighv_org IS 'Organisatorische veiligheidsvoorzieningen';
 
@@ -182,7 +206,8 @@ CREATE TABLE veiligh_ruimtelijk_type
   id        SMALLINT PRIMARY KEY NOT NULL,
   naam      TEXT,
   categorie TEXT,
-  symbol_name TEXT
+  symbol_name TEXT,
+  size      INTEGER
 );
 COMMENT ON TABLE veiligh_ruimtelijk_type IS 'Enumeratie van de verschillende ruimtelijke veiligheidsvoorzieningen';
 REVOKE ALL ON TABLE veiligh_ruimtelijk_type FROM GROUP oiv_write;
@@ -198,6 +223,7 @@ CREATE TABLE veiligh_ruimtelijk
   object_id                 INTEGER         NOT NULL,
   rotatie                   INTEGER DEFAULT 0,
   fotografie_id             INTEGER,
+  bijzonderheid             TEXT,
   CONSTRAINT veiligh_ruimtelijk_type_id_fk FOREIGN KEY (veiligh_ruimtelijk_type_id) REFERENCES veiligh_ruimtelijk_type (id),
   CONSTRAINT veiligh_ruimtelijk_object_id_fk  FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT veiligh_ruimtelijk_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -228,6 +254,7 @@ CREATE TABLE veiligh_install
   bouwlaag_id               INTEGER         NOT NULL,
   rotatie                   INTEGER DEFAULT 0,
   fotografie_id             INTEGER,
+  bijzonderheid             TEXT,
   CONSTRAINT veiligh_install_type_id_fk FOREIGN KEY (veiligh_install_type_id) REFERENCES veiligh_install_type (id),
   CONSTRAINT veiligh_install_bouwlaag_id_fk  FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT veiligh_install_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -237,16 +264,24 @@ COMMENT ON TABLE veiligh_install IS 'Installatietechnische veiligheidsvoorzienin
 CREATE INDEX veiligh_install_geom_gist
   ON veiligh_install USING GIST(geom);
 
+CREATE TABLE veiligh_bouwk_type
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE
+);
+COMMENT ON TABLE veiligh_bouwk IS 'Enumeratie voor type Bouwkundige veiligheidsvoorzieningen';
+
 CREATE TABLE veiligh_bouwk
 (
   id                        SERIAL PRIMARY KEY      NOT NULL,
   geom                      GEOMETRY(MultiLineString, 28992),
   datum_aangemaakt          TIMESTAMP DEFAULT now(),
   datum_gewijzigd           TIMESTAMP,
-  soort                     veiligh_bouwk_type,
+  soort                     varchar(100),
   bouwlaag_id               INTEGER         NOT NULL,
   fotografie_id             INTEGER,
   CONSTRAINT veiligh_bouwk_bouwlaag_id_fk  FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT veiligh_bouwk_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.veiligh_bouwk_type (naam),
   CONSTRAINT veiligh_bouwk_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 COMMENT ON TABLE veiligh_bouwk IS 'Bouwkundige veiligheidsvoorzieningen';
@@ -340,6 +375,7 @@ CREATE TABLE dreiging
   bouwlaag_id               INTEGER,
   object_id                 INTEGER,
   fotografie_id             INTEGER,
+  omschrijving              TEXT,
   CONSTRAINT dreiging_type_id_fk     FOREIGN KEY (dreiging_type_id)  REFERENCES dreiging_type (id),
   CONSTRAINT dreiging_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id)   REFERENCES bouwlagen (id)   ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT dreiging_object_id_fk   FOREIGN KEY (object_id)     REFERENCES object (id)    ON UPDATE CASCADE ON DELETE CASCADE,
@@ -392,21 +428,30 @@ COMMENT ON TABLE sleutelkluis IS 'Sleutelkluizen t.b.v. ingang een pand en dus e
 CREATE INDEX sleutelkluis_geom_gist
   ON sleutelkluis USING GIST(geom);
 
+CREATE TABLE afw_binnendekking_type
+( 
+  id smallint PRIMARY KEY, 
+  naam varchar(50) UNIQUE,
+  symbol_name text,
+  size integer
+);
+
 CREATE TABLE afw_binnendekking
 (
   id                        SERIAL PRIMARY KEY      NOT NULL,
   geom                      GEOMETRY(Point, 28992),
   datum_aangemaakt          TIMESTAMP DEFAULT now(),
   datum_gewijzigd           TIMESTAMP,
-  soort           afw_binnendekking_type NOT NULL,
+  soort                     VARCHAR(50) NOT NULL,
   rotatie                   INTEGER DEFAULT 0,
   label                     VARCHAR(50),
   handelingsaanwijzing      VARCHAR(254),
   bouwlaag_id               INTEGER,
-  object_id         INTEGER,
+  object_id                 INTEGER,
   CONSTRAINT afw_binnendekking_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT afw_binnendekking_object_id_fk   FOREIGN KEY (object_id)   REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT afw_binnendekking_fk_check     CHECK       (bouwlaag_id IS NOT NULL OR object_id IS NOT NULL)
+  CONSTRAINT soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.afw_binnendekking_type (naam),
+  CONSTRAINT afw_binnendekking_fk_check CHECK (bouwlaag_id IS NOT NULL OR object_id IS NOT NULL)
 );
 COMMENT ON TABLE afw_binnendekking IS 'Afwijkende binnendekking';
 
@@ -435,6 +480,7 @@ CREATE TABLE aanwezig
   bouwlaag_id 		  INTEGER 				NOT NULL,
   aantal_personeel  SMALLINT,
   dieren            BOOLEAN,
+  bijzonderheid     TEXT,
   CONSTRAINT aanwezig_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT aanwezig_groep_id_fk FOREIGN KEY (aanwezig_type_id) REFERENCES aanwezig_type (id)
 );
@@ -471,7 +517,21 @@ CREATE TABLE gevaarlijkestof_vnnr
 	CONSTRAINT gevaarlijkestof_vnnr_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE gevaarlijkestof_vnnr IS 'Opzoeklijst voor gevaarlijke stof vn_nr, gevi_nr en eric_kaart';
-	
+
+CREATE TABLE gevaarlijke_stof_eenheid 
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON COLUMN gevaarlijkestof_eenheid IS 'Enumeratie voor type eenheid';
+
+CREATE TABLE gevaarlijke_stof_toestand
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON COLUMN gevaarlijkestof_toestand IS 'Enumeratie voor type aggregatie toestand';
+
 CREATE TABLE gevaarlijkestof
 (
   id                          SERIAL PRIMARY KEY                     NOT NULL,
@@ -482,11 +542,13 @@ CREATE TABLE gevaarlijkestof
   gevaarlijkestof_vnnr_id     INTEGER								NOT NULL,
   locatie                     TEXT,
   hoeveelheid                 INTEGER								NOT NULL,
-  eenheid                     eenheid_type								NOT NULL,
-  toestand                    toestand_type							NOT NULL,
+  eenheid                     varchar(50)						NOT NULL,
+  toestand                    varchar(50)						NOT NULL,
   handelingsaanwijzing        TEXT,
   CONSTRAINT gevaarlijkestof_opslag_id_fk FOREIGN KEY (opslag_id) REFERENCES gevaarlijkestof_opslag (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT gevaarlijkestof_vnnr_id_fk FOREIGN KEY (gevaarlijkestof_vnnr_id) REFERENCES gevaarlijkestof_vnnr (id)
+  CONSTRAINT gevaarlijkestof_vnnr_id_fk FOREIGN KEY (gevaarlijkestof_vnnr_id) REFERENCES gevaarlijkestof_vnnr (id),
+  CONSTRAINT gevaarlijkestof_eenheid_type_id_fk FOREIGN KEY (eenheid) REFERENCES objecten.gevaarlijke_stof_eenheid_type (naam),
+  CONSTRAINT gevaarlijkestof_toestand_type_id_fk FOREIGN KEY (toestand) REFERENCES objecten.gevaarlijke_stof_toestand_type (naam)
 );
 COMMENT ON COLUMN gevaarlijkestof.gevaarlijkestof_vnnr_id IS 'Stofidentificatienummer';
 
@@ -501,6 +563,20 @@ CREATE TABLE historie_matrix_code
 );
 COMMENT ON TABLE historie_matrix_code IS 'Opzoeklijst voor matrix code';
 
+CREATE TABLE historie_aanpassing_type
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON TABLE historie_aanpassing_type IS 'Opzoeklijst voor historie aanpassing type';
+
+CREATE TABLE historie_status_type
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON TABLE historie_status_type IS 'Opzoeklijst voor historie status type';
+
 CREATE TABLE historie
 (
   id                     SERIAL PRIMARY KEY                     NOT NULL,
@@ -509,14 +585,27 @@ CREATE TABLE historie
   datum_gewijzigd        TIMESTAMP WITH TIME ZONE,
   teamlid_behandeld_id   INTEGER,
   teamlid_afgehandeld_id INTEGER,
-  matrix_code_id		     SMALLINT								NOT NULL,
-  status                 historie_status_type   NOT NULL,
-  aanpassing              historie_aanpassing_type NOT NULL,
+  matrix_code_id		     SMALLINT			 NOT NULL,
+  status                 varchar(50)   NOT NULL,
+  aanpassing             varchar(50)   NOT NULL,
+  typeobject             varchar(50)
   CONSTRAINT historie_object_id_fk FOREIGN KEY (object_id) REFERENCES object (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT historie_teamlid_behandeld_id_fk FOREIGN KEY (teamlid_behandeld_id) REFERENCES algemeen.teamlid,
   CONSTRAINT historie_teamlid_afgehandeld_id_fk FOREIGN KEY (teamlid_afgehandeld_id) REFERENCES algemeen.teamlid,
-  CONSTRAINT matrix_code_id_fk FOREIGN KEY (matrix_code_id) REFERENCES historie_matrix_code (id)
+  CONSTRAINT matrix_code_id_fk FOREIGN KEY (matrix_code_id) REFERENCES historie_matrix_code (id),
+  CONSTRAINT aanpassing_id_fk FOREIGN KEY (aanpassing) REFERENCES objecten.historie_aanpassing_type (naam),
+  CONSTRAINT status_id_fk FOREIGN KEY (status) REFERENCES objecten.historie_status_type (naam),
+  CONSTRAINT typeobject_id_fk FOREIGN KEY (typeobject) REFERENCES objecten.object_type (naam)
 );
+
+CREATE TABLE label_type 
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE,
+ symbol_name text,
+ size integer
+);
+COMMENT ON TABLE label_type IS 'Enumeratie voor label type';
 
 CREATE TABLE label
 (
@@ -525,13 +614,14 @@ CREATE TABLE label
   datum_aangemaakt 	TIMESTAMP WITH TIME ZONE  DEFAULT now(),
   datum_gewijzigd 	TIMESTAMP WITH TIME ZONE,
   omschrijving 			CHARACTER VARYING(254)		NOT NULL,
-  soort 			      labels_type           		NOT NULL,
+  soort 			      varchar(100)           		NOT NULL,
   rotatie 				  INTEGER,
   bouwlaag_id 			INTEGER,
   object_id         INTEGER,
   CONSTRAINT labels_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES bouwlagen (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT labels_object_id_fk FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT label_fk_check    CHECK       (bouwlaag_id IS NOT NULL OR object_id IS NOT NULL)
+  CONSTRAINT label_fk_check CHECK (bouwlaag_id IS NOT NULL OR object_id IS NOT NULL),
+  CONSTRAINT label_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.label_type (naam)
 );
 
 CREATE INDEX labels_geom_gist
@@ -569,15 +659,22 @@ CREATE INDEX voorziening__zonder_geom_gist
   USING btree
   (geom);
 
+CREATE TABLE gevaarlijkestof_schade_cirkel_type 
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE
+);
+
 CREATE TABLE gevaarlijkestof_schade_cirkel 
 (
 	id 						     SERIAL PRIMARY KEY, 
 	datum_aangemaakt 	 TIMESTAMP WITH TIME ZONE DEFAULT now(),
 	datum_gewijzigd 	 TIMESTAMP WITH TIME ZONE, 
 	straal 					   INTEGER NOT NULL, 
-	soort        			 schade_cirkel_type NOT NULL, 
+	soort        			 varchar(100) NOT NULL, 
   gevaarlijkestof_id INTEGER NOT NULL,
-  CONSTRAINT schade_cirkel_gevaarlijkestof_id_fk FOREIGN KEY (gevaarlijkestof_id) REFERENCES gevaarlijkestof (id) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT schade_cirkel_gevaarlijkestof_id_fk FOREIGN KEY (gevaarlijkestof_id) REFERENCES gevaarlijkestof (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT gevaarlijkestof_schade_cirkel_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.gevaarlijkestof_schade_cirkel_type (naam)
 );
 
 CREATE TABLE objecten.gt_pk_metadata_table
@@ -592,18 +689,25 @@ CREATE TABLE objecten.gt_pk_metadata_table
   CONSTRAINT gt_pk_metadata_table_pk_policy_check CHECK (pk_policy::text = ANY (ARRAY['sequence'::character varying::text, 'assigned'::character varying::text, 'autogenerated'::character varying::text]))
 );
 
+CREATE TABLE sectoren_type_new 
+(
+ id smallint PRIMARY KEY,
+ naam varchar(100) UNIQUE
+);
+
 CREATE TABLE sectoren
 (
   id                     SERIAL PRIMARY KEY NOT NULL,
   geom                   geometry(MultiPolygon,28992),
   datum_aangemaakt       TIMESTAMP WITH TIME ZONE DEFAULT now(),
   datum_gewijzigd        TIMESTAMP WITH TIME ZONE,
-  soort                  sectoren_type,
+  soort                  varchar(100),
   omschrijving           CHARACTER VARYING(254),
   label                  CHARACTER VARYING(50),
   object_id              INTEGER NOT NULL,
   fotografie_id          INTEGER,
   CONSTRAINT sectoren_object_id_fk FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT sectoren_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.sectoren_type (naam),
   CONSTRAINT sectoren_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -643,17 +747,24 @@ CREATE TABLE maatregel_type (
 );
 COMMENT ON TABLE gebruiksfunctie IS 'Opzoeklijst voor maatregelen t.b.v. dreiging';
 
+CREATE TABLE beheersmaatregelen_inzetfase
+(
+  id smallint PRIMARY KEY,
+  naam varchar(50) UNIQUE
+);
+COMMENT ON TABLE beheersmaatregelen_type IS 'Enumeratie voor type inzetfase waarvoor de Beheersmaatregelen geldt';
 
 CREATE TABLE beheersmaatregelen
 ( 
   id                      SERIAL PRIMARY KEY,
   datum_aangemaakt        TIMESTAMP WITH TIME ZONE DEFAULT now(),
   datum_gewijzigd         TIMESTAMP WITH TIME ZONE,
-  inzetfase               inzetfase_type,
+  inzetfase               varchar(50),
   maatregel_type_id       SMALLINT,
   dreiging_id             INTEGER,
   CONSTRAINT beheersmaatregel_dreiging_id_fik FOREIGN KEY (dreiging_id) REFERENCES dreiging (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT maatregel_type_id_fk FOREIGN KEY (maatregel_type_id) REFERENCES maatregel_type (id)
+  CONSTRAINT maatregel_type_id_fk FOREIGN KEY (maatregel_type_id) REFERENCES maatregel_type (id),
+  CONSTRAINT beheersmaatregelen_inzetfase_type_id_fk FOREIGN KEY (inzetfase) REFERENCES objecten.beheersmaatregelen_inzetfase (naam)
 );
 COMMENT ON TABLE beheersmaatregelen IS 'Beheersmaatregelen t.b.v. dreiging';
 

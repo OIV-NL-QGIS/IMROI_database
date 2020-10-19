@@ -316,13 +316,14 @@ COMMENT ON TABLE alternatieve_type IS 'Opzoeklijst voor alternatieve bluswatervo
 
 CREATE TABLE alternatieve
 (
-  id 			SERIAL NOT NULL PRIMARY KEY,
+  id 			                SERIAL NOT NULL PRIMARY KEY,
   datum_aangemaakt        TIMESTAMP WITH TIME ZONE DEFAULT now(),
   datum_gewijzigd         TIMESTAMP WITH TIME ZONE,
-  type_id		INTEGER,
-  liters_per 	INTEGER,
-  label			TEXT,
-  geom 			geometry(Point,28992),
+  type_id		               INTEGER,
+  liters_per 	            INTEGER,
+  label			              TEXT,
+  geom 			              geometry(Point,28992),
+  opmerking               TEXT,
   CONSTRAINT 	altern_type_id_fk FOREIGN KEY (type_id) REFERENCES alternatieve_type (id)
 );
 
