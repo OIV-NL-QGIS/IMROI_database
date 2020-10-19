@@ -159,7 +159,6 @@ INNER JOIN
   LEFT JOIN sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
   LEFT JOIN sleuteldoel_type sd  ON s.sleuteldoel_type_id = sd.id;
 
--- view van gevaarlijkestoffen locatie met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_gevaarlijkestof_ruimtelijk AS
 SELECT s.*, vn.vn_nr, vn.gevi_nr, vn.eric_kaart, part.geom, part.formelenaam, part.rotatie, ROUND(ST_X(part.geom)) AS X, ROUND(ST_Y(part.geom)) AS Y, part.object_id FROM gevaarlijkestof s
 INNER JOIN
@@ -291,7 +290,7 @@ CREATE OR REPLACE VIEW bouwlaag_label AS
     st.symbol_name
    FROM label l
      JOIN bouwlagen b ON l.bouwlaag_id = b.id
-     INNER JOIN algemeen.styles_symbols_type st ON l.soort::TEXT = st.naam;
+     INNER JOIN label_type st ON l.soort::TEXT = st.naam;
 
 CREATE OR REPLACE RULE label_del AS
     ON DELETE TO bouwlaag_label DO INSTEAD  DELETE FROM label
@@ -330,9 +329,9 @@ CREATE OR REPLACE RULE veiligh_bouwk_ins AS
     veiligh_bouwk.geom,
     veiligh_bouwk.datum_aangemaakt,
     veiligh_bouwk.datum_gewijzigd,
-    veiligh_bouwk.soort,
     veiligh_bouwk.bouwlaag_id,
     veiligh_bouwk.fotografie_id,
+    veiligh_bouwk.soort,
     ( SELECT bouwlagen.bouwlaag
            FROM bouwlagen
           WHERE veiligh_bouwk.bouwlaag_id = bouwlagen.id) AS bouwlaag;
@@ -520,7 +519,7 @@ CREATE OR REPLACE VIEW bouwlaag_afw_binnendekking AS
     st.symbol_name
    FROM afw_binnendekking v
      JOIN bouwlagen b ON v.bouwlaag_id = b.id
-     INNER JOIN algemeen.styles_symbols_type st ON v.soort::TEXT = st.naam;
+     INNER JOIN afw_binnendekking_type st ON v.soort::TEXT = st.naam;
 
 CREATE OR REPLACE RULE afw_binnendekking_del AS
     ON DELETE TO bouwlaag_afw_binnendekking DO INSTEAD  DELETE FROM afw_binnendekking
@@ -758,14 +757,6 @@ CREATE OR REPLACE VIEW stavaza_status_gemeente AS
    FROM status_objectgegevens s
      LEFT JOIN algemeen.gemeente_zonder_wtr g ON st_intersects(s.geom, g.geom)
   GROUP BY g.gemeentena, g.geom;
-
-CREATE OR REPLACE VIEW veiligh_bouwk_types AS
-SELECT
-row_number() OVER (ORDER BY e.enumlabel)::integer AS id, e.enumlabel::text AS naam
-FROM pg_type t 
-   JOIN pg_enum e on t.oid = e.enumtypid  
-   JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
-WHERE t.typname = 'veiligh_bouwk_type';
 
 -- create view bouwlagen, icm formelenaam object van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_bouwlagen AS
@@ -1046,6 +1037,7 @@ CREATE OR REPLACE RULE veiligh_ruimtelijk_ins AS
     veiligh_ruimtelijk.object_id,
     veiligh_ruimtelijk.rotatie,
     veiligh_ruimtelijk.fotografie_id,
+    veiligh_ruimtelijk.bijzonderheid,
     (SELECT formelenaam FROM object o WHERE o.id = veiligh_ruimtelijk.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = veiligh_ruimtelijk.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = veiligh_ruimtelijk.object_id),
@@ -1094,6 +1086,7 @@ CREATE OR REPLACE RULE dreiging_ins AS
     dreiging.bouwlaag_id,
     dreiging.object_id,
     dreiging.fotografie_id,
+    dreiging.omschrijving,
     (SELECT formelenaam FROM object o WHERE o.id = dreiging.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = dreiging.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = dreiging.object_id),
@@ -1202,8 +1195,16 @@ CREATE OR REPLACE RULE object_ruimtelijk_del AS
     ON DELETE TO object_sleutelkluis DO INSTEAD  DELETE FROM sleutelkluis
   WHERE sleutelkluis.id = old.id;
 
-CREATE OR REPLACE VIEW object_opstelplaats AS 
- SELECT v.*,
+CREATE OR REPLACE VIEW object_opstelplaats
+AS SELECT v.id,
+    v.geom,
+    v.datum_aangemaakt,
+    v.datum_gewijzigd,
+    v.rotatie,
+    v.object_id,
+    v.fotografie_id,
+    v.label,
+    v.soort,
     o.formelenaam,
     o.datum_geldig_vanaf,
     o.datum_geldig_tot,
@@ -1211,17 +1212,21 @@ CREATE OR REPLACE VIEW object_opstelplaats AS
     st.symbol_name,
     st.size
    FROM opstelplaats v
-   INNER JOIN ( SELECT object.formelenaam, object.datum_geldig_vanaf, object.datum_geldig_tot, object.id, historie.typeobject
+     JOIN ( SELECT object.formelenaam,
+            object.datum_geldig_vanaf,
+            object.datum_geldig_tot,
+            object.id,
+            historie.typeobject
            FROM object
              LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
                    FROM historie historie_1
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))) o ON v.object_id = o.id
-   INNER JOIN algemeen.styles_symbols_type st ON v.soort::text = st.naam;
+     JOIN opstelplaats_type st ON v.soort::text = st.naam;
 
 CREATE OR REPLACE RULE object_opstelplaats_upd AS
-    ON UPDATE TO object_opstelplaats DO INSTEAD UPDATE opstelplaats SET geom = new.geom, soort = new.soort::opstelplaats_type, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+    ON UPDATE TO object_opstelplaats DO INSTEAD UPDATE opstelplaats SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
   WHERE opstelplaats.id = new.id;
 
 CREATE OR REPLACE RULE object_opstelplaats_del AS
@@ -1235,17 +1240,17 @@ CREATE OR REPLACE RULE object_opstelplaats_ins AS
     opstelplaats.geom,
     opstelplaats.datum_aangemaakt,
     opstelplaats.datum_gewijzigd,
-    opstelplaats.soort,
     opstelplaats.rotatie,
     opstelplaats.object_id,
     opstelplaats.fotografie_id,
-    opstelplaats.label,   
+    opstelplaats.label,
+    opstelplaats.soort,
     (SELECT formelenaam FROM object o WHERE o.id = opstelplaats.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = opstelplaats.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = opstelplaats.object_id),
     (SELECT typeobject FROM historie o WHERE o.object_id = opstelplaats.object_id LIMIT 1),
     (SELECT styles_symbols_type.symbol_name FROM algemeen.styles_symbols_type WHERE styles_symbols_type.naam = 'Opslag stoffen'::text) AS symbol_name,
-    (SELECT styles_symbols_type.size FROM algemeen.styles_symbols_type WHERE styles_symbols_type.naam = 'Opslag stoffen'::text) AS size;    
+    (SELECT styles_symbols_type.size FROM algemeen.styles_symbols_type WHERE styles_symbols_type.naam = 'Opslag stoffen'::text) AS size; 
 
 CREATE OR REPLACE VIEW object_opslag AS 
  SELECT v.*,
@@ -1342,7 +1347,7 @@ CREATE OR REPLACE VIEW object_label AS
     o.typeobject,
     st.size,
     st.symbol_name
-   FROM objecten.label l
+   FROM label l
    INNER JOIN ( SELECT object.formelenaam, object.datum_geldig_vanaf, object.datum_geldig_tot, object.id, historie.typeobject
            FROM object
              LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
@@ -1350,7 +1355,7 @@ CREATE OR REPLACE VIEW object_label AS
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))) o ON l.object_id = o.id     
-   INNER JOIN algemeen.styles_symbols_type st ON l.soort::text = st.naam;
+   INNER JOIN label_type st ON l.soort::text = st.naam;
 
 CREATE OR REPLACE RULE object_label_del AS
     ON DELETE TO object_label DO INSTEAD  DELETE FROM label
@@ -1361,17 +1366,17 @@ CREATE OR REPLACE RULE object_label_upd AS
   WHERE label.id = new.id;
 
 CREATE OR REPLACE RULE object_label_ins AS
-    ON INSERT TO object_label DO INSTEAD  INSERT INTO objecten.label (geom, soort, omschrijving, rotatie, object_id)
+    ON INSERT TO object_label DO INSTEAD  INSERT INTO label (geom, soort, omschrijving, rotatie, object_id)
   VALUES (new.geom, new.soort, new.omschrijving, new.rotatie, new.object_id)
   RETURNING label.id,
     label.geom,
     label.datum_aangemaakt,
     label.datum_gewijzigd,
     label.omschrijving,
-    label.soort,
     label.rotatie,
     label.bouwlaag_id,
     label.object_id,
+	label.soort,    
     (SELECT formelenaam FROM object o WHERE o.id = label.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = label.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = label.object_id),
@@ -1412,10 +1417,10 @@ CREATE OR REPLACE RULE object_bereikbaarheid_ins AS
     bereikbaarheid.datum_gewijzigd,
     bereikbaarheid.obstakels,
     bereikbaarheid.wegafzetting,
-    bereikbaarheid.soort,
     bereikbaarheid.object_id,
     bereikbaarheid.fotografie_id,
     bereikbaarheid.label,
+	bereikbaarheid.soort,    
     (SELECT formelenaam FROM object o WHERE o.id = bereikbaarheid.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = bereikbaarheid.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = bereikbaarheid.object_id),
@@ -1442,7 +1447,7 @@ CREATE OR REPLACE RULE object_sectoren_del AS
 
 CREATE OR REPLACE RULE object_sectoren_upd AS
     ON UPDATE TO object_sectoren DO INSTEAD  
-    UPDATE sectoren SET geom = new.geom, soort = new.soort::sectoren_type, omschrijving = new.omschrijving, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+    UPDATE sectoren SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
   WHERE sectoren.id = new.id;
 
 CREATE OR REPLACE RULE object_sectoren_ins AS
@@ -1452,11 +1457,11 @@ CREATE OR REPLACE RULE object_sectoren_ins AS
     sectoren.geom,
     sectoren.datum_aangemaakt,
     sectoren.datum_gewijzigd,
-    sectoren.soort,
     sectoren.omschrijving,
     sectoren.label,
     sectoren.object_id,
     sectoren.fotografie_id,
+    sectoren.soort,
     (SELECT formelenaam FROM object o WHERE o.id = sectoren.object_id),
     (SELECT datum_geldig_vanaf FROM object o WHERE o.id = sectoren.object_id),
     (SELECT datum_geldig_tot FROM object o WHERE o.id = sectoren.object_id),

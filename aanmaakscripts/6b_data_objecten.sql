@@ -26,6 +26,12 @@ INSERT INTO object_type VALUES (2, 'Evenement', '', 0);
 INSERT INTO object_type VALUES (3, 'Natuur', '', 0);
 INSERT INTO object_type VALUES (4, 'Waterongeval', '', 0);
 
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (1, 'n.n.b.');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (2, 'klei');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (3, 'slib');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (4, 'zand');
+INSERT INTO bodemgesteldheid_type(id, naam) VALUES (5, 'n.v.t.');
+
 INSERT INTO veiligh_bouwk_type VALUES (1, '30 min brandwerende scheiding');
 INSERT INTO veiligh_bouwk_type VALUES (2, '60 min brandwerende scheiding');
 INSERT INTO veiligh_bouwk_type VALUES (3, 'bouwdeelscheiding');
