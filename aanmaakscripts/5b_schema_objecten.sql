@@ -516,21 +516,21 @@ CREATE TABLE gevaarlijkestof_vnnr
 	eric_kaart 		VARCHAR(10) NOT NULL,
 	CONSTRAINT gevaarlijkestof_vnnr_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE gevaarlijke_stof_eenheid IS 'Enumeratie voor type eenheid';
+COMMENT ON TABLE gevaarlijkestof_eenheid IS 'Enumeratie voor type eenheid';
 
-CREATE TABLE gevaarlijke_stof_eenheid 
+CREATE TABLE gevaarlijkestof_eenheid 
 (
   id smallint PRIMARY KEY,
   naam varchar(50) UNIQUE
 );
-COMMENT ON TABLE gevaarlijke_stof_eenheid IS 'Enumeratie voor type eenheid';
+COMMENT ON TABLE gevaarlijkestof_eenheid IS 'Enumeratie voor type eenheid';
 
-CREATE TABLE gevaarlijke_stof_toestand
+CREATE TABLE gevaarlijkestof_toestand
 (
   id smallint PRIMARY KEY,
   naam varchar(50) UNIQUE
 );
-COMMENT ON TABLE gevaarlijke_stof_toestand IS 'Enumeratie voor type aggregatie toestand';
+COMMENT ON TABLE gevaarlijkestof_toestand IS 'Enumeratie voor type aggregatie toestand';
 
 CREATE TABLE gevaarlijkestof
 (
@@ -547,8 +547,8 @@ CREATE TABLE gevaarlijkestof
   handelingsaanwijzing        TEXT,
   CONSTRAINT gevaarlijkestof_opslag_id_fk FOREIGN KEY (opslag_id) REFERENCES gevaarlijkestof_opslag (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT gevaarlijkestof_vnnr_id_fk FOREIGN KEY (gevaarlijkestof_vnnr_id) REFERENCES gevaarlijkestof_vnnr (id),
-  CONSTRAINT gevaarlijkestof_eenheid_type_id_fk FOREIGN KEY (eenheid) REFERENCES objecten.gevaarlijke_stof_eenheid (naam),
-  CONSTRAINT gevaarlijkestof_toestand_type_id_fk FOREIGN KEY (toestand) REFERENCES objecten.gevaarlijke_stof_toestand (naam)
+  CONSTRAINT gevaarlijkestof_eenheid_type_id_fk FOREIGN KEY (eenheid) REFERENCES objecten.gevaarlijkestof_eenheid (naam),
+  CONSTRAINT gevaarlijkestof_toestand_type_id_fk FOREIGN KEY (toestand) REFERENCES objecten.gevaarlijkestof_toestand (naam)
 );
 COMMENT ON COLUMN gevaarlijkestof.gevaarlijkestof_vnnr_id IS 'Stofidentificatienummer';
 
