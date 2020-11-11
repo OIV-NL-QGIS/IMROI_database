@@ -516,7 +516,7 @@ CREATE TABLE gevaarlijkestof_vnnr
 	eric_kaart 		VARCHAR(10) NOT NULL,
 	CONSTRAINT gevaarlijkestof_vnnr_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE gevaarlijkestof_eenheid IS 'Enumeratie voor type eenheid';
+COMMENT ON TABLE gevaarlijkestof_vnnr IS 'Enumeratie voor type eenheid';
 
 CREATE TABLE gevaarlijkestof_eenheid 
 (
