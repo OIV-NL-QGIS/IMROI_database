@@ -762,7 +762,7 @@ CREATE OR REPLACE VIEW stavaza_status_gemeente AS
 CREATE OR REPLACE VIEW view_bouwlagen AS
 SELECT bl.id, bl.geom, bl.datum_aangemaakt, bl.datum_gewijzigd, bl.bouwlaag, bl.bouwdeel, part.object_id, part.formelenaam FROM bouwlagen bl
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -775,7 +775,7 @@ CREATE OR REPLACE VIEW view_veiligh_bouwk AS
 SELECT s.*, part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel FROM veiligh_bouwk s
 INNER JOIN bouwlagen b ON s.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -801,7 +801,7 @@ CREATE OR REPLACE VIEW view_ruimten AS
      JOIN bouwlagen b ON r.bouwlaag_id = b.id
      JOIN ( SELECT DISTINCT o.formelenaam,
             o.id AS object_id,
-            st_union(t_1.geom)::geometry(MultiPolygon,28992) AS geovlak
+            ST_MULTI(ST_UNION(t_1.geom)::geometry(MultiPolygon, 28992)) AS geovlak
            FROM object o
              LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
                    FROM historie historie_1
@@ -817,7 +817,7 @@ CREATE OR REPLACE VIEW view_label_bouwlaag AS
 SELECT l.id, l.geom, l.datum_aangemaakt, l.datum_gewijzigd, l.omschrijving, l.soort, l.rotatie, l.bouwlaag_id, part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(l.geom)) AS X, ROUND(ST_Y(l.geom)) AS Y FROM label l
 INNER JOIN bouwlagen b ON l.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -831,7 +831,7 @@ SELECT v.*, t.naam AS soort, part.formelenaam, part.object_id, b.bouwlaag, b.bou
 INNER JOIN veiligh_install_type t ON v.veiligh_install_type_id = t.id
 INNER JOIN bouwlagen b ON v.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -848,7 +848,7 @@ INNER JOIN
   (SELECT op.id, op.geom, op.bouwlaag_id, op.locatie, op.rotatie, b.bouwlaag, b.bouwdeel FROM gevaarlijkestof_opslag op
   INNER JOIN bouwlagen b ON op.bouwlaag_id = b.id) ops ON gvs.opslag_id = ops.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -866,7 +866,7 @@ INNER JOIN
   (SELECT op.id, op.geom, op.bouwlaag_id, op.locatie, b.bouwlaag, b.bouwdeel FROM gevaarlijkestof_opslag op
   INNER JOIN bouwlagen b ON op.bouwlaag_id = b.id) ops ON gvs.opslag_id = ops.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -895,7 +895,7 @@ SELECT d.id, d.geom, d.datum_aangemaakt, d.datum_gewijzigd, d.dreiging_type_id, 
 INNER JOIN dreiging_type t ON d.dreiging_type_id = t.id
 INNER JOIN bouwlagen b ON d.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -910,7 +910,7 @@ SELECT i.id, i.geom, i.datum_aangemaakt, i.datum_gewijzigd, i.ingang_type_id, i.
 INNER JOIN ingang_type t ON i.ingang_type_id = t.id
 INNER JOIN bouwlagen b ON i.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -926,7 +926,7 @@ INNER JOIN (SELECT i.*, b.bouwlaag, b.bouwdeel FROM ingang i INNER JOIN bouwlage
 INNER JOIN sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
 LEFT JOIN sleuteldoel_type sd ON s.sleuteldoel_type_id = sd.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
@@ -940,7 +940,7 @@ SELECT a.id, a.geom, a.datum_aangemaakt, a.datum_gewijzigd, a.soort, a.rotatie, 
     part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(a.geom)) AS X, ROUND(ST_Y(a.geom)) AS Y FROM afw_binnendekking a
 INNER JOIN bouwlagen b ON a.bouwlaag_id = b.id
 INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_UNION(t.geom)::geometry(MultiPolygon, 28992) as geovlak FROM object o
+  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
     LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
     LEFT JOIN terrein t on o.id = t.object_id
     WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
