@@ -859,7 +859,8 @@ ON ST_INTERSECTS(ops.geom, part.geovlak);
 -- view van gevaarlijkestoffen schade crikel met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_schade_cirkel_bouwlaag AS 
 SELECT gvs.id, gvs.opslag_id, gvs.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, gvs.hoeveelheid, gvs.eenheid, gvs.toestand,
-    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom, ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y FROM gevaarlijkestof gvs
+    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom,
+    ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y, gsc.soort FROM gevaarlijkestof gvs
 INNER JOIN gevaarlijkestof_schade_cirkel gsc ON gvs.id = gevaarlijkestof_id
 LEFT JOIN gevaarlijkestof_vnnr vnnr ON gvs.gevaarlijkestof_vnnr_id = vnnr.id
 INNER JOIN 
@@ -876,7 +877,8 @@ ON ST_INTERSECTS(ops.geom, part.geovlak);
 
 CREATE OR REPLACE VIEW view_schade_cirkel_ruimtelijk AS
 SELECT g.id, g.opslag_id, g.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, g.hoeveelheid, g.eenheid, g.toestand,
-    part.object_id, part.formelenaam, ST_BUFFER(part.geom, gsc.straal)::geometry(Polygon,28992) AS geom, part.locatie, ROUND(ST_X(part.geom)) AS X, ROUND(ST_Y(part.geom)) AS Y FROM gevaarlijkestof g
+    part.object_id, part.formelenaam, ST_BUFFER(part.geom, gsc.straal)::geometry(Polygon,28992) AS geom, part.locatie,
+    ROUND(ST_X(part.geom)) AS X, ROUND(ST_Y(part.geom)) AS Y, gsc.soort FROM gevaarlijkestof g
 INNER JOIN
   (
   SELECT ops.id AS opslag_id, ops.geom, ops.locatie, o.formelenaam, o.id AS object_id FROM gevaarlijkestof_opslag ops

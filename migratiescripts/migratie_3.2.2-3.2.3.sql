@@ -82,13 +82,15 @@ INNER JOIN (
     ) part
 ON ST_INTERSECTS(v.geom, part.geovlak);
 
--- view van gevaarlijkestoffen locatie met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_gevaarlijkestof_bouwlaag AS 
+-- view van gevaarlijkestoffen schade crikel met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
+CREATE OR REPLACE VIEW view_schade_cirkel_bouwlaag AS 
 SELECT gvs.id, gvs.opslag_id, gvs.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, gvs.hoeveelheid, gvs.eenheid, gvs.toestand,
-    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ops.geom, ops.locatie, ops.rotatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y, ops.bouwlaag_id FROM gevaarlijkestof gvs
+    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom, 
+    ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y, gsc.soort FROM gevaarlijkestof gvs
+INNER JOIN gevaarlijkestof_schade_cirkel gsc ON gvs.id = gevaarlijkestof_id
 LEFT JOIN gevaarlijkestof_vnnr vnnr ON gvs.gevaarlijkestof_vnnr_id = vnnr.id
 INNER JOIN 
-  (SELECT op.id, op.geom, op.bouwlaag_id, op.locatie, op.rotatie, b.bouwlaag, b.bouwdeel FROM gevaarlijkestof_opslag op
+  (SELECT op.id, op.geom, op.bouwlaag_id, op.locatie, b.bouwlaag, b.bouwdeel FROM gevaarlijkestof_opslag op
   INNER JOIN bouwlagen b ON op.bouwlaag_id = b.id) ops ON gvs.opslag_id = ops.id
 INNER JOIN (
   SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
@@ -102,7 +104,8 @@ ON ST_INTERSECTS(ops.geom, part.geovlak);
 -- view van gevaarlijkestoffen schade crikel met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_schade_cirkel_bouwlaag AS 
 SELECT gvs.id, gvs.opslag_id, gvs.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, gvs.hoeveelheid, gvs.eenheid, gvs.toestand,
-    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom, ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y FROM gevaarlijkestof gvs
+    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom, 
+    ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y, gsc.soort FROM gevaarlijkestof gvs
 INNER JOIN gevaarlijkestof_schade_cirkel gsc ON gvs.id = gevaarlijkestof_id
 LEFT JOIN gevaarlijkestof_vnnr vnnr ON gvs.gevaarlijkestof_vnnr_id = vnnr.id
 INNER JOIN 
@@ -175,6 +178,22 @@ INNER JOIN (
     GROUP BY formelenaam, o.id
     ) part
 ON ST_INTERSECTS(a.geom, part.geovlak);
+
+CREATE OR REPLACE VIEW view_schade_cirkel_ruimtelijk AS
+SELECT g.id, g.opslag_id, g.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, g.hoeveelheid, g.eenheid, g.toestand,
+    part.object_id, part.formelenaam, ST_BUFFER(part.geom, gsc.straal)::geometry(Polygon,28992) AS geom, part.locatie,
+    ROUND(ST_X(part.geom)) AS X, ROUND(ST_Y(part.geom)) AS Y, gsc.soort FROM gevaarlijkestof g
+INNER JOIN
+  (
+  SELECT ops.id AS opslag_id, ops.geom, ops.locatie, o.formelenaam, o.id AS object_id FROM gevaarlijkestof_opslag ops
+  INNER JOIN (
+        SELECT formelenaam, object.id FROM object
+        LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = object.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
+        WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)) o 
+  ON ops.object_id = o.id
+  ) part ON g.opslag_id = part.opslag_id
+INNER JOIN gevaarlijkestof_schade_cirkel gsc ON g.id = gevaarlijkestof_id
+LEFT JOIN gevaarlijkestof_vnnr vnnr ON g.gevaarlijkestof_vnnr_id = vnnr.id;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 2;
