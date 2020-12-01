@@ -98,7 +98,8 @@ CREATE OR REPLACE VIEW bluswater.brandkraan_huidig_plus AS
     LEFT JOIN plusinformatie ON brandkraan_huidig.nummer = brandkraan_nummer;
 
 CREATE TABLE enum_conditie (
-  value TEXT NOT NULL PRIMARY KEY
+  id serial PRIMARY KEY,
+  value TEXT NOT NULL UNIQUE
 );
 
 INSERT INTO enum_conditie (value) VALUES ('goedgekeurd');
@@ -363,7 +364,7 @@ CREATE OR REPLACE VIEW afgekeurd_binnen_straal AS
           GROUP BY nearest.bk_nummer) tot
      JOIN brandkranen bk ON tot.bk_nummer::text = bk.nummer::text;
      
-CREATE OR REPLACE VIEW bluswater.stavaza_gemeente AS 
+CREATE OR REPLACE VIEW bluswater.bluswater_stavaza_gemeente AS 
  SELECT row_number() OVER (ORDER BY g.gemeentena) AS gid,
     g.gemeentena,
     count(s.conditie) FILTER (WHERE s.conditie = 'inspecteren'::text) AS inspecteren,
