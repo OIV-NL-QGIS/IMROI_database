@@ -38,13 +38,13 @@ INSERT INTO veiligh_bouwk_type VALUES (3, 'bouwdeelscheiding');
 INSERT INTO veiligh_bouwk_type VALUES (4, 'rookwerendescheiding');
 INSERT INTO veiligh_bouwk_type VALUES (5, '120 min brandwerende scheiding');
 
-INSERT INTO opstelplaats_type VALUES (1, 'Tankautospuit', '', 25);
-INSERT INTO opstelplaats_type VALUES (2, 'Redvoertuig', '', 25);
-INSERT INTO opstelplaats_type VALUES (3, 'Autoladder', '', 25);
-INSERT INTO opstelplaats_type VALUES (4, 'WTS', '', 25);
-INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', '', 25);
+INSERT INTO opstelplaats_type VALUES (1, 'Tankautospuit', 'opstelplaats_tankautospuit', 25);
+INSERT INTO opstelplaats_type VALUES (2, 'Redvoertuig', 'opstelplaats_redvoertuig', 25);
+INSERT INTO opstelplaats_type VALUES (3, 'Autoladder', 'opstelplaats_autoladder', 25);
+INSERT INTO opstelplaats_type VALUES (4, 'WTS', 'opstelplaats_wts', 25);
+INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', 'opstelplaats_sb', 25);
 INSERT INTO opstelplaats_type VALUES (6, 'UGS', '', 25);
-INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', '', 25);
+INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', 'boot_te_water_laat_plaats', 25);
 
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
