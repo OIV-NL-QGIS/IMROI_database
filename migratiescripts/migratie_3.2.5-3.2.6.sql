@@ -83,6 +83,6 @@ INSERT INTO bereikbaarheid_type (id, naam) VALUES
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 2;
-UPDATE algemeen.applicatie SET revisie = 5;
-UPDATE algemeen.applicatie SET db_versie = 325; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET revisie = 6;
+UPDATE algemeen.applicatie SET db_versie = 326; -- db versie == versie_sub_revisie
 UPDATE algemeen.applicatie SET datum = now();
