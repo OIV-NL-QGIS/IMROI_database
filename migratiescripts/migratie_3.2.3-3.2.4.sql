@@ -1,7 +1,7 @@
 SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
-INSERT INTO bluswater.alternatieve_type (id, naam) VALUES (15, 'Bovengrondse brandkraan');
+INSERT INTO bluswater.alternatieve_type (id, naam) VALUES (15, 'Bovengrondse brandkraan') ON CONFLICT DO NOTHING;
 
 CREATE OR REPLACE VIEW object_opstelplaats AS 
  SELECT v.id,

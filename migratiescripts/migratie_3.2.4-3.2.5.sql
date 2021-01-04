@@ -68,9 +68,9 @@ CREATE OR REPLACE RULE points_of_interest_del AS
     ON DELETE TO objecten.object_points_of_interest DO INSTEAD  DELETE FROM points_of_interest
   WHERE points_of_interest.id = old.id;
 
-CREATE OR REPLACE RULE veiligh_ruimtelijk_ins AS
-    ON INSERT TO objecten.object_points_of_interest DO INSTEAD  INSERT INTO points_of_interest (geom, points_of_interest_type_id, label, rotatie, object_id, fotografie_id)
-  VALUES (new.geom, new.points_of_interest_type_id, new.label, new.rotatie, new.object_id, new.fotografie_id)
+CREATE OR REPLACE RULE points_of_interest_ins AS
+    ON INSERT TO objecten.object_points_of_interest DO INSTEAD  INSERT INTO points_of_interest (geom, points_of_interest_type_id, label, bijzonderheid, rotatie, object_id, fotografie_id)
+  VALUES (new.geom, new.points_of_interest_type_id, new.label, new.bijzonderheid, new.rotatie, new.object_id, new.fotografie_id)
   RETURNING points_of_interest.id,
     points_of_interest.geom,
     points_of_interest.datum_aangemaakt,
@@ -102,7 +102,8 @@ CREATE OR REPLACE RULE veiligh_ruimtelijk_ins AS
           WHERE st.id = points_of_interest.points_of_interest_type_id) AS size;
 
 CREATE OR REPLACE RULE points_of_interest_upd AS
-    ON UPDATE TO objecten.object_points_of_interest DO INSTEAD  UPDATE points_of_interest SET geom = new.geom, points_of_interest_type_id = new.points_of_interest_type_id, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+    ON UPDATE TO objecten.object_points_of_interest DO INSTEAD  UPDATE points_of_interest SET geom = new.geom, points_of_interest_type_id = new.points_of_interest_type_id, 
+        rotatie = new.rotatie, bijzonderheid = new.bijzonderheid, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
   WHERE points_of_interest.id = new.id;
 
 INSERT INTO points_of_interest_type (id, naam, symbol_name, size) VALUES 
@@ -125,7 +126,7 @@ INSERT INTO points_of_interest_type (id, naam, symbol_name, size) VALUES
     ,(26,'Solitair bouwwerk, risico-ontvangend','N19P26',6)
     ,(29,'Bivakplaats defensie','N19P29',6);
 
-INSERT INTO veiligh_ruimtelijk_type (id, naam, symbol_name, size) VALUES 
+INSERT INTO veiligh_ruimtelijk_type (id, naam, categorie, symbol_name, size) VALUES 
      (2002, 'Wegafsluiting', '', 'N19P13', 6)
     ,(2003, 'Wegafsluiting, passeerbaar', '', 'N19P14', 6)
     ,(2001, 'Passeerplaats', '', 'N19P11', 6)
@@ -135,11 +136,14 @@ INSERT INTO veiligh_ruimtelijk_type (id, naam, symbol_name, size) VALUES
     ,(2005, 'Overdrachtsplaats', '', 'N19P28', 6)
     ,(2008, 'Vuurhaard', '', 'N19P32', 6);
 
-INSERT INTO veiligh_dreiging_type (id, naam, symbol_name, size) VALUES 
-     (301, 'Gastank', '', 'N19P18', 6);
+INSERT INTO dreiging_type (id, naam, symbol_name, size) VALUES 
+     (301, 'Gastank', 'N19P18', 6);
 
 INSERT INTO ingang_type (id, naam, symbol_name, "size") VALUES 
      (301, 'Inrijpunt', 'N19P02', 6);
+
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN symbol_name TEXT;
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN size INTEGER;
 
 UPDATE bluswater.alternatieve_type SET symbol_name = 'geboorde_put_voordruk', size = 6 WHERE id = 1;
 UPDATE bluswater.alternatieve_type SET symbol_name = 'geboorde_put', size = 6 WHERE id = 2;
@@ -156,9 +160,6 @@ UPDATE bluswater.alternatieve_type SET symbol_name = 'open_water_xxx_zijde', siz
 UPDATE bluswater.alternatieve_type SET symbol_name = '', size = 6 WHERE id = 13;
 UPDATE bluswater.alternatieve_type SET symbol_name = 'brandkraan_eigen_terrein', size = 6 WHERE id = 14;
 UPDATE bluswater.alternatieve_type SET symbol_name = 'bovengrondse_brandkraan', size = 6 WHERE id = 15;
-
-ALTER TABLE bluswater.alternatieve_type ADD COLUMN symbol_name TEXT;
-ALTER TABLE bluswater.alternatieve_type ADD COLUMN size INTEGER;
 
 INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, "size") VALUES 
      (21, 'Waterinnampunt,open water', 'N19P19', 6)
