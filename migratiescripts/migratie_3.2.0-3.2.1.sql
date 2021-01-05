@@ -120,7 +120,7 @@ CREATE OR REPLACE RULE object_label_upd AS
     ON UPDATE TO objecten.object_label DO INSTEAD  UPDATE objecten.label SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, rotatie = new.rotatie, object_id = new.object_id
   WHERE label.id = new.id;
 
-CREATE RULE object_bgt_ins AS
+CREATE OR REPLACE RULE object_bgt_ins AS
     ON INSERT TO objecten.object_bgt DO INSTEAD  INSERT INTO objecten.object (geom, basisreg_identifier, formelenaam, bron, bron_tabel)  SELECT new.geom,
             b.identificatie,
             new.formelenaam,
