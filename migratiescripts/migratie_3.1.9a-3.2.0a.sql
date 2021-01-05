@@ -1,11 +1,11 @@
 SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
-INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (1, 'n.n.b.') ON CONFLICT DO NOTHING/UPDATE;
-INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (2, 'klei') ON CONFLICT DO NOTHING/UPDATE;
-INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (3, 'slib') ON CONFLICT DO NOTHING/UPDATE;
-INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (4, 'zand') ON CONFLICT DO NOTHING/UPDATE;
-INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (5, 'n.v.t.') ON CONFLICT DO NOTHING/UPDATE;
+INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (1, 'n.n.b.') ON CONFLICT DO NOTHING;
+INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (2, 'klei') ON CONFLICT DO NOTHING;
+INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (3, 'slib') ON CONFLICT DO NOTHING;
+INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (4, 'zand') ON CONFLICT DO NOTHING;
+INSERT INTO objecten.bodemgesteldheid_type(id, naam) VALUES (5, 'n.v.t.') ON CONFLICT DO NOTHING;
 
 ALTER TABLE objecten.gevaarlijke_stof_eenheid_type RENAME TO gevaarlijkestof_eenheid;
 ALTER TABLE objecten.gevaarlijke_stof_toestand_type RENAME TO gevaarlijkestof_toestand;
