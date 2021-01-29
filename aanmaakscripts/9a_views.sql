@@ -801,7 +801,7 @@ CREATE OR REPLACE VIEW view_ruimten AS
      JOIN bouwlagen b ON r.bouwlaag_id = b.id
      JOIN ( SELECT DISTINCT o.formelenaam,
             o.id AS object_id,
-            ST_MULTI(ST_UNION(t_1.geom)::geometry(MultiPolygon, 28992)) AS geovlak
+            ST_MULTI(ST_UNION(t_1.geom))::geometry(MultiPolygon, 28992) as geovlak
            FROM object o
              LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
                    FROM historie historie_1
@@ -859,7 +859,7 @@ ON ST_INTERSECTS(ops.geom, part.geovlak);
 -- view van gevaarlijkestoffen schade crikel met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_schade_cirkel_bouwlaag AS 
 SELECT gvs.id, gvs.opslag_id, gvs.omschrijving, vnnr.vn_nr, vnnr.gevi_nr, vnnr.eric_kaart, gvs.hoeveelheid, gvs.eenheid, gvs.toestand,
-    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom,
+    part.object_id, part.formelenaam, ops.bouwlaag, ops.bouwdeel, ST_BUFFER(ops.geom, gsc.straal)::geometry(Polygon,28992) AS geom, 
     ops.locatie, ROUND(ST_X(ops.geom)) AS X, ROUND(ST_Y(ops.geom)) AS Y, gsc.soort FROM gevaarlijkestof gvs
 INNER JOIN gevaarlijkestof_schade_cirkel gsc ON gvs.id = gevaarlijkestof_id
 LEFT JOIN gevaarlijkestof_vnnr vnnr ON gvs.gevaarlijkestof_vnnr_id = vnnr.id
@@ -1197,8 +1197,8 @@ CREATE OR REPLACE RULE object_ruimtelijk_del AS
     ON DELETE TO object_sleutelkluis DO INSTEAD  DELETE FROM sleutelkluis
   WHERE sleutelkluis.id = old.id;
 
-CREATE OR REPLACE VIEW object_opstelplaats
-AS SELECT v.id,
+CREATE OR REPLACE VIEW object_opstelplaats AS 
+ SELECT v.id,
     v.geom,
     v.datum_aangemaakt,
     v.datum_gewijzigd,
@@ -1225,7 +1225,7 @@ AS SELECT v.id,
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))) o ON v.object_id = o.id
-     JOIN opstelplaats_type st ON v.soort::text = st.naam;
+     JOIN opstelplaats_type st ON v.soort::text = st.naam::text;
 
 CREATE OR REPLACE RULE object_opstelplaats_upd AS
     ON UPDATE TO object_opstelplaats DO INSTEAD UPDATE opstelplaats SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id

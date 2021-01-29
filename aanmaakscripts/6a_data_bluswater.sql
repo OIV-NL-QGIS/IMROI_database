@@ -17,4 +17,5 @@ INSERT INTO alternatieve_type (id, naam) VALUES (11, 'Opstelplaats WTS');
 INSERT INTO alternatieve_type (id, naam) VALUES (12, 'Open water xxx zijde');
 INSERT INTO alternatieve_type (id, naam) VALUES (13, 'Open water onbereikbaar');
 INSERT INTO alternatieve_type (id, naam) VALUES (14, 'Brandkraan eigen terrein');
+INSERT INTO alternatieve_type (id, naam) VALUES (15, 'Bovengrondse brandkraan');
 INSERT INTO alternatieve_type (id, naam) VALUES (9999,  'Voorziening defect');
