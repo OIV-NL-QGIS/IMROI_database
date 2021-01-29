@@ -165,6 +165,7 @@ AS SELECT b.id,
           WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id
      JOIN objecten.dreiging_type vt ON b.dreiging_type_id = vt.id;
 
+DROP VIEW IF EXISTS objecten.view_opstelplaats;
 CREATE OR REPLACE VIEW objecten.view_opstelplaats
 AS SELECT b.id,
     b.geom,
@@ -181,7 +182,7 @@ AS SELECT b.id,
     vt.symbol_name,
     vt.size
    FROM objecten.opstelplaats b
-   	 JOIN objecten.opstelplaats_type vt ON b.soort = vt.naam
+     JOIN objecten.opstelplaats_type vt ON b.soort = vt.naam
      JOIN ( SELECT object.formelenaam,
             object.id
            FROM objecten.object
