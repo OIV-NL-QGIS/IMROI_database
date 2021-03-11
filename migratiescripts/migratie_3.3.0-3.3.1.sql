@@ -10,6 +10,12 @@ INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size)
 INSERT INTO objecten.sleutelkluis_type (id, naam, symbol_name, size)
     VALUES (10, 'Sleutelkuis Havenbedrijf', 'sleutelkluis_hbr', 4) ON CONFLICT DO NOTHING;
 
+UPDATE algemeen.styles SET soortnaam = 'bijzondere ruimte_top' WHERE soortnaam = 'bijzondere ruimte';
+
+SELECT setval('algemeen.styles_id_seq', (SELECT max(id) + 1 FROM algemeen.styles));
+INSERT INTO algemeen.styles(laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl)
+	VALUES ('Ruimten', 'bijzondere ruimte_bottom', 0.26, '#ff33a02c', 'solid', '#fffff97a', 'solid', 'bevel');
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
 UPDATE algemeen.applicatie SET revisie = 0;
