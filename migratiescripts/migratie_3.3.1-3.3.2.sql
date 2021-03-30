@@ -424,6 +424,59 @@ CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag AS
           WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
           GROUP BY o.formelenaam, o.id) part ON st_intersects(d.geom, part.geovlak);
 
+CREATE OR REPLACE VIEW objecten.view_gebiedsgerichte_aanpak AS 
+ SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.soort,
+    b.label,
+    b.bijzonderheden,
+    b.object_id,
+    b.fotografie_id,
+    o.formelenaam,
+    round(st_x(b.geom)) AS x,
+    round(st_y(b.geom)) AS y
+   FROM objecten.gebiedsgerichte_aanpak b
+     JOIN ( SELECT object.formelenaam,
+            object.id
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+          WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id;
+
+CREATE OR REPLACE VIEW objecten.view_points_of_interest AS 
+ SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.points_of_interest_type_id,
+    b.label,
+    b.object_id,
+    b.rotatie,
+    b.fotografie_id,
+    b.bijzonderheid,
+    o.formelenaam,
+    round(st_x(b.geom)) AS x,
+    round(st_y(b.geom)) AS y,
+    vt.symbol_name,
+    vt.size
+   FROM objecten.points_of_interest b
+     JOIN ( SELECT object.formelenaam,
+            object.id
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+          WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id
+     JOIN objecten.points_of_interest_type vt ON b.points_of_interest_type_id = vt.id;
+
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
 UPDATE algemeen.applicatie SET revisie = 2;
