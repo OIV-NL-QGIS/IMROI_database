@@ -1,6 +1,16 @@
 SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+CREATE INDEX IF NOT EXISTS bouwlagen_pand_id_idx
+  ON objecten.bouwlagen
+  USING btree
+  (pand_id);
+
+CREATE INDEX IF NOT EXISTS bouwlagen_bouwlaag_idx
+  ON objecten.bouwlagen
+  USING btree
+  (bouwlaag);
+
 DROP VIEW IF EXISTS objecten.view_dreiging_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag AS 
  SELECT 
@@ -126,7 +136,7 @@ CREATE OR REPLACE VIEW objecten.view_ruimten AS
     d.geom,
     d.datum_aangemaakt,
     d.datum_gewijzigd,
-    d.ruimten_type_id as soort,
+    d.ruimten_type_id,
     d.omschrijving,
     d.bouwlaag_id,
     d.fotografie_id,
@@ -286,7 +296,9 @@ CREATE OR REPLACE VIEW objecten.view_afw_binnendekking AS
     o.formelenaam,
     o.id as object_id,
     b.bouwlaag,
-    b.bouwdeel
+    b.bouwdeel,
+    dt.symbol_name,
+    dt.size
 FROM objecten.object o
 INNER JOIN 
     (SELECT h.object_id
@@ -300,18 +312,9 @@ INNER JOIN
     ) part ON o.id = part.object_id
 INNER JOIN objecten.terrein t ON o.id = t.object_id
 INNER JOIN objecten.afw_binnendekking d ON ST_INTERSECTS(t.geom, d.geom)
+INNER JOIN objecten.afw_binnendekking_type dt ON d.soort = dt.naam
 INNER JOIN objecten.bouwlagen b ON d.bouwlaag_id = b.id
 WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
-
-CREATE INDEX bouwlagen_pand_id_idx
-  ON objecten.bouwlagen
-  USING btree
-  (pand_id);
-
-CREATE INDEX bouwlagen_bouwlaag_idx
-  ON objecten.bouwlagen
-  USING btree
-  (bouwlaag);
 
 DROP VIEW IF EXISTS objecten.view_bouwlagen;
 CREATE OR REPLACE VIEW objecten.view_bouwlagen AS 
@@ -412,7 +415,8 @@ SELECT
     op.rotatie,
     round(st_x(op.geom)) AS x,
     round(st_y(op.geom)) AS y,
-    op.bouwlaag_id
+    op.bouwlaag_id,
+    gsc.soort
 FROM objecten.object o
 INNER JOIN 
     (SELECT h.object_id
@@ -637,7 +641,8 @@ SELECT
     op.locatie,
     op.rotatie,
     round(st_x(op.geom)) AS x,
-    round(st_y(op.geom)) AS y
+    round(st_y(op.geom)) AS y,
+    gsc.soort
 FROM objecten.object o
 INNER JOIN 
     (SELECT h.object_id
