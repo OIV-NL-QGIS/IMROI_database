@@ -1,6 +1,11 @@
 SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'view_gebiedsgerichte_aanpak', 'id', 1, 'assigned');
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'view_points_of_interest', 'id', 1, 'assigned');  
+
 CREATE INDEX IF NOT EXISTS bouwlagen_pand_id_idx
   ON objecten.bouwlagen
   USING btree
@@ -775,7 +780,8 @@ CREATE OR REPLACE VIEW objecten.view_objectgegevens AS
     bg.naam AS bodemgesteldheid,
     gf.gebruiksfuncties,
     round(st_x(o.geom)) AS x,
-    round(st_y(o.geom)) AS y
+    round(st_y(o.geom)) AS y,
+    part.typeobject
    FROM objecten.object o
    LEFT JOIN objecten.bodemgesteldheid_type bg ON o.bodemgesteldheid_type_id = bg.id
    LEFT JOIN ( SELECT DISTINCT g.object_id,
@@ -784,7 +790,7 @@ CREATE OR REPLACE VIEW objecten.view_objectgegevens AS
              JOIN objecten.gebruiksfunctie_type gt ON g.gebruiksfunctie_type_id = gt.id
           GROUP BY g.object_id) gf ON o.id = gf.object_id
    INNER JOIN 
-    (SELECT h.object_id
+    (SELECT h.object_id, h.typeobject
       FROM objecten.historie h
       INNER JOIN
           (SELECT object_id, MAX(datum_aangemaakt) AS maxdatetime
