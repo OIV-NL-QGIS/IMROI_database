@@ -1,11 +1,6 @@
 SET ROLE oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
-INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
-        VALUES ('objecten', 'view_gebiedsgerichte_aanpak', 'id', 1, 'assigned');
-INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
-        VALUES ('objecten', 'view_points_of_interest', 'id', 1, 'assigned');  
-
 CREATE INDEX IF NOT EXISTS bouwlagen_pand_id_idx
   ON objecten.bouwlagen
   USING btree
