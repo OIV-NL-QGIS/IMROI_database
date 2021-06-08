@@ -437,7 +437,7 @@ INNER JOIN objecten.gevaarlijkestof_schade_cirkel gsc ON d.id = gsc.gevaarlijkes
 WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_bedrijfshulpverlening;
+DROP VIEW IF EXISTS objecten.view_bedrijfshulpverlening;
 CREATE OR REPLACE VIEW objecten.view_bedrijfshulpverlening AS
  SELECT 
 	  b.id,
@@ -465,7 +465,7 @@ CREATE OR REPLACE VIEW objecten.view_bedrijfshulpverlening AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_bereikbaarheid;
+DROP VIEW IF EXISTS objecten.view_bereikbaarheid;
 CREATE OR REPLACE VIEW objecten.view_bereikbaarheid AS
  SELECT 
 	  b.id,
@@ -494,7 +494,7 @@ CREATE OR REPLACE VIEW objecten.view_bereikbaarheid AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_contactpersoon;
+DROP VIEW IF EXISTS objecten.view_contactpersoon;
 CREATE OR REPLACE VIEW objecten.view_contactpersoon AS
  SELECT 
 	  b.id,
@@ -522,7 +522,7 @@ CREATE OR REPLACE VIEW objecten.view_contactpersoon AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_dreiging_ruimtelijk;
+DROP VIEW IF EXISTS objecten.view_dreiging_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk AS
  SELECT 
 	  b.id,
@@ -557,7 +557,7 @@ CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_gebiedsgerichte_aanpak;
+DROP VIEW IF EXISTS objecten.view_gebiedsgerichte_aanpak;
 CREATE OR REPLACE VIEW objecten.view_gebiedsgerichte_aanpak AS
  SELECT 
 	  b.id,
@@ -661,7 +661,7 @@ INNER JOIN objecten.gevaarlijkestof_schade_cirkel gsc ON d.id = gsc.gevaarlijkes
 WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_ingang_ruimtelijk;
+DROP VIEW IF EXISTS objecten.view_ingang_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_ingang_ruimtelijk AS
  SELECT 
 	  b.id,
@@ -697,7 +697,7 @@ CREATE OR REPLACE VIEW objecten.view_ingang_ruimtelijk AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_isolijnen;
+DROP VIEW IF EXISTS objecten.view_isolijnen;
 CREATE OR REPLACE VIEW objecten.view_isolijnen AS
  SELECT 
 	  b.id,
@@ -723,7 +723,7 @@ CREATE OR REPLACE VIEW objecten.view_isolijnen AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_label_ruimtelijk;
+DROP VIEW IF EXISTS objecten.view_label_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_label_ruimtelijk AS
  SELECT 
 	  b.id,
@@ -755,7 +755,7 @@ CREATE OR REPLACE VIEW objecten.view_label_ruimtelijk AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_objectgegevens;
+DROP VIEW IF EXISTS objecten.view_objectgegevens;
 CREATE OR REPLACE VIEW objecten.view_objectgegevens AS
  SELECT 
 	  o.id,
@@ -797,7 +797,7 @@ CREATE OR REPLACE VIEW objecten.view_objectgegevens AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_opstelplaats;
+DROP VIEW IF EXISTS objecten.view_opstelplaats;
 CREATE OR REPLACE VIEW objecten.view_opstelplaats AS
  SELECT 
 	  b.id,
@@ -830,7 +830,7 @@ CREATE OR REPLACE VIEW objecten.view_opstelplaats AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_points_of_interest;
+DROP VIEW IF EXISTS objecten.view_points_of_interest;
 CREATE OR REPLACE VIEW objecten.view_points_of_interest AS
  SELECT 
 	  b.id,
@@ -864,7 +864,7 @@ CREATE OR REPLACE VIEW objecten.view_points_of_interest AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_sectoren;
+DROP VIEW IF EXISTS objecten.view_sectoren;
 CREATE OR REPLACE VIEW objecten.view_sectoren AS
  SELECT 
 	  b.id,
@@ -892,7 +892,7 @@ CREATE OR REPLACE VIEW objecten.view_sectoren AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
-DROP VIEW objecten.view_veiligh_ruimtelijk;
+DROP VIEW IF EXISTS objecten.view_veiligh_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_veiligh_ruimtelijk AS
  SELECT 
 	  b.id,
