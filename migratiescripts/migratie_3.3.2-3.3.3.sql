@@ -437,6 +437,7 @@ INNER JOIN objecten.gevaarlijkestof_schade_cirkel gsc ON d.id = gsc.gevaarlijkes
 WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 
+
 DROP VIEW IF EXISTS objecten.view_bedrijfshulpverlening;
 CREATE OR REPLACE VIEW objecten.view_bedrijfshulpverlening AS
  SELECT 
@@ -463,6 +464,7 @@ CREATE OR REPLACE VIEW objecten.view_bedrijfshulpverlening AS
           ) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime
     ) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
+
 
 
 DROP VIEW IF EXISTS objecten.view_bereikbaarheid;
@@ -492,6 +494,7 @@ CREATE OR REPLACE VIEW objecten.view_bereikbaarheid AS
           ) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime
     ) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
+
 
 
 DROP VIEW IF EXISTS objecten.view_contactpersoon;
@@ -721,7 +724,6 @@ CREATE OR REPLACE VIEW objecten.view_isolijnen AS
           ) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime
     ) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
-
 
 DROP VIEW IF EXISTS objecten.view_label_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_label_ruimtelijk AS
