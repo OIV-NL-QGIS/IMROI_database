@@ -40,8 +40,8 @@ INSERT INTO objecten.veiligh_bouwk_type (id, naam) VALUES (8, 'blusleiding_bouwl
 INSERT INTO objecten.veiligh_bouwk_type (id, naam) VALUES (9, 'contouren_bouwlaag');
 INSERT INTO objecten.veiligh_bouwk_type (id, naam) VALUES (90, 'hulplijn_bouwlaag');
 
-INSERT INTO objecten.sectoren_type (id, naam) VALUES (31, 'openwater');
-INSERT INTO objecten.sectoren_type (id, naam) VALUES (32, 'zwembad');
+INSERT INTO objecten.sectoren_type (id, naam) VALUES (41, 'openwater');
+INSERT INTO objecten.sectoren_type (id, naam) VALUES (42, 'zwembad');
 
 INSERT INTO algemeen.styles
     (laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl)
@@ -51,6 +51,56 @@ INSERT INTO algemeen.styles
 INSERT INTO algemeen.styles
     (laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl)
   VALUES ('Sectoren', 'zwembad', 1, '#ff0033e6', 'solid', '#ff0072e0', 'solid', 'bevel', 'round');
+
+INSERT INTO objecten.ingang_type (id, naam, symbol_name, size)
+    VALUES (701, 'Deur', 'deur', 2);
+INSERT INTO objecten.ingang_type (id, naam, symbol_name, size)
+    VALUES (702, 'Schuifdeur dubbel', 'schuifdeur_dubbel', 2);
+INSERT INTO objecten.ingang_type (id, naam, symbol_name, size)
+    VALUES (703, 'Schuifdeur enkel links', 'schuifdeur_enkel_links', 2);
+INSERT INTO objecten.ingang_type (id, naam, symbol_name, size)
+    VALUES (704, 'Schuifdeur enkel rechts', 'schuifdeur_enkel_rechts', 2);
+
+INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size)
+    VALUES (9, 'Overig voertuig', 'opstelplaats_overige_voertuigen', 8);
+
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, size)
+    VALUES (705, 'Flitslicht', 'flitslicht', 4);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, size)
+    VALUES (706, 'Gas detectiepaneel', 'gasdetectiepaneel', 4);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, size)
+    VALUES (707, 'Afsluiter SVM', 'afsluiter_svm', 4);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, size)
+    VALUES (708, 'Brandweer info-kast', 'brandweerinfokast', 4);
+
+INSERT INTO objecten.veiligh_ruimtelijk_type (id, naam, symbol_name, size)
+    VALUES (707, 'Afsluiter SVM', 'afsluiter_svm', 6);
+INSERT INTO objecten.veiligh_ruimtelijk_type (id, naam, symbol_name, size)
+    VALUES (708, 'Brandweer info-kast', 'brandweerinfokast', 6);
+
+INSERT INTO objecten.dreiging_type (id, naam, symbol_name, size)
+    VALUES (709, 'Laadpaal electrisch voertuig', 'laadpaal_elektrisch_voertuig', 6);
+
+INSERT INTO algemeen.styles
+    (laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, verbindingsstijl, eindstijl)
+  VALUES ('Bereikbaarheid', 'slagboom_bottom', 0.8, '#ff000000', 'solid', 'bevel', 'round');
+INSERT INTO algemeen.styles
+    (laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, verbindingsstijl, eindstijl)
+  VALUES ('Bereikbaarheid', 'slagboom_middle', 0.6, '#ffffffff', 'solid', 'bevel', 'round');
+INSERT INTO algemeen.styles
+    (laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, verbindingsstijl, eindstijl)
+  VALUES ('Bereikbaarheid', 'slagboom_top', 0.6, '#ffff0000', 'dot', 'bevel', 'flat');
+
+INSERT INTO objecten.bereikbaarheid_type (id, naam) VALUES (10, 'slagboom');
+
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, size)
+    VALUES (51, 'Doorrijhoogte', 'doorrijhoogte', 6);
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, size)
+    VALUES (52, 'Sleutelpaal of ringpaal', 'sleutelpaal_of_ringpaal', 6);
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, size)
+    VALUES (53, 'Poller', 'poller', 6);
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, size)
+    VALUES (54, 'Windvaan', 'windvaan', 4);
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
