@@ -86,6 +86,32 @@ INNER JOIN objecten.sleutelkluis_type dt ON d.sleutelkluis_type_id = dt.id
 LEFT OUTER JOIN objecten.sleuteldoel_type dd ON d.sleuteldoel_type_id = dd.id 
 WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
+CREATE OR REPLACE VIEW objecten.view_grid
+AS SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.y_as_label,
+    b.x_as_label,
+    b.object_id,
+    b.afstand,
+    b.vaknummer,
+    b.scale,
+    b.papersize,
+    b.orientation,
+    b.type,
+    b.uuid,
+    o.formelenaam
+   FROM objecten.object o
+     JOIN objecten.grid b ON o.id = b.object_id
+     JOIN ( SELECT h.object_id
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  WHERE historie.status::text = 'in gebruik'::text
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
