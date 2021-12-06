@@ -1,18 +1,9 @@
 SET role oiv_admin;
 SET search_path = mobiel, pg_catalog, public;
 
---aantal nieuwe symbolen voor industrie
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (21, 'Blus unit', 'blus_unit', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (22, 'Dompelpomp unit', 'dpu', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (23, 'Foambooster', 'foam_booster', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (24, 'Foambooster 2', 'foam_booster2', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (25, 'KRVE', 'krve', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (26, 'Schuim trailer', 'sv_trailer', 8);
-INSERT INTO objecten.opstelplaats_type (id, naam, symbol_name, size) VALUES (27, 'UGV', 'ugv', 8);
-
 UPDATE objecten.label_type SET symbol_name = naam;
 
-DROP SCHEMA IF EXISTS mobiel;
+DROP SCHEMA IF EXISTS mobiel CASCADE;
 CREATE SCHEMA mobiel;
 GRANT USAGE ON SCHEMA mobiel TO oiv_read;
 
@@ -21,18 +12,7 @@ CREATE TABLE mobiel.log_werkvoorraad (
     datum_aangemaakt timestamp,
     datum_gewijzigd timestamp,
     geom geometry(geometry, 28992),
-    waarden_new json,
-    operatie varchar(10),
-    brontabel varchar(50),
-    bron_id integer,
-    bouwlaag_id integer,
-    object_id integer,
-    rotatie integer,
-    SIZE integer,
-    symbol_name TEXT,
-    accepted bool,
-    bouwlaag integer,
-    fotografie_id integer,
+    record json,
     CONSTRAINT log_werkvoorraad_pkey PRIMARY KEY (id)
 );
 
@@ -350,7 +330,7 @@ CREATE OR REPLACE FUNCTION objecten.func_opslag_upd()
             VALUES (new.geom, jsonstring, 'UPDATE', 'gevaarlijkestof_opslag', old.id, new.bouwlaag_id, NEW.object_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
 
             IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'gevaarlijkestof_opslag', new.bouwlaag);
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'gevaarlijkestof_opslag', bouwlaag);
             END IF;
         END IF;
         RETURN NEW;
@@ -487,7 +467,7 @@ CREATE OR REPLACE FUNCTION objecten.func_label_upd()
             VALUES (new.geom, jsonstring, 'UPDATE', 'label', old.id, new.bouwlaag_id, NEW.object_id, NEW.rotatie, size, symbol_name, bouwlaag, false);
 
             IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'label', new.bouwlaag);
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'label', bouwlaag);
             END IF;
         END IF;
         RETURN NEW;
@@ -900,7 +880,7 @@ CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_upd()
             VALUES (new.geom, jsonstring, 'UPDATE', 'sleutelkluis', old.id, new.ingang_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
 
             IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'sleutelkluis', new.bouwlaag);
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'sleutelkluis', bouwlaag);
             END IF;
         END IF;
         RETURN NEW;
@@ -955,7 +935,7 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_ins()
             INSERT INTO objecten.afw_binnendekking (geom, soort, label, rotatie, handelingsaanwijzing, bouwlaag_id)
             VALUES (new.geom, new.soort, new.label, new.rotatie, new.handelingsaanwijzing, new.bouwlaag_id);
         ELSE
-            size := (SELECT "size" FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
+            size := (SELECT at."size" FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
             symbol_name := (SELECT symbol_name FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
             jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.handelingsaanwijzing) d));
             bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
@@ -1001,7 +981,7 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_upd()
             UPDATE objecten.afw_binnendekking SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, handelingsaanwijzing = new.handelingsaanwijzing, bouwlaag_id = new.bouwlaag_id
             WHERE (afw_binnendekking.id = new.id);
         ELSE
-            size := (SELECT "size" FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
+            size := (SELECT at."size" FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
             symbol_name := (SELECT symbol_name FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
             jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.handelingsaanwijzing) d));
 
@@ -1078,7 +1058,7 @@ CREATE OR REPLACE FUNCTION objecten.func_opstelplaats_del()
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label) d));
 
             INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, object_id, rotatie, SIZE, symbol_name, fotografie_id, accepted)
-            VALUES (OLD.geom, jsonstring, 'DELETE', 'opstelplaats', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, new.fotografie_id, false);
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'opstelplaats', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, old.fotografie_id, false);
         END IF;
         RETURN OLD;
     END;

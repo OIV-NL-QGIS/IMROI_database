@@ -78,6 +78,46 @@ CREATE RULE object_upd AS
                 bron = new.bron, bron_tabel = new.bron_tabel, fotografie_id = new.fotografie_id, bodemgesteldheid_type_id = new.bodemgesteldheid_type_id, bijzonderheden = new.bijzonderheden, min_bouwlaag = new.min_bouwlaag, max_bouwlaag = new.max_bouwlaag
   WHERE (object.id = new.id);
 
+DROP VIEW objecten.view_objectgegevens; 
+CREATE OR REPLACE VIEW objecten.view_objectgegevens
+AS SELECT o.id,
+    o.formelenaam,
+    o.geom,
+    o.basisreg_identifier,
+    o.datum_aangemaakt,
+    o.datum_gewijzigd,
+    o.bijzonderheden,
+    o.pers_max,
+    o.pers_nietz_max,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    o.bron,
+    o.bron_tabel,
+    o.fotografie_id,
+    bg.naam AS bodemgesteldheid,
+    o.min_bouwlaag,
+    o.max_bouwlaag,
+    gf.gebruiksfuncties,
+    round(st_x(o.geom)) AS x,
+    round(st_y(o.geom)) AS y,
+    part.typeobject
+   FROM objecten.object o
+     LEFT JOIN objecten.bodemgesteldheid_type bg ON o.bodemgesteldheid_type_id = bg.id
+     LEFT JOIN ( SELECT DISTINCT g.object_id,
+            string_agg(gt.naam, ', '::text) AS gebruiksfuncties
+           FROM objecten.gebruiksfunctie g
+             JOIN objecten.gebruiksfunctie_type gt ON g.gebruiksfunctie_type_id = gt.id
+          GROUP BY g.object_id) gf ON o.id = gf.object_id
+     JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  WHERE historie.status::text = 'in gebruik'::text
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
 UPDATE algemeen.applicatie SET revisie = 7;
