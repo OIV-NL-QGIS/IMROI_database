@@ -86,6 +86,12 @@ CREATE TABLE mobiel.werkvoorraad_hulplijnen (
     CONSTRAINT werkvoorraad_hulplijnen_pkey PRIMARY KEY (id)
 );
 
+CREATE OR REPLACE VIEW mobiel.bouwlagen_binnen_object AS
+SELECT DISTINCT t.object_id, bouwlaag FROM mobiel.werkvoorraad_punt w 
+                INNER JOIN objecten.terrein t ON ST_INTERSECTS(w.geom, t.geom) 
+                WHERE w.object_id IS NULL
+                GROUP BY t.object_id, bouwlaag;
+
 CREATE INDEX werkvoorraad_punt_geom_gist ON mobiel.werkvoorraad_punt USING gist (geom);
 CREATE INDEX werkvoorraad_lijn_geom_gist ON mobiel.werkvoorraad_lijn USING gist (geom);
 CREATE INDEX werkvoorraad_vlak_geom_gist ON mobiel.werkvoorraad_vlak USING gist (geom);
@@ -845,7 +851,7 @@ CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_del()
             END IF;
 
             INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
-            VALUES (OLD.geom, jsonstring, 'DELETE', 'sleutelkluis', OLD.id, OLD.ingang_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, new.fotografie_id, false);
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'sleutelkluis', OLD.id, OLD.ingang_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, OLD.fotografie_id, false);
         END IF;
         RETURN OLD;
     END;
@@ -936,7 +942,7 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_ins()
             VALUES (new.geom, new.soort, new.label, new.rotatie, new.handelingsaanwijzing, new.bouwlaag_id);
         ELSE
             size := (SELECT at."size" FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
-            symbol_name := (SELECT symbol_name FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
+            symbol_name := (SELECT at.symbol_name FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
             jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.handelingsaanwijzing) d));
             bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
     
@@ -982,7 +988,7 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_upd()
             WHERE (afw_binnendekking.id = new.id);
         ELSE
             size := (SELECT at."size" FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
-            symbol_name := (SELECT symbol_name FROM objecten.afw_binnendekking_type WHERE naam = new.soort);
+            symbol_name := (SELECT at.symbol_name FROM objecten.afw_binnendekking_type at WHERE naam = new.soort);
             jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.handelingsaanwijzing) d));
 
             INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, SIZE, symbol_name, bouwlaag, accepted)
@@ -1155,7 +1161,7 @@ CREATE OR REPLACE FUNCTION objecten.func_veiligh_ruimtelijk_del()
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheid) d));        
 
             INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, object_id, rotatie, SIZE, symbol_name, fotografie_id, accepted)
-            VALUES (OLD.geom, jsonstring, 'DELETE', 'veiligh_ruimtelijk', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, new.fotografie_id, false);
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'veiligh_ruimtelijk', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, OLD.fotografie_id, false);
         END IF;
         RETURN OLD;
     END;
@@ -1252,7 +1258,7 @@ CREATE OR REPLACE FUNCTION objecten.func_points_of_interest_del()
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheid) d)); 
 
             INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, object_id, rotatie, SIZE, symbol_name, fotografie_id, accepted)
-            VALUES (OLD.geom, jsonstring, 'DELETE', 'points_of_interest', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, new.fotografie_id, false);
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'points_of_interest', OLD.id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, OLD.fotografie_id, false);
         END IF;
         RETURN OLD;
     END;
