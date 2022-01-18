@@ -13,6 +13,13 @@ INSERT INTO algemeen.styles ("laagnaam", "soortnaam", "lijndikte", "lijnkleur", 
 
 INSERT INTO objecten.ruimten_type (id, naam) VALUES (11, 'afbrand scenario');
 
+-- issue 196 - Slagboom op bouwlaag
+INSERT INTO objecten.veiligh_bouwk_type (id,naam) VALUES (10,'slagboom_bouwlaag');
+INSERT INTO algemeen.styles (laagnaam,soortnaam,lijndikte,lijnkleur,lijnstijl,vulkleur,vulstijl,verbindingsstijl,eindstijl) VALUES
+	 ('Bouwkundige veiligheidsvoorzieningen','slagboom_bouwlaag_bottom',0.4,'#ff000000','solid',NULL,NULL,'bevel','round'),
+	 ('Bouwkundige veiligheidsvoorzieningen','slagboom_bouwlaag_middle',0.3,'#ffffffff','solid',NULL,NULL,'bevel','round'),
+	 ('Bouwkundige veiligheidsvoorzieningen','slagboom_bouwlaag_top',0.3,'#ffff0000','dot',NULL,NULL,'bevel','flat');
+
 -- issue 145 - Symboolgrootte object splitsen van bouwlaag grootte
 ALTER TABLE objecten.dreiging_type ADD COLUMN size_object INTEGER;
 ALTER TABLE objecten.ingang_type ADD COLUMN size_object INTEGER;
