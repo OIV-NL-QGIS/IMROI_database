@@ -653,38 +653,41 @@ AS SELECT l.id,
     l.fotografie_id,
     l.object_id,
     b.formelenaam,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    part.typeobject
    FROM objecten.bereikbaarheid l
      JOIN objecten.object b ON l.object_id = b.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_bgt
-AS SELECT object.id,
-    object.geom,
-    object.datum_aangemaakt,
-    object.datum_gewijzigd,
-    object.basisreg_identifier,
-    object.formelenaam,
-    object.bijzonderheden,
-    object.pers_max,
-    object.pers_nietz_max,
-    object.datum_geldig_tot,
-    object.datum_geldig_vanaf,
-    object.bron,
-    object.bron_tabel,
-    object.fotografie_id,
-    object.bodemgesteldheid_type_id,
-    o.typeobject
-   FROM objecten.object
-     JOIN ( SELECT object_1.id,
-            historie.typeobject
-           FROM objecten.object object_1
-             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
-                   FROM objecten.historie historie_1
-                  WHERE historie_1.object_id = object_1.id
-                  ORDER BY historie_1.datum_aangemaakt DESC
-                 LIMIT 1))) o ON object.id = o.id
-  WHERE object.bron::text = 'BGT'::text AND object.datum_deleted IS NULL;
+AS SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.basisreg_identifier,
+    b.formelenaam,
+    b.bijzonderheden,
+    b.pers_max,
+    b.pers_nietz_max,
+    b.datum_geldig_tot,
+    b.datum_geldig_vanaf,
+    b.bron,
+    b.bron_tabel,
+    b.fotografie_id,
+    b.bodemgesteldheid_type_id,
+    part.typeobject
+   FROM objecten.object b
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
+  WHERE b.bron::text = 'BGT'::text AND b.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_dreiging
 AS SELECT v.id,
@@ -699,10 +702,18 @@ AS SELECT v.id,
     v.rotatie,
     st.symbol_name,
     st.size_object AS size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    part.typeobject,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot
    FROM objecten.dreiging v
      JOIN objecten.object b ON v.object_id = b.id
      JOIN objecten.dreiging_type st ON v.dreiging_type_id = st.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE v.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_gebiedsgerichte_aanpak
@@ -714,9 +725,17 @@ AS SELECT l.id,
     l.fotografie_id,
     l.object_id,
     b.formelenaam,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    part.typeobject,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot
    FROM objecten.gebiedsgerichte_aanpak l
      JOIN objecten.object b ON l.object_id = b.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_grid
@@ -737,19 +756,14 @@ AS SELECT b.id,
     o.formelenaam,
     o.datum_geldig_vanaf,
     o.datum_geldig_tot,
-    o.typeobject
+    part.typeobject
    FROM objecten.grid b
-     JOIN ( SELECT object.formelenaam,
-            object.datum_geldig_vanaf,
-            object.datum_geldig_tot,
-            object.id,
-            historie.typeobject
-           FROM objecten.object
-             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
-                   FROM objecten.historie historie_1
-                  WHERE historie_1.object_id = object.id
-                  ORDER BY historie_1.datum_aangemaakt DESC
-                 LIMIT 1))) o ON b.object_id = o.id
+     JOIN objecten.object o ON b.object_id = o.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
    WHERE b.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_ingang
@@ -766,10 +780,18 @@ AS SELECT v.id,
     v.rotatie,
     it.symbol_name,
     it.size_object AS size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.ingang v
      JOIN objecten.object b ON v.object_id = b.id
      JOIN objecten.ingang_type it ON v.ingang_type_id = it.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE v.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_isolijnen
@@ -779,9 +801,17 @@ AS SELECT l.id,
     l.omschrijving,
     l.object_id,
     b.formelenaam,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.isolijnen l
      JOIN objecten.object b ON l.object_id = b.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_label
@@ -795,41 +825,46 @@ AS SELECT l.id,
     l.rotatie,
     st.symbol_name,
     st.size_object AS size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.label l
      JOIN objecten.object b ON l.object_id = b.id
      JOIN objecten.label_type st ON l.soort::text = st.naam::text
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_objecten
-AS SELECT object.id,
-    object.geom,
-    object.datum_aangemaakt,
-    object.datum_gewijzigd,
-    object.basisreg_identifier,
-    object.formelenaam,
-    object.bijzonderheden,
-    object.pers_max,
-    object.pers_nietz_max,
-    object.datum_geldig_tot,
-    object.datum_geldig_vanaf,
-    object.bron,
-    object.bron_tabel,
-    object.fotografie_id,
-    object.bodemgesteldheid_type_id,
-    object.min_bouwlaag,
-    object.max_bouwlaag,
-    o.typeobject
-   FROM objecten.object
-     JOIN ( SELECT object_1.id,
-            historie.typeobject
-           FROM objecten.object object_1
-             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
-                   FROM objecten.historie historie_1
-                  WHERE historie_1.object_id = object_1.id
-                  ORDER BY historie_1.datum_aangemaakt DESC
-                 LIMIT 1))) o ON object.id = o.id
-   WHERE object.datum_deleted IS NULL;
+AS SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.basisreg_identifier,
+    b.formelenaam,
+    b.bijzonderheden,
+    b.pers_max,
+    b.pers_nietz_max,
+    b.datum_geldig_tot,
+    b.datum_geldig_vanaf,
+    b.bron,
+    b.bron_tabel,
+    b.fotografie_id,
+    b.bodemgesteldheid_type_id,
+    b.min_bouwlaag,
+    b.max_bouwlaag,
+    part.typeobject
+   FROM objecten.object b
+    JOIN ( SELECT h.object_id, h.typeobject
+          FROM objecten.historie h
+            JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                  FROM objecten.historie
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
+   WHERE b.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_opslag
 AS SELECT o.id,
@@ -844,10 +879,18 @@ AS SELECT o.id,
     o.rotatie,
     st.size_object AS size,
     st.symbol_name,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.gevaarlijkestof_opslag o
      JOIN objecten.object b ON o.object_id = b.id
      JOIN objecten.gevaarlijkestof_opslag_type st ON 'Opslag stoffen'::text = st.naam
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE o.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_opstelplaats
@@ -861,10 +904,18 @@ AS SELECT l.id,
     l.rotatie,
     st.symbol_name,
     st.size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.opstelplaats l
      JOIN objecten.object b ON l.object_id = b.id
      JOIN objecten.opstelplaats_type st ON l.soort::text = st.naam::text
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_points_of_interest
@@ -879,10 +930,18 @@ AS SELECT b.id,
     b.rotatie,
     vt.symbol_name,
     vt.size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    part.typeobject
    FROM objecten.points_of_interest b
      JOIN objecten.object o ON b.object_id = o.id
      JOIN objecten.points_of_interest_type vt ON b.points_of_interest_type_id = vt.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
    WHERE b.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_sectoren
@@ -894,9 +953,17 @@ AS SELECT l.id,
     l.fotografie_id,
     l.object_id,
     b.formelenaam,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.sectoren l
      JOIN objecten.object b ON l.object_id = b.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
 CREATE OR REPLACE VIEW objecten.object_sleutelkluis
@@ -908,18 +975,23 @@ AS SELECT v.id,
     v.sleuteldoel_type_id,
     v.fotografie_id,
     v.ingang_id,
-    part.formelenaam,
+    b.formelenaam,
     v.rotatie,
     it.symbol_name,
     it.size_object AS size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject
    FROM objecten.sleutelkluis v
-     JOIN ( SELECT b.formelenaam,
-            ib.id,
-            ib.object_id
-           FROM objecten.ingang ib
-             JOIN objecten.object b ON ib.object_id = b.id) part ON v.ingang_id = part.id
+     JOIN objecten.ingang i ON v.ingang_id = i.id
      JOIN objecten.sleutelkluis_type it ON v.sleutelkluis_type_id = it.id
+     JOIN objecten.object b ON i.object_id = b.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE v.datum_deleted IS NULL;
 
 DROP VIEW objecten.object_terrein;
@@ -933,10 +1005,38 @@ AS SELECT b.id,
     o.formelenaam,
     o.datum_geldig_vanaf,
     o.datum_geldig_tot,
-    o.typeobject
+    part.typeobject
    FROM objecten.terrein b
      JOIN objecten.object o ON b.object_id = o.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
    WHERE b.datum_deleted IS NULL;
+
+CREATE OR REPLACE RULE object_terrein_del AS
+    ON DELETE TO objecten.object_terrein DO INSTEAD  DELETE FROM objecten.terrein
+  WHERE terrein.id = old.id;
+
+CREATE OR REPLACE RULE object_terrein_upd AS
+    ON UPDATE TO objecten.object_terrein DO INSTEAD  
+    UPDATE objecten.terrein SET geom = new.geom, omschrijving = new.omschrijving, object_id = new.object_id
+  WHERE terrein.id = new.id;
+
+CREATE OR REPLACE RULE object_terrein_ins AS
+    ON INSERT TO objecten.object_terrein DO INSTEAD  INSERT INTO objecten.terrein (geom, omschrijving, object_id)
+  VALUES (new.geom, new.omschrijving, new.object_id)
+  RETURNING terrein.id,
+    terrein.geom,
+    terrein.datum_aangemaakt,
+    terrein.datum_gewijzigd,
+    terrein.omschrijving,
+    terrein.object_id,
+    (SELECT formelenaam FROM object o WHERE o.id = terrein.object_id),
+    (SELECT datum_geldig_vanaf FROM object o WHERE o.id = terrein.object_id),
+    (SELECT datum_geldig_tot FROM object o WHERE o.id = terrein.object_id),
+    (SELECT typeobject FROM historie o WHERE o.object_id = terrein.object_id LIMIT 1);
 
 CREATE OR REPLACE VIEW objecten.object_veiligh_ruimtelijk
 AS SELECT b.id,
@@ -950,10 +1050,18 @@ AS SELECT b.id,
     b.rotatie,
     vt.symbol_name,
     vt.size,
-    ''::text AS applicatie
+    ''::text AS applicatie,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    part.typeobject
    FROM objecten.veiligh_ruimtelijk b
      JOIN objecten.object o ON b.object_id = o.id
      JOIN objecten.veiligh_ruimtelijk_type vt ON b.veiligh_ruimtelijk_type_id = vt.id
+     JOIN ( SELECT h.object_id, h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
+                    FROM objecten.historie
+                    GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
    WHERE b.datum_deleted IS NULL;
 
 --management lagen
