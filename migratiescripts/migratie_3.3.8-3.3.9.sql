@@ -2128,6 +2128,812 @@ AS SELECT b.id,
     AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
+
+-- issue 211 - scenario's naar punt-locaties
+DROP TABLE IF EXISTS objecten.scenario_locatie_type;
+CREATE TABLE objecten.scenario_locatie_type (
+	id int4 NOT NULL,
+	naam text NOT NULL,
+	symbol_name text NULL,
+	"size" int4 NULL,
+	size_object int4 NULL,
+	CONSTRAINT scenario_locatie_type_naam_key UNIQUE (naam),
+	CONSTRAINT scenario_locatie_type_pkey PRIMARY KEY (id)
+);
+
+INSERT INTO objecten.scenario_locatie_type VALUES (1, 'Scenario locatie', 'scenario_locatie', 3, 6);
+
+DROP TABLE IF EXISTS objecten.scenario_locatie;
+CREATE TABLE objecten.scenario_locatie
+(
+  id               SERIAL PRIMARY KEY NOT NULL,
+  geom             GEOMETRY(POINT, 28992),
+  datum_aangemaakt TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  datum_gewijzigd  TIMESTAMP WITH TIME ZONE,
+  datum_deleted   TIMESTAMP WITH TIME ZONE,
+  locatie          TEXT	NOT NULL,
+  bouwlaag_id 	   INTEGER,
+  object_id        INTEGER,
+  fotografie_id    INTEGER,
+  rotatie          INTEGER DEFAULT 0,
+  CONSTRAINT scenario_locatie_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES objecten.bouwlagen (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT scenario_locatie_object_id_fk FOREIGN KEY (object_id) REFERENCES objecten.object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT scenario_locatie_fk_check CHECK  (bouwlaag_id IS NOT NULL OR object_id IS NOT NULL),
+  CONSTRAINT scenario_locatie_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE INDEX scenario_locatie_gist ON objecten.scenario_locatie (geom);
+COMMENT ON TABLE gevaarlijkestof_opslag IS 'Lokaties waar scenarios kunnen plaatsvinden';
+
+CREATE TRIGGER trg_set_mutatie BEFORE UPDATE ON objecten.scenario_locatie FOR EACH ROW EXECUTE PROCEDURE set_timestamp('datum_gewijzigd');
+CREATE TRIGGER trg_set_insert BEFORE INSERT ON objecten.scenario_locatie FOR EACH ROW EXECUTE PROCEDURE set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_delete BEFORE DELETE ON objecten.scenario_locatie FOR EACH ROW EXECUTE PROCEDURE set_delete_timestamp();
+
+ALTER TABLE objecten.scenario ADD COLUMN scenario_locatie_id INTEGER;
+ALTER TABLE objecten.scenario_type ADD COLUMN file_name TEXT;
+
+--LET OP: bestaande scenario's worden naast het bestaande i-tje geplaatst
+INSERT INTO objecten.scenario_locatie (geom, object_id)
+SELECT ST_Translate(o.geom, 5, 0), object_id FROM objecten.scenario s
+INNER JOIN objecten.object o ON s.object_id = o.id;
+
+UPDATE objecten.scenario SET scenario_locatie_id = sub.id
+FROM
+(SELECT id, object_id FROM objecten.scenario_locatie) sub
+WHERE scenario.object_id = sub.object_id;
+
+ALTER TABLE objecten.scenario ADD CONSTRAINT scenario_locatie_id_fk FOREIGN KEY (scenario_locatie_id) REFERENCES objecten.scenario_locatie (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+DROP TABLE IF EXISTS algemeen.settings;
+CREATE TABLE algemeen.settings (id SERIAL PRIMARY KEY, setting_key VARCHAR(100), setting_value TEXT);
+REVOKE ALL ON TABLE algemeen.settings FROM GROUP oiv_write;
+INSERT INTO algemeen.settings (setting_key, setting_value) VALUES ('scenario_base_url', 'http://localhost/geoserver/');
+
+CREATE OR REPLACE VIEW objecten.object_scenario_locatie
+AS SELECT o.id,
+    o.geom,
+    o.datum_aangemaakt,
+    o.datum_gewijzigd,
+    o.locatie,
+    o.bouwlaag_id,
+    o.object_id,
+    o.fotografie_id,
+    o.rotatie,
+    st.size_object AS size,
+    st.symbol_name,
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject,
+   FROM objecten.scenario_locatie o
+     JOIN objecten.object b ON o.object_id = b.id
+     JOIN objecten.scenario_locatie_type st ON 'Scenario locatie'::text = st.naam
+     JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
+  WHERE o.datum_deleted IS NULL;
+
+CREATE OR REPLACE VIEW objecten.bouwlaag_scenario_locatie
+AS SELECT o.id,
+    o.geom,
+    o.datum_aangemaakt,
+    o.datum_gewijzigd,
+    o.locatie,
+    o.bouwlaag_id,
+    o.object_id,
+    o.fotografie_id,
+    o.rotatie,
+    b.bouwlaag,
+    st.symbol_name,
+    st.size,
+    ''::text AS applicatie,
+   FROM objecten.scenario_locatie o
+     JOIN objecten.bouwlagen b ON o.bouwlaag_id = b.id
+     JOIN objecten.scenario_locatie_type st ON 'Scenario locatie'::text = st.naam
+  WHERE o.datum_deleted IS NULL;
+
+CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.scenario_locatie (geom, locatie, bouwlaag_id, object_id, fotografie_id, rotatie)
+            VALUES (new.geom, new.locatie, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.locatie) d));
+
+            IF bouwlaag_object = 'object'::text THEN
+                size := (SELECT st."size_object" FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag := new.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'INSERT', 'scenario_locatie', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.scenario_locatie WHERE (scenario_locatie.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.locatie) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'scenario_locatie', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, old.fotografie_id, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.scenario_locatie SET geom = new.geom, locatie = new.locatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (scenario_locatie.id = new.id);
+        ELSE
+            
+            symbol_name := (SELECT st.symbol_name FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.locatie) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+                bouwlaag := new.bouwlaag;
+            ELSE
+                size := (SELECT st."size_object" FROM objecten.scenario_locatie_type st WHERE st.naam = 'Scenario locatie'::text);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'scenario_locatie', old.id, new.bouwlaag_id, NEW.object_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'scenario_locatie', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE TRIGGER bouwlaag_scenario_locatie_ins
+    INSTEAD OF INSERT ON objecten.bouwlaag_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_ins('bouwlaag');
+
+CREATE TRIGGER object_scenario_locatie_ins
+    INSTEAD OF INSERT ON objecten.object_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_ins('object');
+
+CREATE TRIGGER bouwlaag_scenario_locatie_del
+    INSTEAD OF DELETE ON objecten.bouwlaag_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_del('bouwlaag');
+
+CREATE TRIGGER object_scenario_locatie_del
+    INSTEAD OF DELETE ON objecten.object_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_del('object');
+
+CREATE TRIGGER bouwlaag_scenario_locatie_upd
+    INSTEAD OF UPDATE ON objecten.bouwlaag_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_upd('bouwlaag');
+
+CREATE TRIGGER object_scenario_locatie_upd
+    INSTEAD OF UPDATE ON objecten.object_scenario_locatie
+    FOR EACH ROW EXECUTE PROCEDURE objecten.func_scenario_locatie_upd('object');
+
+ALTER TABLE objecten.scenario ADD COLUMN file_name TEXT;
+
+CREATE OR REPLACE VIEW objecten.view_scenario_ruimtelijk
+AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
+    d.id,
+    d.scenario_locatie_id,
+    d.omschrijving,
+    d.scenario_type_id,
+    COALESCE(d.file_name, st.file_name) as file_name,
+    o.id AS object_id,
+    o.formelenaam,
+    op.geom,
+    op.locatie,
+    op.rotatie,
+    round(st_x(op.geom)) AS x,
+    round(st_y(op.geom)) AS y,
+    slt.symbol_name,
+    slt.size_object AS size,
+    CONCAT(s.setting_value, COALESCE(d.file_name, st.file_name)) as scenario_url
+   FROM objecten.object o
+     JOIN ( SELECT h.object_id
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  WHERE historie.status::text = 'in gebruik'::text
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+     JOIN objecten.scenario_locatie op ON o.id = op.object_id
+     JOIN objecten.scenario d ON op.id = d.scenario_locatie_id
+     JOIN objecten.scenario_locatie_type slt ON 'Scenario locatie'::text = slt.naam
+     LEFT OUTER JOIN objecten.scenario_type st ON d.scenario_type_id = st.id
+     JOIN algemeen.settings s ON 'scenario_base_url'::text = s.setting_key
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND op.datum_deleted IS NULL AND o.datum_deleted IS NULL AND d.datum_deleted IS NULL;
+
+CREATE OR REPLACE VIEW objecten.view_scenario_bouwlaag
+AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
+    d.id,
+    d.scenario_locatie_id,
+    d.omschrijving,
+    d.scenario_type_id,
+    COALESCE(d.file_name, st.file_name) as file_name,
+    o.id AS object_id,
+    o.formelenaam,
+    op.geom,
+    op.locatie,
+    op.rotatie,
+    round(st_x(op.geom)) AS x,
+    round(st_y(op.geom)) AS y,
+    slt.symbol_name,
+    slt.size_object AS size,
+    CONCAT(s.setting_value, COALESCE(d.file_name, st.file_name)) as scenario_url
+   FROM objecten.object o
+     JOIN ( SELECT h.object_id
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  WHERE historie.status::text = 'in gebruik'::text
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+     JOIN objecten.terrein t ON o.id = t.object_id
+     JOIN objecten.scenario_locatie op ON st_intersects(t.geom, op.geom)
+     JOIN objecten.scenario d ON op.id = d.scenario_locatie_id
+     JOIN objecten.scenario_locatie_type slt ON 'Scenario locatie'::text = slt.naam
+     LEFT OUTER JOIN objecten.scenario_type st ON d.scenario_type_id = st.id
+     JOIN objecten.bouwlagen b ON op.bouwlaag_id = b.id
+     JOIN algemeen.settings s ON 'scenario_base_url'::text = s.setting_key
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND op.datum_deleted IS NULL AND t.datum_deleted IS NULL AND d.datum_deleted IS NULL;
+
+-- update functions if object then size -> size_object
+CREATE OR REPLACE FUNCTION objecten.func_opslag_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.gevaarlijkestof_opslag (geom, locatie, bouwlaag_id, object_id, fotografie_id, rotatie)
+            VALUES (new.geom, new.locatie, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.locatie) d));
+
+            IF bouwlaag_object = 'object'::text THEN
+                size := (SELECT st."size_object" FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag := new.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'INSERT', 'gevaarlijkestof_opslag', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_opslag_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.gevaarlijkestof_opslag WHERE (gevaarlijkestof_opslag.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.locatie) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'gevaarlijkestof_opslag', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, old.fotografie_id, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_opslag_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.gevaarlijkestof_opslag SET geom = new.geom, locatie = new.locatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (gevaarlijkestof_opslag.id = new.id);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.locatie) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT st."size" FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+            ELSE
+                size := (SELECT st."size_object" FROM objecten.gevaarlijkestof_opslag_type st WHERE st.naam = 'Opslag stoffen'::text);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'gevaarlijkestof_opslag', old.id, new.bouwlaag_id, NEW.object_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'gevaarlijkestof_opslag', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_label_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.label (geom, soort, omschrijving, rotatie, bouwlaag_id, object_id)
+            VALUES (new.geom, new.soort, new.omschrijving, new.rotatie, new.bouwlaag_id, new.object_id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.omschrijving) d));
+
+            IF bouwlaag_object = 'object'::text THEN
+                size := (SELECT dt."size_object" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT dt."size" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag := new.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, accepted)
+            VALUES (new.geom, jsonstring, 'INSERT', 'label', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_label_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.label WHERE (label.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'label', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_label_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.label SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, rotatie = new.rotatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id
+            WHERE (label.id = new.id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.omschrijving) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT dt."size" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            ELSE
+                size := (SELECT dt."size_object" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'label', old.id, new.bouwlaag_id, NEW.object_id, NEW.rotatie, size, symbol_name, bouwlaag, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'label', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_dreiging_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.dreiging (geom, dreiging_type_id, label, rotatie, bouwlaag_id, object_id, fotografie_id)
+            VALUES (new.geom, new.dreiging_type_id, new.label, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.omschrijving) d));
+
+            IF bouwlaag_object = 'object'::text THEN
+                size := (SELECT dt."size_object" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT dt."size" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag := new.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'INSERT', 'dreiging', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_dreiging_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.dreiging WHERE (dreiging.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.omschrijving) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'dreiging', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, old.fotografie_id, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_dreiging_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.dreiging SET geom = new.geom, dreiging_type_id = new.dreiging_type_id, rotatie = new.rotatie, label = new.label, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (dreiging.id = new.id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.omschrijving) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT dt."size" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            ELSE
+                size := (SELECT dt."size_object" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'dreiging', old.id, new.bouwlaag_id, new.object_id, NEW.rotatie, size, symbol_name, bouwlaag , new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'dreiging', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_ingang_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.ingang (geom, ingang_type_id, label, rotatie, belemmering, voorzieningen, bouwlaag_id, object_id, fotografie_id)
+            VALUES (new.geom, new.ingang_type_id, new.label, new.rotatie, new.belemmering, new.voorzieningen, new.bouwlaag_id, new.object_id, new.fotografie_id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.belemmering, new.voorzieningen) d));
+
+            IF bouwlaag_object = 'object'::text THEN
+                size := (SELECT dt."size_object" FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT dt."size" FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag := new.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'INSERT', 'ingang', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_ingang_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.ingang WHERE (ingang.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.belemmering, old.voorzieningen) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'ingang', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, old.fotografie_id, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_ingang_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.ingang SET geom = new.geom, ingang_type_id = new.ingang_type_id, rotatie = new.rotatie, label = new.label, belemmering = new.belemmering, voorzieningen = new.voorzieningen, 
+                    bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (ingang.id = new.id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.belemmering, new.voorzieningen) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT dt."size" FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+                bouwlaag := new.bouwlaag;
+            ELSE
+                size := (SELECT dt."size_object" FROM objecten.ingang_type dt WHERE dt.id = new.ingang_type_id);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'ingang', old.id, new.bouwlaag_id, new.object_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'ingang', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_ins()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        ingangid integer;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN
+        IF NEW.applicatie = 'OIV' THEN
+            INSERT INTO objecten.sleutelkluis (geom, sleutelkluis_type_id, label, rotatie, aanduiding_locatie, sleuteldoel_type_id, ingang_id, fotografie_id)
+            VALUES (new.geom, new.sleutelkluis_type_id, new.label, new.rotatie, new.aanduiding_locatie, new.sleuteldoel_type_id, new.ingang_id, new.fotografie_id);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.aanduiding_locatie, new.sleuteldoel_type_id) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+                ingangid := (SELECT i.ingang_id FROM (SELECT i.id AS ingang_id, b.geom <-> new.geom AS dist FROM objecten.ingang i
+                                INNER JOIN objecten.bouwlagen b ON i.bouwlaag_id = b.id WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) i);
+                bouwlaag = new.bouwlaag;
+            ELSEIF bouwlaag_object = 'object'::text THEN
+                size := (SELECT st."size_object" FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+                ingangid := (SELECT b.ingang_id FROM (SELECT b.id AS ingang_id, b.geom <-> new.geom AS dist FROM objecten.ingang b ORDER BY dist LIMIT 1) b);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, row_to_json(NEW.*), 'INSERT', 'sleutelkluis', NULL, ingangid, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_del()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF OLD.applicatie = 'OIV' THEN 
+            DELETE FROM objecten.sleutelkluis WHERE (sleutelkluis.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.aanduiding_locatie, old.sleuteldoel_type_id) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'sleutelkluis', OLD.id, OLD.ingang_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, OLD.fotografie_id, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $$;
+
+CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_upd()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS 
+    $$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.ingang SET geom = new.geom, ingang_type_id = new.ingang_type_id, rotatie = new.rotatie, label = new.label, belemmering = new.belemmering, voorzieningen = new.voorzieningen, 
+                    bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (ingang.id = new.id);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.aanduiding_locatie, new.sleuteldoel_type_id) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+                bouwlaag := new.bouwlaag;
+            ELSE
+                size := (SELECT st."size_object" FROM objecten.sleutelkluis_type st WHERE st.id = new.sleutelkluis_type_id);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'sleutelkluis', old.id, new.ingang_id, NEW.rotatie, size, symbol_name, bouwlaag, new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'sleutelkluis', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $$;
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 3;
 UPDATE algemeen.applicatie SET revisie = 9;
