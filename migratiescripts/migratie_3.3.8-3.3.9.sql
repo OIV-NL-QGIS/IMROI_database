@@ -2150,8 +2150,8 @@ CREATE TABLE objecten.scenario_locatie
   geom             GEOMETRY(POINT, 28992),
   datum_aangemaakt TIMESTAMP WITH TIME ZONE DEFAULT now(),
   datum_gewijzigd  TIMESTAMP WITH TIME ZONE,
-  datum_deleted   TIMESTAMP WITH TIME ZONE,
-  locatie          TEXT	NOT NULL,
+  datum_deleted    TIMESTAMP WITH TIME ZONE,
+  locatie          TEXT,
   bouwlaag_id 	   INTEGER,
   object_id        INTEGER,
   fotografie_id    INTEGER,
@@ -2183,6 +2183,8 @@ FROM
 WHERE scenario.object_id = sub.object_id;
 
 ALTER TABLE objecten.scenario ADD CONSTRAINT scenario_locatie_id_fk FOREIGN KEY (scenario_locatie_id) REFERENCES objecten.scenario_locatie (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE objecten.scenario DROP COLUMN object_id;
 
 DROP TABLE IF EXISTS algemeen.settings;
 CREATE TABLE algemeen.settings (id SERIAL PRIMARY KEY, setting_key VARCHAR(100), setting_value TEXT);
