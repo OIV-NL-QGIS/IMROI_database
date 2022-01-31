@@ -664,6 +664,7 @@ AS SELECT l.id,
                     GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
    WHERE l.datum_deleted IS NULL;
 
+DROP VIEW objecten.object_bgt;
 CREATE OR REPLACE VIEW objecten.object_bgt
 AS SELECT b.id,
     b.geom,
@@ -682,7 +683,7 @@ AS SELECT b.id,
     b.bodemgesteldheid_type_id,
     part.typeobject
    FROM objecten.object b
-     JOIN ( SELECT h.object_id, h.typeobject
+     LEFT JOIN ( SELECT h.object_id, h.typeobject
            FROM objecten.historie h
              JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
                     FROM objecten.historie
@@ -859,7 +860,7 @@ AS SELECT b.id,
     b.max_bouwlaag,
     part.typeobject
    FROM objecten.object b
-    JOIN ( SELECT h.object_id, h.typeobject
+    LEFT JOIN ( SELECT h.object_id, h.typeobject
           FROM objecten.historie h
             JOIN ( SELECT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime
                   FROM objecten.historie
@@ -2206,7 +2207,7 @@ AS SELECT o.id,
     ''::text AS applicatie,
     b.datum_geldig_vanaf,
     b.datum_geldig_tot,
-    part.typeobject,
+    part.typeobject
    FROM objecten.scenario_locatie o
      JOIN objecten.object b ON o.object_id = b.id
      JOIN objecten.scenario_locatie_type st ON 'Scenario locatie'::text = st.naam
@@ -2232,7 +2233,7 @@ AS SELECT o.id,
     b.bouwlaag,
     st.symbol_name,
     st.size,
-    ''::text AS applicatie,
+    ''::text AS applicatie
    FROM objecten.scenario_locatie o
      JOIN objecten.bouwlagen b ON o.bouwlaag_id = b.id
      JOIN objecten.scenario_locatie_type st ON 'Scenario locatie'::text = st.naam
