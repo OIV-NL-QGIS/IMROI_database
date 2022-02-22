@@ -310,8 +310,10 @@ CREATE OR REPLACE VIEW bluswater.rapport_inspectie_vandaag_gemeente AS
 -- Alternatieve bluswatervoorzieningen
 CREATE TABLE alternatieve_type
 (
-  id 			SMALLINT PRIMARY KEY NOT NULL,
-  naam		 	VARCHAR(25)
+  id 			    SMALLINT PRIMARY KEY NOT NULL,
+  naam		 	  VARCHAR(25),
+  symbol_name text,
+  size        integer
 );
 COMMENT ON TABLE alternatieve_type IS 'Opzoeklijst voor alternatieve bluswatervoorzieningen';
 

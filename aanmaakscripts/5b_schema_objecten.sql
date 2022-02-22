@@ -821,6 +821,38 @@ CREATE INDEX grid_geom_gist
   ON grid
 USING GIST(geom);
 
+CREATE TABLE points_of_interest_type
+(
+  id smallint NOT NULL,
+  naam text,
+  symbol_name text,
+  size integer,
+  CONSTRAINT points_of_interest_type_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE points_of_interest
+(
+  id serial NOT NULL,
+  geom geometry(Point,28992),
+  datum_aangemaakt timestamp without time zone DEFAULT now(),
+  datum_gewijzigd timestamp without time zone,
+  points_of_interest_type_id integer,
+  label text,
+  object_id integer,
+  rotatie integer DEFAULT 0,
+  fotografie_id integer,
+  bijzonderheid text,
+  CONSTRAINT points_of_interest_pkey PRIMARY KEY (id),
+  CONSTRAINT points_of_interest_fotografie_id_fk FOREIGN KEY (fotografie_id)
+      REFERENCES algemeen.fotografie (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT points_of_interest_object_id_fk FOREIGN KEY (object_id)
+      REFERENCES objecten.object (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT points_of_interest_type_id_fk FOREIGN KEY (points_of_interest_type_id)
+      REFERENCES objecten.points_of_interest_type (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 -- Restricties voor opzoektabellen
 REVOKE ALL ON TABLE aanwezig_type FROM GROUP oiv_write;
 REVOKE ALL ON TABLE gevaarlijkestof_vnnr FROM GROUP oiv_write;

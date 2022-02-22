@@ -1587,6 +1587,81 @@ CREATE OR REPLACE RULE object_grid_ins AS
     (SELECT datum_geldig_tot FROM object o WHERE o.id = grid.object_id),
     (SELECT typeobject FROM historie o WHERE o.object_id = grid.object_id LIMIT 1);
 
+CREATE OR REPLACE VIEW object_points_of_interest AS 
+ SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.points_of_interest_type_id,
+    b.label,
+    b.object_id,
+    b.rotatie,
+    b.fotografie_id,
+    b.bijzonderheid,
+    o.formelenaam,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    o.typeobject,
+    vt.symbol_name,
+    vt.size
+   FROM points_of_interest b
+     JOIN ( SELECT object.formelenaam,
+            object.datum_geldig_vanaf,
+            object.datum_geldig_tot,
+            object.id,
+            historie.typeobject
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))) o ON b.object_id = o.id
+     JOIN points_of_interest_type vt ON b.points_of_interest_type_id = vt.id;
+
+CREATE OR REPLACE RULE points_of_interest_del AS
+    ON DELETE TO objecten.object_points_of_interest DO INSTEAD  DELETE FROM points_of_interest
+  WHERE points_of_interest.id = old.id;
+
+CREATE OR REPLACE RULE points_of_interest_ins AS
+    ON INSERT TO objecten.object_points_of_interest DO INSTEAD  INSERT INTO points_of_interest (geom, points_of_interest_type_id, label, bijzonderheid, rotatie, object_id, fotografie_id)
+  VALUES (new.geom, new.points_of_interest_type_id, new.label, new.bijzonderheid, new.rotatie, new.object_id, new.fotografie_id)
+  RETURNING points_of_interest.id,
+    points_of_interest.geom,
+    points_of_interest.datum_aangemaakt,
+    points_of_interest.datum_gewijzigd,
+    points_of_interest.points_of_interest_type_id,
+    points_of_interest.label,
+    points_of_interest.object_id,
+    points_of_interest.rotatie,
+    points_of_interest.fotografie_id,
+    points_of_interest.bijzonderheid,
+    ( SELECT o.formelenaam
+           FROM objecten.object o
+          WHERE o.id = points_of_interest.object_id) AS formelenaam,
+    ( SELECT o.datum_geldig_vanaf
+           FROM objecten.object o
+          WHERE o.id = points_of_interest.object_id) AS datum_geldig_vanaf,
+    ( SELECT o.datum_geldig_tot
+           FROM objecten.object o
+          WHERE o.id = points_of_interest.object_id) AS datum_geldig_tot,
+    ( SELECT o.typeobject
+           FROM objecten.historie o
+          WHERE o.object_id = points_of_interest.object_id
+         LIMIT 1) AS typeobject,
+    ( SELECT st.symbol_name
+           FROM objecten.points_of_interest_type st
+          WHERE st.id = points_of_interest.points_of_interest_type_id) AS symbol_name,
+    ( SELECT st.size
+           FROM objecten.points_of_interest_type st
+          WHERE st.id = points_of_interest.points_of_interest_type_id) AS size;
+
+CREATE OR REPLACE RULE points_of_interest_upd AS
+    ON UPDATE TO objecten.object_points_of_interest DO INSTEAD  UPDATE points_of_interest SET geom = new.geom, points_of_interest_type_id = new.points_of_interest_type_id, 
+        rotatie = new.rotatie, bijzonderheid = new.bijzonderheid, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+  WHERE points_of_interest.id = new.id;
+
+
+
 REVOKE ALL ON TABLE stavaza_status_gemeente FROM GROUP oiv_write;
 REVOKE ALL ON TABLE stavaza_update_gemeente FROM GROUP oiv_write;
 REVOKE ALL ON TABLE veiligh_bouwk_types     FROM GROUP oiv_write;
