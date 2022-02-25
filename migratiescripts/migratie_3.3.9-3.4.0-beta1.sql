@@ -1,7 +1,7 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
-UPDATE objecten.sleutelkuis_type SET naam = 'Sleutelkuis Havenbedrijf', symbol_name = 'sleutelkluis_havenbedrijf'
+UPDATE objecten.sleutelkluis_type SET naam = 'Sleutelkluis Havenbedrijf', symbol_name = 'sleutelkluis_havenbedrijf'
 WHERE id = 10;
 
 UPDATE bluswater.alternatieve_type SET naam = 'Voorziening defect', symbol_name = 'bluswater_defect'
