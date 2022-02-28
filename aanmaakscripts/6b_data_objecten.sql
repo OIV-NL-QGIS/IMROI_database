@@ -144,6 +144,7 @@ INSERT INTO ingang_type VALUES (173, 'Trap rond', 'trap_rond', 5);
 INSERT INTO ingang_type VALUES (1011, 'Nooduitgang', 'nooduitgang', 5);
 INSERT INTO ingang_type VALUES (1012, 'Toegang spoor', 'toegang_spoor', 4);
 INSERT INTO ingang_type VALUES (1013, 'Gedeelde neveningang', 'gedeelde_neveningang', 4);
+INSERT INTO ingang_type VALUES (301, 'Inrijpunt', 'N19P02', 6);
 
 INSERT INTO gebruiksfunctie_type (id, naam, omschrijving) VALUES (1, 'brug', '');
 INSERT INTO gebruiksfunctie_type (id, naam, omschrijving) VALUES (2, 'gemaal', '');
@@ -248,6 +249,14 @@ INSERT INTO veiligh_ruimtelijk_type VALUES (210, 'kleedkamer', 'evenement', 'kle
 INSERT INTO veiligh_ruimtelijk_type VALUES (211, 'vuurwerkafsteekplaats', 'evenement', 'vuurwerkafsteekplaats', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (212, 'restaurant', 'evenement', 'restaurant', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (213, 'tijdelijke wegafsluiting', 'evenement', 'tijdelijke_wegafsluiting', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2002, 'Wegafsluiting', '', 'N19P13', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2003, 'Wegafsluiting, passeerbaar', '', 'N19P14', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2001, 'Passeerplaats', '', 'N19P11', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2004, 'Zwaartepunt', '', 'N19P27', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2006, 'Heli landplaats', '', 'N19P30', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2007, 'Heli land verbod', '', 'N19P31', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2005, 'Overdrachtsplaats', '', 'N19P28', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (2008, 'Vuurhaard', '', 'N19P32', 6);
 
 INSERT INTO veiligh_install_type VALUES (7, 'Afsluiter CV', 'afsluiter_cv', 4);
 INSERT INTO veiligh_install_type VALUES (8, 'Afsluiter elektra', 'afsluiter_elektra', 4);
@@ -360,6 +369,27 @@ INSERT INTO dreiging_type VALUES (206, 'Accuut gevaar - GHS', 'accuut_gevaar_ghs
 INSERT INTO dreiging_type VALUES (207, 'Gassen onder druk - GHS', 'gassen_onder_druk_ghs', 4);
 INSERT INTO dreiging_type VALUES (208, 'Gevaar voor milieu - GHS', 'gevaar_aquatisch_milieu_ghs', 4);
 INSERT INTO dreiging_type VALUES (209, 'Gevaar gezondheid - GHS', 'gevaar_gezondheid_ghs', 4);
+INSERT INTO dreiging_type (id, naam, symbol_name, size) VALUES (301, 'Gastank', 'N19P18', 6);
+
+INSERT INTO points_of_interest_type (id, naam, symbol_name, size) VALUES 
+     (1,'ANWB Paddenstoel','N19P01',6)
+    ,(3,'Bungalowpark','N19P03',6)
+    ,(4,'Camping','N19P04',6)
+    ,(5,'Hotel','N19P05',6)
+    ,(6,'Mountainbike route','N19P06',6)
+    ,(7,'Restaurant','N19P07',6)
+    ,(8,'Rustplaats','N19P08',6)
+    ,(9,'Zittafel','N19P09',6)
+    ,(10,'Wildrooster','N19P10',6)
+    ,(12,'Ecoduct','N19P12',6)
+    ,(15,'Uitzichtpunt','N19P15',6)
+    ,(16,'Strandpaal, paal','N19P16',6)
+    ,(17,'Zendmast','N19P17',6)
+    ,(23,'Object vitale infrastructuur','N19P23',6)
+    ,(24,'Solitair bouwwerk','N19P24',6)
+    ,(25,'Solitair bouwwerk, risicogevend','N19P25',6)
+    ,(26,'Solitair bouwwerk, risico-ontvangend','N19P26',6)
+    ,(29,'Bivakplaats defensie','N19P29',6);
 
 -- Insert data in de tabel gevaarlijkestof_vnnr
 INSERT INTO gevaarlijkestof_vnnr (id, vn_nr, gevi_nr, eric_kaart) VALUES (1, '102', '', '1-02');
