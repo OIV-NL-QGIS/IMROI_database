@@ -1,6 +1,13 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+ALTER TABLE objecten.bouwlagen ADD COLUMN IF NOT EXISTS fotografie_id integer;
+
+ALTER TABLE objecten.bouwlagen DROP CONSTRAINT IF EXISTS bouwlagen_fotografie_id_fk;
+ALTER TABLE objecten.bouwlagen ADD CONSTRAINT bouwlagen_fotografie_id_fk FOREIGN KEY (fotografie_id)
+      REFERENCES algemeen.fotografie (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
 DROP VIEW IF EXISTS objecten.bouwlaag_bouwlagen;
 CREATE OR REPLACE VIEW objecten.bouwlaag_bouwlagen
 AS SELECT *
@@ -14,20 +21,13 @@ CREATE RULE bouwlagen_del AS
 CREATE RULE bouwlagen_upd AS
     ON UPDATE TO objecten.bouwlaag_bouwlagen DO INSTEAD  
       UPDATE objecten.bouwlagen 
-        SET geom = new.geom, bouwlaag = new.bouwlaag, bouwdeel = new.bouwdeel, pand_id = new.pand_id
+        SET geom = new.geom, bouwlaag = new.bouwlaag, bouwdeel = new.bouwdeel, pand_id = new.pand_id, fotografie_id = new.fotografie_id
   WHERE (bouwlagen.id = new.id);
-  
+
 CREATE RULE bouwlagen_ins AS
-    ON INSERT TO objecten.bouwlaag_bouwlagen DO INSTEAD  INSERT INTO objecten.bouwlagen (geom, bouwlaag, bouwdeel, pand_id)
-  VALUES (new.geom, new.bouwlaag, new.bouwdeel, new.pand_id)
-  RETURNING bouwlagen.id,
-    bouwlagen.geom,
-    bouwlagen.datum_aangemaakt,
-    bouwlagen.datum_gewijzigd,
-    bouwlagen.bouwlaag,
-    bouwlagen.bouwdeel,
-    bouwlagen.pand_id,
-    bouwlagen.datum_deleted;
+    ON INSERT TO objecten.bouwlaag_bouwlagen DO INSTEAD  INSERT INTO objecten.bouwlagen (geom, bouwlaag, bouwdeel, pand_id, fotografie_id)
+  VALUES (new.geom, new.bouwlaag, new.bouwdeel, new.pand_id, new.fotografie_id)
+  RETURNING *;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 4;
