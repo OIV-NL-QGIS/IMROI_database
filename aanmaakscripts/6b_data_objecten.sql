@@ -51,8 +51,9 @@ INSERT INTO opstelplaats_type VALUES (2, 'Redvoertuig', 'opstelplaats_redvoertui
 INSERT INTO opstelplaats_type VALUES (3, 'Autoladder', 'opstelplaats_autoladder', 25);
 INSERT INTO opstelplaats_type VALUES (4, 'WTS', 'opstelplaats_wts', 25);
 INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', 'opstelplaats_sb', 25);
-INSERT INTO opstelplaats_type VALUES (6, 'UGS', '', 25);
+INSERT INTO opstelplaats_type VALUES (6, 'UGS', 'ugs', 12);
 INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', 'boot_te_water_laat_plaats', 25);
+INSERT INTO opstelplaats_type VALUES (8, 'CoPI', 'copi', 15);
 
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
@@ -156,7 +157,7 @@ INSERT INTO ingang_type VALUES (173, 'Trap rond', 'trap_rond', 5);
 INSERT INTO ingang_type VALUES (1011, 'Nooduitgang', 'nooduitgang', 5);
 INSERT INTO ingang_type VALUES (1012, 'Toegang spoor', 'toegang_spoor', 4);
 INSERT INTO ingang_type VALUES (1013, 'Gedeelde neveningang', 'gedeelde_neveningang', 4);
-INSERT INTO ingang_type VALUES (301, 'Inrijpunt', 'N19P02', 6);
+INSERT INTO ingang_type VALUES (301, 'Inrijpunt', 'N19P02', 12);
 
 INSERT INTO gebruiksfunctie_type (id, naam, omschrijving) VALUES (1, 'brug', '');
 INSERT INTO gebruiksfunctie_type (id, naam, omschrijving) VALUES (2, 'gemaal', '');
@@ -401,7 +402,7 @@ INSERT INTO points_of_interest_type (id, naam, symbol_name, size) VALUES
     ,(24,'Solitair bouwwerk','N19P24',6)
     ,(25,'Solitair bouwwerk, risicogevend','N19P25',6)
     ,(26,'Solitair bouwwerk, risico-ontvangend','N19P26',6)
-    ,(29,'Bivakplaats defensie','N19P29',6);
+    ,(29,'Bivakplaats defensie','N19P29',12);
 
 INSERT INTO gebiedsgerichte_aanpak_type (id, naam) VALUES
 	 (1, 'Beheer bos: 100%')

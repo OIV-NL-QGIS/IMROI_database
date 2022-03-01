@@ -10,14 +10,34 @@ CREATE OR REPLACE VIEW view_bereikbaarheid AS
          ) o 
   ON b.object_id = o.id;
 
-CREATE OR REPLACE VIEW view_opstelplaats AS
-  SELECT b.*, o.formelenaam, ROUND(ST_X(b.geom)) AS X, ROUND(ST_Y(b.geom)) AS Y FROM opstelplaats b
-  INNER JOIN (
-        SELECT formelenaam, object.id FROM object
-        LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = object.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-        WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-         ) o 
-  ON b.object_id = o.id;
+DROP VIEW IF EXISTS objecten.view_opstelplaats;
+CREATE OR REPLACE VIEW objecten.view_opstelplaats
+AS SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.rotatie,
+    b.object_id,
+    b.fotografie_id,
+    b.label,
+    b.soort,
+    o.formelenaam,
+    round(st_x(b.geom)) AS x,
+    round(st_y(b.geom)) AS y,
+    vt.symbol_name,
+    vt.size
+   FROM objecten.opstelplaats b
+     JOIN objecten.opstelplaats_type vt ON b.soort = vt.naam
+     JOIN ( SELECT object.formelenaam,
+            object.id
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+          WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id;
+
 
 CREATE OR REPLACE VIEW view_sectoren AS
   SELECT b.*, o.formelenaam FROM sectoren b
@@ -50,8 +70,8 @@ CREATE OR REPLACE VIEW view_isolijnen AS
                 (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND 
                 (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id;
 
-CREATE OR REPLACE VIEW view_veiligh_ruimtelijk AS 
- SELECT b.id,
+CREATE OR REPLACE VIEW objecten.view_veiligh_ruimtelijk
+AS SELECT b.id,
     b.geom,
     b.datum_aangemaakt,
     b.datum_gewijzigd,
@@ -64,21 +84,22 @@ CREATE OR REPLACE VIEW view_veiligh_ruimtelijk AS
     o.formelenaam,
     round(st_x(b.geom)) AS x,
     round(st_y(b.geom)) AS y,
-    vt.symbol_name
-   FROM veiligh_ruimtelijk b
+    vt.symbol_name,
+    vt.size
+   FROM objecten.veiligh_ruimtelijk b
      JOIN ( SELECT object.formelenaam,
             object.id
-           FROM object
-             LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
-                   FROM historie historie_1
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))
           WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id
-     JOIN veiligh_ruimtelijk_type vt ON b.veiligh_ruimtelijk_type_id = vt.id;
+     JOIN objecten.veiligh_ruimtelijk_type vt ON b.veiligh_ruimtelijk_type_id = vt.id;
 
-CREATE OR REPLACE VIEW view_ingang_ruimtelijk AS 
- SELECT b.id,
+CREATE OR REPLACE VIEW objecten.view_ingang_ruimtelijk
+AS SELECT b.id,
     b.geom,
     b.datum_aangemaakt,
     b.datum_gewijzigd,
@@ -94,18 +115,19 @@ CREATE OR REPLACE VIEW view_ingang_ruimtelijk AS
     o.formelenaam,
     round(st_x(b.geom)) AS x,
     round(st_y(b.geom)) AS y,
-    vt.symbol_name 
-   FROM ingang b
+    vt.symbol_name,
+    vt.size
+   FROM objecten.ingang b
      JOIN ( SELECT object.formelenaam,
             object.id
-           FROM object
-             LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
-                   FROM historie historie_1
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))
           WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id
-     JOIN ingang_type vt ON b.ingang_type_id = vt.id;
+     JOIN objecten.ingang_type vt ON b.ingang_type_id = vt.id;
 
 CREATE OR REPLACE VIEW view_label_ruimtelijk AS
   SELECT b.*, o.formelenaam, ROUND(ST_X(b.geom)) AS X, ROUND(ST_Y(b.geom)) AS Y FROM label b
@@ -116,8 +138,8 @@ CREATE OR REPLACE VIEW view_label_ruimtelijk AS
          ) o 
   ON b.object_id = o.id;
 
-CREATE OR REPLACE VIEW view_dreiging_ruimtelijk AS 
- SELECT b.id,
+CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk
+AS SELECT b.id,
     b.geom,
     b.datum_aangemaakt,
     b.datum_gewijzigd,
@@ -131,33 +153,56 @@ CREATE OR REPLACE VIEW view_dreiging_ruimtelijk AS
     o.formelenaam,
     round(st_x(b.geom)) AS x,
     round(st_y(b.geom)) AS y,
-    vt.symbol_name
-   FROM dreiging b
+    vt.symbol_name,
+    vt.size
+   FROM objecten.dreiging b
      JOIN ( SELECT object.formelenaam,
             object.id
-           FROM object
-             LEFT JOIN historie ON historie.id = (( SELECT historie_1.id
-                   FROM historie historie_1
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
                   WHERE historie_1.object_id = object.id
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))
           WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id
-     JOIN dreiging_type vt ON b.dreiging_type_id = vt.id;
+     JOIN objecten.dreiging_type vt ON b.dreiging_type_id = vt.id;
 		
-CREATE OR REPLACE VIEW view_sleutelkluis_ruimtelijk AS
-SELECT s.*, st.naam AS type, sd.naam AS doel, part.formelenaam, part.object_id, ROUND(ST_X(s.geom)) AS X, ROUND(ST_Y(s.geom)) AS Y FROM sleutelkluis s
-INNER JOIN
-  (
-  SELECT b.id AS ingang_id, b.object_id, o.formelenaam FROM ingang b
-  INNER JOIN (
-        SELECT formelenaam, object.id FROM object
-        LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = object.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-        WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-         ) o 
-  ON b.object_id = o.id
-  ) part ON s.ingang_id = part.ingang_id
-  LEFT JOIN sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
-  LEFT JOIN sleuteldoel_type sd  ON s.sleuteldoel_type_id = sd.id;
+CREATE OR REPLACE VIEW objecten.view_sleutelkluis_ruimtelijk
+AS SELECT s.id,
+    s.geom,
+    s.datum_aangemaakt,
+    s.datum_gewijzigd,
+    s.sleutelkluis_type_id,
+    s.rotatie,
+    s.label,
+    s.aanduiding_locatie,
+    s.sleuteldoel_type_id,
+    s.ingang_id,
+    s.fotografie_id,
+    st.naam AS type,
+    sd.naam AS doel,
+    part.formelenaam,
+    part.object_id,
+    round(st_x(s.geom)) AS x,
+    round(st_y(s.geom)) AS y,
+    st.symbol_name,
+    st.size
+   FROM objecten.sleutelkluis s
+     JOIN ( SELECT b.id AS ingang_id,
+            b.object_id,
+            o.formelenaam
+           FROM objecten.ingang b
+             JOIN ( SELECT object.formelenaam,
+                    object.id
+                   FROM objecten.object
+                     LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                           FROM objecten.historie historie_1
+                          WHERE historie_1.object_id = object.id
+                          ORDER BY historie_1.datum_aangemaakt DESC
+                         LIMIT 1))
+                  WHERE historie.status::text = 'in gebruik'::text AND (object.datum_geldig_vanaf <= now() OR object.datum_geldig_vanaf IS NULL) AND (object.datum_geldig_tot > now() OR object.datum_geldig_tot IS NULL)) o ON b.object_id = o.id) part ON s.ingang_id = part.ingang_id
+     LEFT JOIN objecten.sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
+     LEFT JOIN objecten.sleuteldoel_type sd ON s.sleuteldoel_type_id = sd.id;
 
 CREATE OR REPLACE VIEW view_gevaarlijkestof_ruimtelijk AS
 SELECT s.*, vn.vn_nr, vn.gevi_nr, vn.eric_kaart, part.geom, part.formelenaam, part.rotatie, ROUND(ST_X(part.geom)) AS X, ROUND(ST_Y(part.geom)) AS Y, part.object_id FROM gevaarlijkestof s
@@ -826,18 +871,41 @@ INNER JOIN (
 ON ST_INTERSECTS(l.geom, part.geovlak);
 
 -- create view installatietechnische veiligheidsvoorzieningen, icm formelenaam object van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_veiligh_install AS
-SELECT v.*, t.naam AS soort, part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(v.geom)) AS X, ROUND(ST_Y(v.geom)) AS Y FROM veiligh_install v
-INNER JOIN veiligh_install_type t ON v.veiligh_install_type_id = t.id
-INNER JOIN bouwlagen b ON v.bouwlaag_id = b.id
-INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
-    LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-    LEFT JOIN terrein t on o.id = t.object_id
-    WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-    GROUP BY formelenaam, o.id
-    ) part
-ON ST_INTERSECTS(v.geom, part.geovlak);
+CREATE OR REPLACE VIEW objecten.view_veiligh_install
+AS SELECT v.id,
+    v.geom,
+    v.datum_aangemaakt,
+    v.datum_gewijzigd,
+    v.veiligh_install_type_id,
+    v.label,
+    v.bouwlaag_id,
+    v.rotatie,
+    v.fotografie_id,
+    v.bijzonderheid,
+    t.naam AS soort,
+    part.formelenaam,
+    part.object_id,
+    b.bouwlaag,
+    b.bouwdeel,
+    round(st_x(v.geom)) AS x,
+    round(st_y(v.geom)) AS y,
+    t.symbol_name,
+    t.size
+   FROM objecten.veiligh_install v
+     JOIN objecten.veiligh_install_type t ON v.veiligh_install_type_id = t.id
+     JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+     JOIN ( SELECT DISTINCT o.formelenaam,
+            o.id AS object_id,
+            st_multi(st_union(t_1.geom))::geometry(MultiPolygon,28992) AS geovlak
+           FROM objecten.object o
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = o.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+             LEFT JOIN objecten.terrein t_1 ON o.id = t_1.object_id
+          WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+          GROUP BY o.formelenaam, o.id) part ON st_intersects(v.geom, part.geovlak);
 
 -- view van gevaarlijkestoffen locatie met gevaarlijke stoffen gecombineerd met formelenaam van alle objecten die de status hebben "in gebruik"
 CREATE OR REPLACE VIEW view_gevaarlijkestof_bouwlaag AS 
@@ -892,63 +960,167 @@ INNER JOIN gevaarlijkestof_schade_cirkel gsc ON g.id = gevaarlijkestof_id
 LEFT JOIN gevaarlijkestof_vnnr vnnr ON g.gevaarlijkestof_vnnr_id = vnnr.id;
 
 -- create view dreiging bouwlaag, icm formelenaam object van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_dreiging_bouwlaag AS
-SELECT d.id, d.geom, d.datum_aangemaakt, d.datum_gewijzigd, d.dreiging_type_id, d.rotatie, d.label, d.bouwlaag_id, d.fotografie_id, t.naam AS soort, part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(d.geom)) AS X, ROUND(ST_Y(d.geom)) AS Y, t.symbol_name FROM dreiging d
-INNER JOIN dreiging_type t ON d.dreiging_type_id = t.id
-INNER JOIN bouwlagen b ON d.bouwlaag_id = b.id
-INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
-    LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-    LEFT JOIN terrein t on o.id = t.object_id
-    WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-    GROUP BY formelenaam, o.id
-    ) part
-ON ST_INTERSECTS(d.geom, part.geovlak);
+CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag
+AS SELECT d.id,
+    d.geom,
+    d.datum_aangemaakt,
+    d.datum_gewijzigd,
+    d.dreiging_type_id,
+    d.rotatie,
+    d.label,
+    d.bouwlaag_id,
+    d.fotografie_id,
+    t.naam AS soort,
+    part.formelenaam,
+    part.object_id,
+    b.bouwlaag,
+    b.bouwdeel,
+    round(st_x(d.geom)) AS x,
+    round(st_y(d.geom)) AS y,
+    t.symbol_name,
+    t.size
+   FROM objecten.dreiging d
+     JOIN objecten.dreiging_type t ON d.dreiging_type_id = t.id
+     JOIN objecten.bouwlagen b ON d.bouwlaag_id = b.id
+     JOIN ( SELECT DISTINCT o.formelenaam,
+            o.id AS object_id,
+            st_multi(st_union(t_1.geom))::geometry(MultiPolygon,28992) AS geovlak
+           FROM objecten.object o
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = o.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+             LEFT JOIN objecten.terrein t_1 ON o.id = t_1.object_id
+          WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+          GROUP BY o.formelenaam, o.id) part ON st_intersects(d.geom, part.geovlak);
 
 -- create view ingang bouwlaag, icm formelenaam object van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_ingang_bouwlaag AS
-SELECT i.id, i.geom, i.datum_aangemaakt, i.datum_gewijzigd, i.ingang_type_id, i.rotatie, i.label, i.bouwlaag_id, i.fotografie_id, t.naam AS soort, 
-    part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(i.geom)) AS X, ROUND(ST_Y(i.geom)) AS Y, t.symbol_name FROM ingang i 
-INNER JOIN ingang_type t ON i.ingang_type_id = t.id
-INNER JOIN bouwlagen b ON i.bouwlaag_id = b.id
-INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
-    LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-    LEFT JOIN terrein t on o.id = t.object_id
-    WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-    GROUP BY formelenaam, o.id
-    ) part
-ON ST_INTERSECTS(i.geom, part.geovlak);
+CREATE OR REPLACE VIEW objecten.view_ingang_bouwlaag
+AS SELECT i.id,
+    i.geom,
+    i.datum_aangemaakt,
+    i.datum_gewijzigd,
+    i.ingang_type_id,
+    i.rotatie,
+    i.label,
+    i.bouwlaag_id,
+    i.fotografie_id,
+    t.naam AS soort,
+    part.formelenaam,
+    part.object_id,
+    b.bouwlaag,
+    b.bouwdeel,
+    round(st_x(i.geom)) AS x,
+    round(st_y(i.geom)) AS y,
+    t.symbol_name,
+    t.size
+   FROM objecten.ingang i
+     JOIN objecten.ingang_type t ON i.ingang_type_id = t.id
+     JOIN objecten.bouwlagen b ON i.bouwlaag_id = b.id
+     JOIN ( SELECT DISTINCT o.formelenaam,
+            o.id AS object_id,
+            st_multi(st_union(t_1.geom))::geometry(MultiPolygon,28992) AS geovlak
+           FROM objecten.object o
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = o.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+             LEFT JOIN objecten.terrein t_1 ON o.id = t_1.object_id
+          WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+          GROUP BY o.formelenaam, o.id) part ON st_intersects(i.geom, part.geovlak);
 
 -- create view sleutelkluis bouwlaag, icm formelenaam object van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_sleutelkluis_bouwlaag AS
-SELECT s.id, s.geom, s.datum_aangemaakt, s.datum_gewijzigd, s.sleutelkluis_type_id, st.naam AS type, s.rotatie, s.label, s.aanduiding_locatie, s.sleuteldoel_type_id, sd.naam AS doel, s.ingang_id, s.fotografie_id, 
-    sub.formelenaam, sub.object_id, part.bouwlaag, part.bouwdeel, ROUND(ST_X(s.geom)) AS X, ROUND(ST_Y(s.geom)) AS Y, part.bouwlaag_id FROM sleutelkluis s 
-INNER JOIN (SELECT i.*, b.bouwlaag, b.bouwdeel FROM ingang i INNER JOIN bouwlagen b ON i.bouwlaag_id = b.id) part ON s.ingang_id = part.id
-INNER JOIN sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
-LEFT JOIN sleuteldoel_type sd ON s.sleuteldoel_type_id = sd.id
-INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
-    LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-    LEFT JOIN terrein t on o.id = t.object_id
-    WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-    GROUP BY formelenaam, o.id
-    ) sub
-ON ST_INTERSECTS(s.geom, sub.geovlak);
+CREATE OR REPLACE VIEW objecten.view_sleutelkluis_bouwlaag
+AS SELECT s.id,
+    s.geom,
+    s.datum_aangemaakt,
+    s.datum_gewijzigd,
+    s.sleutelkluis_type_id,
+    st.naam AS type,
+    s.rotatie,
+    s.label,
+    s.aanduiding_locatie,
+    s.sleuteldoel_type_id,
+    sd.naam AS doel,
+    s.ingang_id,
+    s.fotografie_id,
+    sub.formelenaam,
+    sub.object_id,
+    part.bouwlaag,
+    part.bouwdeel,
+    round(st_x(s.geom)) AS x,
+    round(st_y(s.geom)) AS y,
+    part.bouwlaag_id,
+    st.symbol_name,
+    st.size
+   FROM objecten.sleutelkluis s
+     JOIN ( SELECT i.id,
+            i.geom,
+            i.datum_aangemaakt,
+            i.datum_gewijzigd,
+            i.ingang_type_id,
+            i.rotatie,
+            i.label,
+            i.belemmering,
+            i.voorzieningen,
+            i.bouwlaag_id,
+            i.object_id,
+            i.fotografie_id,
+            b.bouwlaag,
+            b.bouwdeel
+           FROM objecten.ingang i
+             JOIN objecten.bouwlagen b ON i.bouwlaag_id = b.id) part ON s.ingang_id = part.id
+     JOIN objecten.sleutelkluis_type st ON s.sleutelkluis_type_id = st.id
+     LEFT JOIN objecten.sleuteldoel_type sd ON s.sleuteldoel_type_id = sd.id
+     JOIN ( SELECT DISTINCT o.formelenaam,
+            o.id AS object_id,
+            st_multi(st_union(t.geom))::geometry(MultiPolygon,28992) AS geovlak
+           FROM objecten.object o
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = o.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+             LEFT JOIN objecten.terrein t ON o.id = t.object_id
+          WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+          GROUP BY o.formelenaam, o.id) sub ON st_intersects(s.geom, sub.geovlak);
 
 -- create view dreiging bouwlaag, icm formelenaam object van alle objecten die de status hebben "in gebruik"
-CREATE OR REPLACE VIEW view_afw_binnendekking AS
-SELECT a.id, a.geom, a.datum_aangemaakt, a.datum_gewijzigd, a.soort, a.rotatie, a.label, a.handelingsaanwijzing, a.bouwlaag_id, 
-    part.formelenaam, part.object_id, b.bouwlaag, b.bouwdeel, ROUND(ST_X(a.geom)) AS X, ROUND(ST_Y(a.geom)) AS Y FROM afw_binnendekking a
-INNER JOIN bouwlagen b ON a.bouwlaag_id = b.id
-INNER JOIN (
-  SELECT DISTINCT formelenaam, o.id AS object_id, ST_MULTI(ST_UNION(t.geom))::geometry(MultiPolygon, 28992) as geovlak FROM object o
-    LEFT JOIN historie ON historie.id = ((SELECT id FROM historie WHERE historie.object_id = o.id ORDER BY historie.datum_aangemaakt DESC LIMIT 1))
-    LEFT JOIN terrein t on o.id = t.object_id
-    WHERE status::text = 'in gebruik'::text AND (datum_geldig_vanaf <= NOW() OR datum_geldig_vanaf IS NULL) AND (datum_geldig_tot > NOW() OR datum_geldig_tot IS NULL)
-    GROUP BY formelenaam, o.id
-    ) part
-ON ST_INTERSECTS(a.geom, part.geovlak);
+CREATE OR REPLACE VIEW objecten.view_afw_binnendekking
+AS SELECT a.id,
+    a.geom,
+    a.datum_aangemaakt,
+    a.datum_gewijzigd,
+    a.soort,
+    a.rotatie,
+    a.label,
+    a.handelingsaanwijzing,
+    a.bouwlaag_id,
+    part.formelenaam,
+    part.object_id,
+    b.bouwlaag,
+    b.bouwdeel,
+    round(st_x(a.geom)) AS x,
+    round(st_y(a.geom)) AS y,
+    t.symbol_name,
+    t.size
+   FROM objecten.afw_binnendekking a
+     JOIN objecten.bouwlagen b ON a.bouwlaag_id = b.id
+     JOIN objecten.afw_binnendekking_type t ON a.soort = t.naam
+     JOIN ( SELECT DISTINCT o.formelenaam,
+            o.id AS object_id,
+            st_multi(st_union(t.geom))::geometry(MultiPolygon,28992) AS geovlak
+           FROM objecten.object o
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = o.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))
+             LEFT JOIN objecten.terrein t ON o.id = t.object_id
+          WHERE historie.status::text = 'in gebruik'::text AND (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+          GROUP BY o.formelenaam, o.id) part ON st_intersects(a.geom, part.geovlak);
 
 CREATE OR REPLACE VIEW view_objectgegevens AS 
  SELECT object.id,
