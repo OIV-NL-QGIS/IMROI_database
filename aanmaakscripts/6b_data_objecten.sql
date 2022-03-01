@@ -54,6 +54,7 @@ INSERT INTO opstelplaats_type VALUES (5, 'Schuimblusvoertuig', 'opstelplaats_sb'
 INSERT INTO opstelplaats_type VALUES (6, 'UGS', 'ugs', 12);
 INSERT INTO opstelplaats_type VALUES (7, 'Boot te water laat plaats', 'boot_te_water_laat_plaats', 25);
 INSERT INTO opstelplaats_type VALUES (8, 'CoPI', 'copi', 15);
+INSERT INTO opstelplaats_type (id, naam, symbol_name, size) VALUES (31, 'Politie', 'politie', 10);
 
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (1, 'onherstelbare schade en branden');
 INSERT INTO gevaarlijkestof_schade_cirkel_type VALUES (2, 'zware schade en secundaire branden');
@@ -69,6 +70,7 @@ INSERT INTO sectoren_type (id, naam) VALUES
 	 (21, 'Ecologisch kwetsbaar terrein')
 	,(22, 'Drassig terrein, niet berijdbaar')
 	,(23, 'Gevaarlijk terrein, nooit te betreden');
+INSERT INTO sectoren_type (id, naam) VALUES (31, 'Werkingsgebied RBP');
 
 INSERT INTO label_type VALUES (1, 'Algemeen', '', 3);
 INSERT INTO label_type VALUES (2, 'Gevaar', '', 3);
