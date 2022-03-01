@@ -1718,8 +1718,8 @@ CREATE OR REPLACE RULE object_terrein_ins AS
     (SELECT datum_geldig_tot FROM object o WHERE o.id = terrein.object_id),
     (SELECT typeobject FROM historie o WHERE o.object_id = terrein.object_id LIMIT 1);
 
-CREATE OR REPLACE VIEW object_grid AS 
- SELECT b.id,
+CREATE OR REPLACE VIEW object_grid
+AS SELECT b.id,
     b.geom,
     b.datum_aangemaakt,
     b.datum_gewijzigd,
@@ -1732,6 +1732,7 @@ CREATE OR REPLACE VIEW object_grid AS
     b.papersize,
     b.orientation,
     b.type,
+    b.uuid,
     o.formelenaam,
     o.datum_geldig_vanaf,
     o.datum_geldig_tot,
@@ -1749,21 +1750,18 @@ CREATE OR REPLACE VIEW object_grid AS
                   ORDER BY historie_1.datum_aangemaakt DESC
                  LIMIT 1))) o ON b.object_id = o.id;
 
-CREATE OR REPLACE RULE object_grid_del AS
-    ON DELETE TO object_grid DO INSTEAD  DELETE FROM objecten.grid
-  WHERE grid.id = old.id;
+CREATE RULE object_grid_del AS
+    ON DELETE TO objecten.object_grid DO INSTEAD DELETE FROM objecten.grid
+  WHERE (grid.id = old.id);
 
-CREATE OR REPLACE RULE object_grid_upd AS
-    ON UPDATE TO object_grid DO INSTEAD  
-    UPDATE grid 
-    SET geom = new.geom, x_as_label = new.x_as_label, y_as_label = new.y_as_label, object_id = new.object_id, afstand = new.afstand, vaknummer = new.vaknummer,
-        scale = new.scale, papersize = new.papersize, orientation = new.orientation, type = new.type
-  WHERE grid.id = new.id;
+CREATE RULE object_grid_upd AS
+    ON UPDATE TO objecten.object_grid DO INSTEAD  UPDATE objecten.grid SET geom = new.geom, x_as_label = new.x_as_label, y_as_label = new.y_as_label, object_id = new.object_id, afstand = new.afstand,
+    			vaknummer = new.vaknummer, scale = new.scale, papersize = new.papersize, orientation = new.orientation, type = new.type, uuid = new.uuid
+  WHERE (grid.id = new.id);
 
-CREATE OR REPLACE RULE object_grid_ins AS
-  ON INSERT TO objecten.object_grid DO INSTEAD  
-  INSERT INTO objecten.grid (geom, x_as_label, y_as_label, object_id, afstand, vaknummer, scale, papersize, orientation, type)
-  VALUES (new.geom, new.x_as_label, new.y_as_label, new.object_id, new.afstand, new.vaknummer, new.scale, new.papersize, new.orientation, new.type)
+CREATE RULE object_grid_ins AS
+    ON INSERT TO objecten.object_grid DO INSTEAD  INSERT INTO objecten.grid (geom, x_as_label, y_as_label, object_id, afstand, vaknummer, scale, papersize, orientation, type, uuid)
+  VALUES (new.geom, new.x_as_label, new.y_as_label, new.object_id, new.afstand, new.vaknummer, new.scale, new.papersize, new.orientation, new.type, new.uuid)
   RETURNING grid.id,
     grid.geom,
     grid.datum_aangemaakt,
@@ -1777,18 +1775,19 @@ CREATE OR REPLACE RULE object_grid_ins AS
     grid.papersize,
     grid.orientation,
     grid.type,
+    grid.uuid,
     ( SELECT o.formelenaam
            FROM objecten.object o
-          WHERE o.id = grid.object_id) AS formelenaam,
+          WHERE (o.id = grid.object_id)) AS formelenaam,
     ( SELECT o.datum_geldig_vanaf
            FROM objecten.object o
-          WHERE o.id = grid.object_id) AS datum_geldig_vanaf,
+          WHERE (o.id = grid.object_id)) AS datum_geldig_vanaf,
     ( SELECT o.datum_geldig_tot
            FROM objecten.object o
-          WHERE o.id = grid.object_id) AS datum_geldig_tot,
+          WHERE (o.id = grid.object_id)) AS datum_geldig_tot,
     ( SELECT o.typeobject
            FROM objecten.historie o
-          WHERE o.object_id = grid.object_id
+          WHERE (o.object_id = grid.object_id)
          LIMIT 1) AS typeobject;
 
 CREATE OR REPLACE VIEW object_points_of_interest AS 
