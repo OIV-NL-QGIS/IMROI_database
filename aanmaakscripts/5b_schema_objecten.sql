@@ -804,15 +804,20 @@ USING GIST(geom);
 
 CREATE TABLE grid
 (
-  id        SERIAL primary key,
+  id                SERIAL primary key,
   geom              geometry(MultiPolygon, 28992),
   datum_aangemaakt  TIMESTAMP WITH TIME ZONE   DEFAULT now(),
   datum_gewijzigd   TIMESTAMP WITH TIME ZONE,
-  y_as_label   TEXT,
-  x_as_label   TEXT,
-  afstand INTEGER,  
-  object_id     INTEGER,
-  vaknummer CHARACTER VARYING(10),
+  y_as_label        TEXT,
+  x_as_label        TEXT,
+  afstand           INTEGER,  
+  object_id         INTEGER,
+  vaknummer         CHARACTER VARYING(10),
+  scale             INTEGER,
+  papersize         VARCHAR(2),
+  orientation       VARCHAR(10),
+  "type"            VARCHAR(10) NOT NULL,
+  uuid              TEXT,
   CONSTRAINT grid_object_id_fk FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 COMMENT ON TABLE bouwlagen IS 'Grid voor verdeling en verduidelijking locatie op terrein';
@@ -850,6 +855,37 @@ CREATE TABLE points_of_interest
       REFERENCES objecten.object (id) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT points_of_interest_type_id_fk FOREIGN KEY (points_of_interest_type_id)
       REFERENCES objecten.points_of_interest_type (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE gebiedsgerichte_aanpak_type
+(
+  id smallint NOT NULL,
+  naam character varying(50),
+  CONSTRAINT gebiedsgerichte_aanpak_type_pkey PRIMARY KEY (id),
+  CONSTRAINT naam_uk UNIQUE (naam)
+);
+
+CREATE TABLE gebiedsgerichte_aanpak
+(
+  id serial NOT NULL,
+  geom geometry(MultiLineString,28992),
+  datum_aangemaakt timestamp with time zone DEFAULT now(),
+  datum_gewijzigd timestamp with time zone,
+  soort character varying(50),
+  label character varying(254),  
+  bijzonderheden text,
+  object_id integer NOT NULL,
+  fotografie_id integer,
+  CONSTRAINT gebiedsgerichte_aanpak_pkey PRIMARY KEY (id),
+  CONSTRAINT gebiedsgerichte_aanpak_fotografie_id_fk FOREIGN KEY (fotografie_id)
+      REFERENCES algemeen.fotografie (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT gebiedsgerichte_aanpak_object_id_fk FOREIGN KEY (object_id)
+      REFERENCES objecten.object (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT soort_id_fk FOREIGN KEY (soort)
+      REFERENCES objecten.gebiedsgerichte_aanpak_type (naam) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 

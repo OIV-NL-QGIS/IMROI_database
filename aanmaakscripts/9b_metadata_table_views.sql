@@ -116,3 +116,7 @@ INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column
         VALUES ('objecten', 'object_veiligh_ruimtelijk', 'id', 1, 'assigned');
 INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
         VALUES ('objecten', 'object_bereikbaarheid', 'id', 1, 'assigned');  
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_points_of_interest', 'id', 1, 'assigned');  
+INSERT INTO gt_pk_metadata_table (table_schema, table_name, pk_column, pk_column_idx, pk_policy)
+        VALUES ('objecten', 'object_gebiedsgerichte_aanpak', 'id', 1, 'assigned');
