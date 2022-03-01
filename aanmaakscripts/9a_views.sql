@@ -1660,7 +1660,68 @@ CREATE OR REPLACE RULE points_of_interest_upd AS
         rotatie = new.rotatie, bijzonderheid = new.bijzonderheid, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
   WHERE points_of_interest.id = new.id;
 
+CREATE OR REPLACE VIEW object_gebiedsgerichte_aanpak AS 
+ SELECT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.soort,
+    b.label,
+    b.bijzonderheden,    
+    b.object_id,
+    b.fotografie_id,
+    o.formelenaam,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    o.typeobject
+   FROM gebiedsgerichte_aanpak b
+     JOIN ( SELECT object.formelenaam,
+            object.datum_geldig_vanaf,
+            object.datum_geldig_tot,
+            object.id,
+            historie.typeobject
+           FROM objecten.object
+             LEFT JOIN objecten.historie ON historie.id = (( SELECT historie_1.id
+                   FROM objecten.historie historie_1
+                  WHERE historie_1.object_id = object.id
+                  ORDER BY historie_1.datum_aangemaakt DESC
+                 LIMIT 1))) o ON b.object_id = o.id;
 
+CREATE OR REPLACE RULE gebiedsgerichte_aanpak_del AS
+    ON DELETE TO objecten.object_gebiedsgerichte_aanpak DO INSTEAD  DELETE FROM objecten.gebiedsgerichte_aanpak
+  WHERE gebiedsgerichte_aanpak.id = old.id;
+
+CREATE OR REPLACE RULE gebiedsgerichte_aanpak_upd AS
+    ON UPDATE TO objecten.object_gebiedsgerichte_aanpak DO INSTEAD  UPDATE objecten.gebiedsgerichte_aanpak
+    SET geom = new.geom, soort = new.soort, label = new.label, bijzonderheden = new.bijzonderheden,
+    object_id = new.object_id, fotografie_id = new.fotografie_id
+  WHERE gebiedsgerichte_aanpak.id = new.id;
+
+CREATE OR REPLACE RULE gebiedsgerichte_aanpak_ins AS
+    ON INSERT TO objecten.object_gebiedsgerichte_aanpak DO INSTEAD  INSERT INTO objecten.gebiedsgerichte_aanpak (geom, soort, label, bijzonderheden, object_id, fotografie_id)
+  VALUES (new.geom, new.soort, new.label, new.bijzonderheden, new.object_id, new.fotografie_id)
+  RETURNING gebiedsgerichte_aanpak.id,
+    gebiedsgerichte_aanpak.geom,
+    gebiedsgerichte_aanpak.datum_aangemaakt,
+    gebiedsgerichte_aanpak.datum_gewijzigd,
+    gebiedsgerichte_aanpak.soort,
+    gebiedsgerichte_aanpak.label,
+    gebiedsgerichte_aanpak.bijzonderheden,    
+    gebiedsgerichte_aanpak.object_id,
+    gebiedsgerichte_aanpak.fotografie_id,
+    ( SELECT o.formelenaam
+           FROM objecten.object o
+          WHERE o.id = gebiedsgerichte_aanpak.object_id) AS formelenaam,
+    ( SELECT o.datum_geldig_vanaf
+           FROM objecten.object o
+          WHERE o.id = gebiedsgerichte_aanpak.object_id) AS datum_geldig_vanaf,
+    ( SELECT o.datum_geldig_tot
+           FROM objecten.object o
+          WHERE o.id = gebiedsgerichte_aanpak.object_id) AS datum_geldig_tot,
+    ( SELECT o.typeobject
+           FROM objecten.historie o
+          WHERE o.object_id = gebiedsgerichte_aanpak.object_id
+         LIMIT 1) AS typeobject;
 
 REVOKE ALL ON TABLE stavaza_status_gemeente FROM GROUP oiv_write;
 REVOKE ALL ON TABLE stavaza_update_gemeente FROM GROUP oiv_write;

@@ -374,3 +374,27 @@ CREATE TRIGGER trg_set_insert
   ON grid
   FOR EACH ROW
   EXECUTE PROCEDURE set_timestamp('datum_aangemaakt');
+
+CREATE TRIGGER trg_set_mutatie
+  BEFORE UPDATE
+  ON gebiedsgerichte_aanpak
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_timestamp('datum_gewijzigd');
+  
+CREATE TRIGGER trg_set_insert
+  BEFORE INSERT
+  ON gebiedsgerichte_aanpak
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_timestamp('datum_aangemaakt');
+
+CREATE TRIGGER trg_set_mutatie
+  BEFORE UPDATE
+  ON points_of_interest
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_timestamp('datum_gewijzigd');
+  
+CREATE TRIGGER trg_set_insert
+  BEFORE INSERT
+  ON points_of_interest
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_timestamp('datum_aangemaakt');

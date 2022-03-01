@@ -17,6 +17,14 @@ INSERT INTO bereikbaarheid_type (id, naam) VALUES (4, 'vluchtroute publiek');
 INSERT INTO bereikbaarheid_type (id, naam) VALUES (5, 'wegen eigen terrein');
 INSERT INTO bereikbaarheid_type (id, naam) VALUES (6, 'oever-kade');
 INSERT INTO bereikbaarheid_type (id, naam) VALUES (7, 'evenementenroute');
+INSERT INTO bereikbaarheid_type (id, naam) VALUES
+	 (21, 'Afrastering (algemeen)')
+	,(22, 'Afrastering defensie/risico-objecten')
+	,(23, 'Afrastering munitie')
+    ,(24, 'Weg - berijdbaar alle voertuigen')
+    ,(25, 'Weg - berijdbaar 4x4 zwaar')
+    ,(26, 'Weg - berijdbaar 4x4 licht')
+    ,(27, 'Weg - looproute');
 
 INSERT INTO afw_binnendekking_type VALUES (1, 'Dekkingsprobleem DMO', 'dekkingsprobleem_dmo', 2);
 INSERT INTO afw_binnendekking_type VALUES (2, 'Dekkingsprobleem TMO', 'dekkingsprobleem_tmo', 2);
@@ -56,6 +64,10 @@ INSERT INTO sectoren_type VALUES (2, 'podium');
 INSERT INTO sectoren_type VALUES (3, 'publieke sector');
 INSERT INTO sectoren_type VALUES (4, 'tent');
 INSERT INTO sectoren_type VALUES (5, 'parkeerzone');
+INSERT INTO sectoren_type (id, naam) VALUES
+	 (21, 'Ecologisch kwetsbaar terrein')
+	,(22, 'Drassig terrein, niet berijdbaar')
+	,(23, 'Gevaarlijk terrein, nooit te betreden');
 
 INSERT INTO label_type VALUES (1, 'Algemeen', '', 3);
 INSERT INTO label_type VALUES (2, 'Gevaar', '', 3);
@@ -390,6 +402,21 @@ INSERT INTO points_of_interest_type (id, naam, symbol_name, size) VALUES
     ,(25,'Solitair bouwwerk, risicogevend','N19P25',6)
     ,(26,'Solitair bouwwerk, risico-ontvangend','N19P26',6)
     ,(29,'Bivakplaats defensie','N19P29',6);
+
+INSERT INTO gebiedsgerichte_aanpak_type (id, naam) VALUES
+	 (1, 'Beheer bos: 100%')
+	,(2, 'Beheer bos: 60%')
+	,(3, 'Beheer bos: 30%')
+	,(4, 'Beheer bos: 0%')
+	,(5, 'Beheer heide: 100%')
+	,(6, 'Beheer heide: niet gereed')
+	,(7, 'Beheer heide: subcompartiment')
+	,(8, 'Stoplijn in heide/gras')
+	,(9, 'Stoplijn door voorbranden')
+	,(10, 'Bos: compartiment gereed')
+	,(11, 'Bos: subcompartiment of 60% gereed')
+	,(12, 'Bos: compartimentsgrens in aanleg')
+	,(13, 'Heide: gereed');
 
 -- Insert data in de tabel gevaarlijkestof_vnnr
 INSERT INTO gevaarlijkestof_vnnr (id, vn_nr, gevi_nr, eric_kaart) VALUES (1, '102', '', '1-02');

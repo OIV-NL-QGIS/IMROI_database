@@ -853,6 +853,37 @@ CREATE TABLE points_of_interest
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+CREATE TABLE gebiedsgerichte_aanpak_type
+(
+  id smallint NOT NULL,
+  naam character varying(50),
+  CONSTRAINT gebiedsgerichte_aanpak_type_pkey PRIMARY KEY (id),
+  CONSTRAINT naam_uk UNIQUE (naam)
+);
+
+CREATE TABLE gebiedsgerichte_aanpak
+(
+  id serial NOT NULL,
+  geom geometry(MultiLineString,28992),
+  datum_aangemaakt timestamp with time zone DEFAULT now(),
+  datum_gewijzigd timestamp with time zone,
+  soort character varying(50),
+  label character varying(254),  
+  bijzonderheden text,
+  object_id integer NOT NULL,
+  fotografie_id integer,
+  CONSTRAINT gebiedsgerichte_aanpak_pkey PRIMARY KEY (id),
+  CONSTRAINT gebiedsgerichte_aanpak_fotografie_id_fk FOREIGN KEY (fotografie_id)
+      REFERENCES algemeen.fotografie (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT gebiedsgerichte_aanpak_object_id_fk FOREIGN KEY (object_id)
+      REFERENCES objecten.object (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT soort_id_fk FOREIGN KEY (soort)
+      REFERENCES objecten.gebiedsgerichte_aanpak_type (naam) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 -- Restricties voor opzoektabellen
 REVOKE ALL ON TABLE aanwezig_type FROM GROUP oiv_write;
 REVOKE ALL ON TABLE gevaarlijkestof_vnnr FROM GROUP oiv_write;
