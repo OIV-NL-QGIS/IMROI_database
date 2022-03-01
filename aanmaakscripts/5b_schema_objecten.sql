@@ -804,15 +804,19 @@ USING GIST(geom);
 
 CREATE TABLE grid
 (
-  id        SERIAL primary key,
+  id                SERIAL primary key,
   geom              geometry(MultiPolygon, 28992),
   datum_aangemaakt  TIMESTAMP WITH TIME ZONE   DEFAULT now(),
   datum_gewijzigd   TIMESTAMP WITH TIME ZONE,
-  y_as_label   TEXT,
-  x_as_label   TEXT,
-  afstand INTEGER,  
-  object_id     INTEGER,
-  vaknummer CHARACTER VARYING(10),
+  y_as_label        TEXT,
+  x_as_label        TEXT,
+  afstand           INTEGER,  
+  object_id         INTEGER,
+  vaknummer         CHARACTER VARYING(10),
+  scale             INTEGER,
+  papersize         VARCHAR(2),
+  orientation       VARCHAR(10),
+  "type"            VARCHAR(10) NOT NULL,
   CONSTRAINT grid_object_id_fk FOREIGN KEY (object_id) REFERENCES object (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 COMMENT ON TABLE bouwlagen IS 'Grid voor verdeling en verduidelijking locatie op terrein';
