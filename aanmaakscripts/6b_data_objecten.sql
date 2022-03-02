@@ -205,7 +205,7 @@ INSERT INTO maatregel_type (id, naam) VALUES (24, 'Zoek gebied vast stellen, str
 
 INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (148, 'sleutelkluis', 'sleutelkluis', 4);
 INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (1, 'sleutelbuis', 'sleutelbuis' , 4);
-INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (10, 'Sleutelkuis Havenbedrijf', 'sleutelkluis_havenbedrijf', 4);
+INSERT INTO sleutelkluis_type (id, naam, symbol_name, size) VALUES (10, 'Sleutelkuis Havenbedrijf', 'sleutelkluis_hbr', 4);
 
 INSERT INTO sleuteldoel_type (id, naam) VALUES (1, 'generale hoofdsleutel');
 
@@ -246,7 +246,7 @@ INSERT INTO veiligh_ruimtelijk_type VALUES (1006, 'Oilboom_opstel', NULL, 'oilbo
 INSERT INTO veiligh_ruimtelijk_type VALUES (1004, 'Oogdouche', NULL, 'oogdouche', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (1010, 'Opstapplaats RPA', NULL, 'opstapplaats_rpa', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (206, 'parkeerplaats', 'evenement', 'parkeerplaats', 6);
-INSERT INTO veiligh_ruimtelijk_type VALUES (1020, 'Reduceer of drukbegerenzer', NULL, 'reduceer_drukbegerenzer', 6);
+INSERT INTO veiligh_ruimtelijk_type VALUES (1020, 'Reduceer of drukbegerenzer', NULL, 'reduceer_drukbegrenzer', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (1019, 'Schacht of kanaal', NULL, 'schacht_kanaal', 6);
 INSERT INTO veiligh_ruimtelijk_type VALUES (1008, 'Schermenponton', NULL, 'schermenponton');
 INSERT INTO veiligh_ruimtelijk_type VALUES (151, 'Stijgleiding HD afnamepunt', 'Voorziening', 'stijgleiding_hd_afnamepunt', 6);
@@ -373,7 +373,7 @@ INSERT INTO dreiging_type VALUES (125, 'Houder onder druk', 'houder_onder_druk',
 INSERT INTO dreiging_type VALUES (126, 'Op afstand bestuurde machines', 'op_afstand_bestuurde_machines', 4);
 INSERT INTO dreiging_type VALUES (127, 'Helling', 'helling', 4);
 INSERT INTO dreiging_type VALUES (128, 'Langetermijn gezondheidsschade', 'langetermijn_gezondheidsschade', 4);
-INSERT INTO dreiging_type VALUES (129, 'Algemeen gevaar', 'algemeen_gevaar_2', 4);
+INSERT INTO dreiging_type VALUES (129, 'Algemeen gevaar', 'algemeen_gevaar', 4);
 INSERT INTO dreiging_type VALUES (130, 'Stroming', 'stroming', 4);
 INSERT INTO dreiging_type VALUES (201, 'Ontvlambare stoffen - GHS', 'ontvlambare_stoffen_ghs', 4);
 INSERT INTO dreiging_type VALUES (202, 'Oxiderende stoffen - GHS', 'oxiderende_stoffen_ghs', 4);
