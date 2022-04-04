@@ -5,7 +5,7 @@ SET search_path = bluswater, pg_catalog, public;
 -- INSERT type alternatieve bluswatervoorzieningen
 INSERT INTO alternatieve_type VALUES (1, 'Geboorde Put met voordruk', 'geboorde_put_voordruk', 6);
 INSERT INTO alternatieve_type VALUES (2, 'Geboorde Put', 'geboorde_put', 6);
-INSERT INTO alternatieve_type VALUES (3, 'Waterkelder', 'openwater_winput', t6);
+INSERT INTO alternatieve_type VALUES (3, 'Waterkelder', 'openwater_winput', 6);
 INSERT INTO alternatieve_type VALUES (4, 'Blusleiding afnamepunt', 'stijgleiding_ld_afnamepunt', 6);
 INSERT INTO alternatieve_type VALUES (5, 'Blusleiding vulpunt', 'stijgleiding_ld_vulpunt', 6);
 INSERT INTO alternatieve_type VALUES (6, 'Bluswaterriool', 'bluswaterriool', 6);
