@@ -39,6 +39,18 @@ AS $function$
     $function$
 ;
 
+ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.gebiedsgerichte_aanpak ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.isolijnen ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.veiligh_bouwk ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.bouwlagen ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.grid ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.ruimten ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.sectoren ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+ALTER TABLE objecten.terrein ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+
+
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 4;
 UPDATE algemeen.applicatie SET revisie = 2;
