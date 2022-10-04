@@ -39,6 +39,42 @@ AS $function$
     $function$
 ;
 
+ALTER TABLE objecten.bereikbaarheid DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.bereikbaarheid WHERE geom is null;
+ALTER TABLE objecten.bereikbaarheid ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.gebiedsgerichte_aanpak DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.gebiedsgerichte_aanpak WHERE geom is null;
+ALTER TABLE objecten.gebiedsgerichte_aanpak ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.veiligh_bouwk DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.veiligh_bouwk WHERE geom is null;
+ALTER TABLE objecten.veiligh_bouwk ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.isolijnen DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.isolijnen WHERE geom is null;
+ALTER TABLE objecten.isolijnen ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.bouwlagen DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.bouwlagen WHERE geom is null;
+ALTER TABLE objecten.bouwlagen ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.ruimten DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.ruimten WHERE geom is null;
+ALTER TABLE objecten.ruimten ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.grid DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.grid WHERE geom is null;
+ALTER TABLE objecten.grid ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.sectoren DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.sectoren WHERE geom is null;
+ALTER TABLE objecten.sectoren ENABLE TRIGGER trg_set_delete;
+
+ALTER TABLE objecten.terrein DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.terrein WHERE geom is null;
+ALTER TABLE objecten.terrein ENABLE TRIGGER trg_set_delete;
+
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
 ALTER TABLE objecten.gebiedsgerichte_aanpak ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
 ALTER TABLE objecten.isolijnen ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));

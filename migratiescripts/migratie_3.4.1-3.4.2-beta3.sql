@@ -32,7 +32,7 @@ AS $function$
 CREATE OR REPLACE TRIGGER bouwlagen_soft_del_cascade BEFORE
 DELETE
     ON
-    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten', 'bouwlagen', 'bouwlaag_id')
+    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten', 'bouwlagen', 'bouwlaag_id');
 
 CREATE OR REPLACE TRIGGER ingang_soft_del_cascade BEFORE
 DELETE
