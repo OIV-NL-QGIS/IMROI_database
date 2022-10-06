@@ -75,15 +75,31 @@ ALTER TABLE objecten.terrein DISABLE TRIGGER trg_set_delete;
 DELETE FROM objecten.terrein WHERE geom is null;
 ALTER TABLE objecten.terrein ENABLE TRIGGER trg_set_delete;
 
+ALTER TABLE objecten.bereikbaarheid DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.gebiedsgerichte_aanpak DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.gebiedsgerichte_aanpak ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.isolijnen DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.isolijnen ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.veiligh_bouwk DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.veiligh_bouwk ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL));
 
+ALTER TABLE objecten.bouwlagen DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.bouwlagen ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.grid DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.grid ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.ruimten DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.ruimten ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.sectoren DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.sectoren ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
+
+ALTER TABLE objecten.terrein DROP CONSTRAINT IF EXISTS enforce_geotype_geom;
 ALTER TABLE objecten.terrein ADD CONSTRAINT enforce_geotype_geom CHECK ((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL));
 
 
@@ -91,4 +107,5 @@ ALTER TABLE objecten.terrein ADD CONSTRAINT enforce_geotype_geom CHECK ((geometr
 UPDATE algemeen.applicatie SET sub = 4;
 UPDATE algemeen.applicatie SET revisie = 2;
 UPDATE algemeen.applicatie SET db_versie = 342; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET omschrijving = 'beta2';
 UPDATE algemeen.applicatie SET datum = now();

@@ -53,4 +53,5 @@ DELETE
 UPDATE algemeen.applicatie SET sub = 4;
 UPDATE algemeen.applicatie SET revisie = 2;
 UPDATE algemeen.applicatie SET db_versie = 342; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET omschrijving = 'beta3';
 UPDATE algemeen.applicatie SET datum = now();

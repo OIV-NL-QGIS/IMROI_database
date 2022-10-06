@@ -153,7 +153,7 @@ CREATE TABLE mobiel.werkvoorraad_label (
 	accepted bool NULL,
 	bouwlaag int4 NULL,
 	fotografie_id int4 NULL,
-	bouwlaag_object varchar(50)
+	bouwlaag_object varchar(50),
 	CONSTRAINT werkvoorraad_label_pkey PRIMARY KEY (id)
 );
 CREATE INDEX werkvoorraad_label_geom_gist ON mobiel.werkvoorraad_label USING gist (geom);
@@ -183,6 +183,7 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bron_id,
     sub.object_id,
     sub.bouwlaag_id,
+    sub.omschrijving,
     sub.rotatie,
     sub.size,
     sub.symbol_name,
@@ -329,17 +330,17 @@ AS $function$
 $function$
 ;
 
-CREATE TRIGGER trg_set_insert BEFORE
+CREATE or replace TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE TRIGGER trg_set_upd BEFORE
+CREATE or replace TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
     
-CREATE TRIGGER trg_after_insert AFTER
+CREATE or replace TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_punt();
@@ -524,17 +525,17 @@ AS $function$
 $function$
 ;
 
-CREATE TRIGGER trg_set_insert BEFORE
+CREATE or replace TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE TRIGGER trg_set_upd BEFORE
+CREATE or replace TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
     
-CREATE TRIGGER trg_after_insert AFTER
+CREATE or replace TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_lijn();
@@ -743,22 +744,22 @@ AS $function$
 $function$
 ;
 
-CREATE TRIGGER trg_set_insert BEFORE
+CREATE or replace TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE TRIGGER trg_set_upd BEFORE
+CREATE or replace TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
     
-CREATE TRIGGER trg_after_insert AFTER
+CREATE or replace TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_vlak();
 
-CREATE OR REPLACE VIEW mobiel.lijnen
+CREATE OR REPLACE VIEW mobiel.vlakken
 AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.geom,
     sub.waarden_new,
@@ -769,19 +770,20 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag_id,
     sub.symbol_name,
     sub.bouwlaag,
-    sub.bron
+    sub.bron,
+    sub.binnen_buiten
    FROM ( 
 	SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, symbol_name, bouwlaag,
-    'werkvoorraad'::text AS bron
+    'werkvoorraad'::text AS bron, ''::text AS binnen_buiten
 	FROM mobiel.werkvoorraad_vlak
 UNION ALL
 	SELECT b.id, geom, row_to_json((SELECT d FROM (SELECT omschrijving) d)) AS waarden_new, '', 'sectoren', b.id, object_id, NULL AS bouwlaag_id, soort, NULL AS bouwlaag,
-    'oiv'::text AS bron
+    'oiv'::text AS bron, 'object'::text AS binnen_buiten
 	FROM objecten.object_sectoren b
 	INNER JOIN objecten.sectoren_type bt ON b.soort = bt.naam
 UNION ALL
 	SELECT b.id, geom, row_to_json((SELECT d FROM (SELECT omschrijving) d)) AS waarden_new, '', 'ruimten', b.id, NULL AS object_id, bouwlaag_id, ruimten_type_id, bouwlaag,
-    'oiv'::text AS bron
+    'oiv'::text AS bron, 'bouwlaag'::text AS binnen_buiten
 	FROM objecten.bouwlaag_ruimten b
 	INNER JOIN objecten.ruimten_type bt ON b.ruimten_type_id = bt.naam
    ) sub;
