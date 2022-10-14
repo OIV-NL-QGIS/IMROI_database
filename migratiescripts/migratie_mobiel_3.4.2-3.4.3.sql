@@ -246,6 +246,45 @@ CREATE TABLE mobiel.punten_type (
 );
 
 --INSERT SCRIPTS PUNTEN NOG TOEVOEGEN
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'afw_binnendekking', naam, 'algemeen', symbol_name, "size", True, True, True, True, True, 'bouwlaag' FROM objecten.afw_binnendekking_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'dreiging', naam, 'gevaar', symbol_name, "size", False, True, False, False, False, 'bouwlaag' FROM objecten.dreiging_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'dreiging', naam, 'gevaar', symbol_name, "size_object", True, True, False, False, False, 'object' FROM objecten.dreiging_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'ingang', naam, 'ingang', symbol_name, "size", True, True, False, False, False, 'bouwlaag' FROM objecten.ingang_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'ingang', naam, 'ingang', symbol_name, "size_object", True, True, True, False, True, 'object' FROM objecten.ingang_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'opstelplaats', naam, 'opstelplaats', symbol_name, "size", True, True, False, False, False, 'object' FROM objecten.opstelplaats_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'veiligh_install', naam, 'algemeen', symbol_name, "size", True, True, False, False, False, 'bouwlaag' FROM objecten.veiligh_install_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'veiligh_ruimtelijk', naam, 'algemeen', symbol_name, "size", True, True, True, False, True, 'object' FROM objecten.veiligh_ruimtelijk_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size", False, True, True, False, TrueIk , 'bouwlaag' FROM objecten.sleutelkluis_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size_object", False, True, True, False, True, 'object' FROM objecten.sleutelkluis_type;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_punt()
  RETURNS trigger
