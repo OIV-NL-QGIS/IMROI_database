@@ -706,10 +706,10 @@ CREATE TABLE mobiel.vlakken_type (
 );
 
 INSERT INTO mobiel.vlakken_type (bron_id, brontabel, naam, categorie, gebouw, bouwlaag_object)
-SELECT id, 'ruimten_type', naam, 'ruimten', True, 'bouwlaag' FROM objecten.ruimten_type;
+SELECT id, 'ruimten', naam, 'ruimten', True, 'bouwlaag' FROM objecten.ruimten_type;
 
 INSERT INTO mobiel.vlakken_type (bron_id, brontabel, naam, categorie, gebouw, evenement, natuur, bluswater, bouwlaag_object)
-SELECT id, 'sectoren_type', naam, 'sectoren', True, True, True, True, 'object' FROM objecten.sectoren_type;
+SELECT id, 'sectoren', naam, 'sectoren', True, True, True, True, 'object' FROM objecten.sectoren_type;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_vlak()
  RETURNS trigger
