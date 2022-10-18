@@ -245,7 +245,8 @@ CREATE TABLE mobiel.punten_type (
 	bouwlaag_object varchar(50)
 );
 
---INSERT SCRIPTS PUNTEN NOG TOEVOEGEN
+TRUNCATE TABLE mobiel.punten_type;
+
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
 SELECT id, 'afw_binnendekking', naam, 'algemeen', symbol_name, "size", True, True, True, True, True, 'bouwlaag' FROM objecten.afw_binnendekking_type;
@@ -280,7 +281,7 @@ SELECT id, 'veiligh_ruimtelijk', naam, 'algemeen', symbol_name, "size", True, Tr
 
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
-SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size", False, True, True, False, TrueIk , 'bouwlaag' FROM objecten.sleutelkluis_type;
+SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size", False, True, True, False, True , 'bouwlaag' FROM objecten.sleutelkluis_type;
 
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
