@@ -59,7 +59,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", bouwlaag_id = bouwlaagid
 			FROM
@@ -295,7 +295,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", bouwlaag_id = bouwlaagid
 			FROM
@@ -500,7 +500,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    ELSE
 	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
@@ -719,7 +719,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    ELSE
 	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
