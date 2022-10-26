@@ -194,17 +194,20 @@ FROM ( SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bo
     		''::text AS binnen_buiten, 'werkvoorraad'::text AS bron
 	FROM mobiel.werkvoorraad_label
 UNION ALL
-	SELECT l.id, geom, NULL, '', 'label', l.id, 
-			NULL AS object_id, bouwlaag_id, omschrijving, rotatie, lt."size", lt.symbol_name, bouwlaag,
+	SELECT l.id, l.geom, NULL, '', 'label', l.id, 
+			NULL AS object_id, l.bouwlaag_id, l.omschrijving, l.rotatie, lt."size", lt.symbol_name, b.bouwlaag,
 				'bouwlaag'::text AS binnen_buiten, 'oiv'::text AS bron
-	FROM objecten.bouwlaag_label l
+	FROM objecten.label l
+	inner join objecten.bouwlagen b on l.bouwlaag_id = b.id
 	INNER JOIN objecten.label_type lt ON l.soort = lt.naam
+    WHERE l.bouwlaag_id IS NOT NULL AND l.datum_deleted IS NULL
 UNION ALL
 	SELECT l.id, geom, NULL, '', 'label', l.id,
 			object_id, NULL AS bouwlaag_id, omschrijving, rotatie, lt."size", lt.symbol_name, NULL AS bouwlaag,
 				'object'::text AS binnen_buiten, 'oiv'::text AS bron
-	FROM objecten.object_label l
+	FROM objecten.label l
 	INNER JOIN objecten.label_type lt ON l.soort = lt.naam
+    WHERE l.object_id IS NOT NULL AND l.datum_deleted IS NULL
 ) sub;
 
 CREATE TRIGGER trg_labels_upd INSTEAD OF
@@ -286,6 +289,10 @@ SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size", False, True, Tru
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
 SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size_object", False, True, True, False, True, 'object' FROM objecten.sleutelkluis_type;
+
+INSERT INTO mobiel.punten_type
+(bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
+SELECT id, 'points_of_interest', naam, 'poi', symbol_name, "size", True, True, True, False, True, 'object' FROM objecten.points_of_interest_type;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_punt()
  RETURNS trigger
@@ -400,57 +407,94 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag,
     sub.bron,
     sub.binnen_buiten
-FROM ( SELECT werkvoorraad_punt.id,
-    werkvoorraad_punt.geom,
-    werkvoorraad_punt.waarden_new,
-    werkvoorraad_punt.operatie,
-    werkvoorraad_punt.brontabel,
-    werkvoorraad_punt.bron_id,
-    werkvoorraad_punt.object_id,
-    werkvoorraad_punt.bouwlaag_id,
-    werkvoorraad_punt.rotatie,
-    werkvoorraad_punt.size,
-    werkvoorraad_punt.symbol_name,
-    werkvoorraad_punt.bouwlaag,
-    ''::text AS binnen_buiten,
-    'werkvoorraad'::text AS bron
-   FROM mobiel.werkvoorraad_punt
+FROM ( 
+  SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag,
+  	''::text AS binnen_buiten, 'werkvoorraad'::text AS bron
+  FROM mobiel.werkvoorraad_punt
 UNION ALL
- SELECT bouwlaag_veiligh_install.id,
-    bouwlaag_veiligh_install.geom,
-    row_to_json(( SELECT d.*::record AS d
-           FROM ( SELECT bouwlaag_veiligh_install.label,
-                    bouwlaag_veiligh_install.bijzonderheid) d)) AS waarden_new,
-    ''::character varying AS operatie,
-    'veiligh_install'::character varying AS brontabel,
-    bouwlaag_veiligh_install.id AS bron_id,
-    NULL::integer AS object_id,
-    bouwlaag_veiligh_install.bouwlaag_id,
-    bouwlaag_veiligh_install.rotatie,
-    bouwlaag_veiligh_install.size,
-    bouwlaag_veiligh_install.symbol_name,
-    bouwlaag_veiligh_install.bouwlaag,
-    'bouwlaag'::text AS binnen_buiten,
-    'oiv'::text AS bron
-   FROM objecten.bouwlaag_veiligh_install
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.bijzonderheid) d)) AS waarden_new,
+    '' AS operatie, 'veiligh_install' AS brontabel, v.id AS bron_id, NULL AS object_id, v.bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    b.bouwlaag, 'bouwlaag' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.veiligh_install v
+  INNER JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+  INNER JOIN objecten.veiligh_install_type vt ON v.veiligh_install_type_id = vt.id
+  WHERE v.datum_deleted IS NULL
 UNION ALL
- SELECT bouwlaag_dreiging.id,
-    bouwlaag_dreiging.geom,
-    row_to_json(( SELECT d.*::record AS d
-           FROM ( SELECT bouwlaag_dreiging.label,
-                    bouwlaag_dreiging.omschrijving) d)) AS waarden_new,
-    ''::character varying AS operatie,
-    'dreiging_type_id'::character varying AS brontabel,
-    bouwlaag_dreiging.id AS bron_id,
-    bouwlaag_dreiging.object_id,
-    bouwlaag_dreiging.bouwlaag_id,
-    bouwlaag_dreiging.rotatie,
-    bouwlaag_dreiging.size,
-    bouwlaag_dreiging.symbol_name,
-    bouwlaag_dreiging.bouwlaag,
-    'bouwlaag'::text AS binnen_buiten,
-    'oiv'::text AS bron
-   FROM objecten.bouwlaag_dreiging
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.bijzonderheid) d)) AS waarden_new,
+    '' AS operatie, 'veiligh_ruimtelijk' AS brontabel, v.id AS bron_id, v.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.veiligh_ruimtelijk v
+  INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id
+  WHERE v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.omschrijving) d)) AS waarden_new,
+    '' AS operatie, 'dreiging' AS brontabel, v.id AS bron_id, NULL AS object_id, v.bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+	b.bouwlaag, 'bouwlaag' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.dreiging v
+  INNER JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+  INNER JOIN objecten.dreiging_type vt ON v.dreiging_type_id = vt.id
+  WHERE v.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.omschrijving) d)) AS waarden_new,
+    '' AS operatie, 'dreiging' AS brontabel, v.id AS bron_id, v.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+	NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.dreiging v
+  INNER JOIN objecten.dreiging_type vt ON v.dreiging_type_id = vt.id
+  WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.handelingsaanwijzing) d)) AS waarden_new,
+    '' AS operatie, 'afw_binnendekking' AS brontabel, v.id AS bron_id, NULL AS object_id, v.bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    b.bouwlaag, 'bouwlaag' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.afw_binnendekking v
+  INNER JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+  INNER JOIN objecten.afw_binnendekking_type vt ON v.soort = vt.naam
+  WHERE v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.belemmering, v.voorzieningen) d)) AS waarden_new,
+    '' AS operatie, 'ingang' AS brontabel, v.id AS bron_id, NULL AS object_id, v.bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    b.bouwlaag, 'bouwlaag' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.ingang v
+  INNER JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+  INNER JOIN objecten.ingang_type vt ON v.ingang_type_id = vt.id
+  WHERE v.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.belemmering, v.voorzieningen) d)) AS waarden_new,
+    '' AS operatie, 'ingang' AS brontabel, v.id AS bron_id, v.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.ingang v
+  INNER JOIN objecten.ingang_type vt ON v.ingang_type_id = vt.id
+  WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label) d)) AS waarden_new,
+    '' AS operatie, 'opstelplaats' AS brontabel, v.id AS bron_id, v.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.opstelplaats v
+  INNER JOIN objecten.opstelplaats_type vt ON v.soort = vt.naam
+  WHERE v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.aanduiding_locatie) d)) AS waarden_new,
+    '' AS operatie, 'sleutelkluis' AS brontabel, v.id AS bron_id, NULL AS object_id, i.bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    b.bouwlaag, 'bouwlaag' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.sleutelkluis v
+  INNER JOIN objecten.ingang i ON v.ingang_id = i.id
+  INNER JOIN objecten.bouwlagen b ON i.bouwlaag_id = b.id
+  INNER JOIN objecten.sleutelkluis_type vt ON v.sleutelkluis_type_id = vt.id
+  WHERE i.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.aanduiding_locatie) d)) AS waarden_new,
+    '' AS operatie, 'sleutelkluis' AS brontabel, v.id AS bron_id, i.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.sleutelkluis v
+  INNER JOIN objecten.ingang i ON v.ingang_id = i.id
+  INNER JOIN objecten.sleutelkluis_type vt ON v.sleutelkluis_type_id = vt.id
+  WHERE i.object_id IS NOT NULL AND v.datum_deleted IS NULL
+UNION ALL
+  SELECT v.id, v.geom, row_to_json(( SELECT d.*::record AS d FROM (SELECT v.label, v.bijzonderheid) d)) AS waarden_new,
+    '' AS operatie, 'points_of_interest' AS brontabel, v.id AS bron_id, v.object_id, NULL AS bouwlaag_id, v.rotatie, vt.size, vt.symbol_name,
+    NULL AS bouwlaag, 'object' AS binnen_buiten, 'oiv' AS bron
+  FROM objecten.points_of_interest v
+  INNER JOIN objecten.points_of_interest_type vt ON v.points_of_interest_type_id = vt.id
+  WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL
 ) sub;
 
 CREATE RULE symbolen_ins AS
@@ -593,84 +637,39 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag,
     sub.bron,
     sub.binnen_buiten
-   FROM ( SELECT werkvoorraad_lijn.id,
-            werkvoorraad_lijn.geom,
-            werkvoorraad_lijn.waarden_new,
-            werkvoorraad_lijn.operatie,
-            werkvoorraad_lijn.brontabel,
-            werkvoorraad_lijn.bron_id,
-            werkvoorraad_lijn.object_id,
-            werkvoorraad_lijn.bouwlaag_id,
-            werkvoorraad_lijn.symbol_name,
-            werkvoorraad_lijn.bouwlaag,
-            'werkvoorraad'::text AS bron,
-    		''::text AS binnen_buiten
-           FROM mobiel.werkvoorraad_lijn
-        UNION ALL
-         SELECT b.id,
-            b.geom,
-            row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT b.label,
-                            b.obstakels,
-                            b.wegafzetting) d)) AS waarden_new,
-            ''::character varying AS operatie,
-            'bereikbaarheid'::character varying AS brontabel,
-            b.id AS bron_id,
-            b.object_id,
-            NULL::integer AS bouwlaag_id,
-            b.soort AS symbol_name,
-            NULL::integer AS bouwlaag,
-            'oiv'::text AS bron,
-    		'object'::text AS binnen_buiten
-           FROM objecten.object_bereikbaarheid b
-             JOIN objecten.bereikbaarheid_type bt ON b.soort::text = bt.naam::text
-        UNION ALL
-         SELECT b.id,
-            b.geom,
-            row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT b.label,
-                            b.bijzonderheden) d)) AS waarden_new,
-            ''::character varying AS operatie,
-            'gebiedsgerichte_aanpak'::character varying AS brontabel,
-            b.id AS bron_id,
-            b.object_id,
-            NULL::integer AS bouwlaag_id,
-            b.soort AS symbol_name,
-            NULL::integer AS bouwlaag,
-            'oiv'::text AS bron,
-    		'object'::text AS binnen_buiten
-           FROM objecten.object_gebiedsgerichte_aanpak b
-             JOIN objecten.gebiedsgerichte_aanpak_type bt ON b.soort::text = bt.naam::text
-        UNION ALL
-         SELECT object_isolijnen.id,
-            object_isolijnen.geom,
-            row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT object_isolijnen.omschrijving) d)) AS waarden_new,
-            ''::character varying AS operatie,
-            'isolijnen'::character varying AS brontabel,
-            object_isolijnen.id AS bron_id,
-            object_isolijnen.object_id,
-            NULL::integer AS bouwlaag_id,
-            object_isolijnen.hoogte::character varying AS symbol_name,
-            NULL::integer AS bouwlaag,
-            'oiv'::text AS bron,
-    		'object'::text AS binnen_buiten
-           FROM objecten.object_isolijnen
-        UNION ALL
-         SELECT b.id,
-            b.geom,
-            NULL::json AS waarden_new,
-            ''::character varying AS operatie,
-            'veiligh_bouwk'::character varying AS brontabel,
-            b.id AS bron_id,
-            NULL::integer AS object_id,
-            b.bouwlaag_id,
-            b.soort AS symbol_name,
-            b.bouwlaag,
-            'oiv'::text AS bron,
-    		'bouwlaag'::text AS binnen_buiten
-           FROM objecten.bouwlaag_veiligh_bouwk b
-             JOIN objecten.veiligh_bouwk_type bt ON b.soort::text = bt.naam::text) sub;
+   FROM ( 
+      SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, symbol_name,
+            bouwlaag, 'werkvoorraad'::text AS bron, ''::text AS binnen_buiten
+      FROM mobiel.werkvoorraad_lijn
+    UNION ALL
+      SELECT b.id, b.geom, row_to_json(( SELECT d.*::record AS d FROM ( SELECT b.label, b.obstakels, b.wegafzetting) d)) AS waarden_new,
+            '' AS operatie, 'bereikbaarheid' AS brontabel, b.id AS bron_id, b.object_id, NULL AS bouwlaag_id, b.soort AS symbol_name,
+            NULL AS bouwlaag, 'oiv'::text AS bron, 'object'::text AS binnen_buiten
+      FROM objecten.bereikbaarheid b
+      INNER JOIN objecten.bereikbaarheid_type bt ON b.soort::text = bt.naam::text
+      WHERE b.datum_deleted IS NULL
+    UNION ALL
+      SELECT b.id, b.geom, row_to_json(( SELECT d.*::record AS d FROM ( SELECT b.label, b.bijzonderheden) d)) AS waarden_new,
+            '' AS operatie, 'gebiedsgerichte_aanpak' AS brontabel, b.id AS bron_id, b.object_id, NULL AS bouwlaag_id, b.soort AS symbol_name,
+            NULL AS bouwlaag, 'oiv'::text AS bron, 'object'::text AS binnen_buiten
+      FROM objecten.gebiedsgerichte_aanpak b
+      INNER JOIN objecten.gebiedsgerichte_aanpak_type bt ON b.soort::text = bt.naam::text
+      WHERE b.datum_deleted IS NULL
+    UNION ALL
+      SELECT b.id, b.geom, row_to_json(( SELECT d.*::record AS d FROM ( SELECT b.omschrijving) d)) AS waarden_new,
+            '' AS operatie, 'isolijnen' AS brontabel, b.id AS bron_id, b.object_id, NULL AS bouwlaag_id, hoogte::text AS symbol_name,
+            NULL AS bouwlaag, 'oiv'::text AS bron, 'object'::text AS binnen_buiten
+      FROM objecten.isolijnen b
+      WHERE b.datum_deleted IS NULL
+    UNION ALL
+      SELECT b.id, b.geom, NULL::json AS waarden_new,  '' AS operatie, 'veiligh_bouwk' AS brontabel, b.id AS bron_id,
+            NULL AS object_id, b.bouwlaag_id, b.soort AS symbol_name, bl.bouwlaag, 'oiv' AS bron, 'bouwlaag' AS binnen_buiten
+      FROM objecten.veiligh_bouwk b
+      inner join objecten.bouwlagen bl on b.bouwlaag_id = bl.id
+      INNER JOIN objecten.veiligh_bouwk_type bt ON b.soort::text = bt.naam::text
+      WHERE b.datum_deleted IS NULL
+  ) sub;
+
 
 CREATE OR REPLACE RULE lijnen_ins AS
     ON INSERT TO mobiel.lijnen DO INSTEAD  INSERT INTO mobiel.werkvoorraad_lijn (geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, symbol_name, bouwlaag, accepted, bouwlaag_object)
@@ -813,19 +812,21 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bron,
     sub.binnen_buiten
    FROM ( 
-	SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, symbol_name, bouwlaag,
-    'werkvoorraad'::text AS bron, ''::text AS binnen_buiten
+	SELECT id, geom, waarden_new, operatie, brontabel, bron_id, object_id, bouwlaag_id, symbol_name, bouwlaag, 'werkvoorraad' AS bron, '' AS binnen_buiten
 	FROM mobiel.werkvoorraad_vlak
 UNION ALL
 	SELECT b.id, geom, row_to_json((SELECT d FROM (SELECT omschrijving) d)) AS waarden_new, '', 'sectoren', b.id, object_id, NULL AS bouwlaag_id, soort, NULL AS bouwlaag,
     'oiv'::text AS bron, 'object'::text AS binnen_buiten
-	FROM objecten.object_sectoren b
+	FROM objecten.sectoren b
 	INNER JOIN objecten.sectoren_type bt ON b.soort = bt.naam
+  WHERE b.datum_deleted IS NULL
 UNION ALL
-	SELECT b.id, geom, row_to_json((SELECT d FROM (SELECT omschrijving) d)) AS waarden_new, '', 'ruimten', b.id, NULL AS object_id, bouwlaag_id, ruimten_type_id, bouwlaag,
+	SELECT b.id, b.geom, row_to_json((SELECT d FROM (SELECT omschrijving) d)) AS waarden_new, '', 'ruimten', b.id, NULL AS object_id, b.bouwlaag_id, b.ruimten_type_id, bl.bouwlaag,
     'oiv'::text AS bron, 'bouwlaag'::text AS binnen_buiten
-	FROM objecten.bouwlaag_ruimten b
+	FROM objecten.ruimten b
+	inner join objecten.bouwlagen bl on b.bouwlaag_id = bl.id
 	INNER JOIN objecten.ruimten_type bt ON b.ruimten_type_id = bt.naam
+  WHERE b.datum_deleted IS NULL
    ) sub;
 
 CREATE OR REPLACE RULE vlakken_ins AS ON INSERT TO mobiel.vlakken
@@ -847,6 +848,48 @@ UPDATE
 
 CREATE OR REPLACE VIEW mobiel.categorie_vlakken
 AS SELECT DISTINCT vlakken_type.categorie, vlakken_type.brontabel, bouwlaag_object FROM mobiel.vlakken_type;
+
+CREATE OR REPLACE VIEW mobiel.werkvoorraad_objecten
+AS SELECT DISTINCT o.id,
+    o.geom,
+    sub.object_id
+   FROM (SELECT DISTINCT werkvoorraad_punt.object_id
+           FROM mobiel.werkvoorraad_punt WHERE object_id IS NOT NULL
+        UNION
+         SELECT DISTINCT werkvoorraad_label.object_id
+           FROM mobiel.werkvoorraad_label WHERE object_id IS NOT NULL
+        UNION
+         SELECT DISTINCT werkvoorraad_lijn.object_id
+           FROM mobiel.werkvoorraad_lijn WHERE object_id IS NOT NULL
+        UNION
+         SELECT DISTINCT werkvoorraad_vlak.object_id
+           FROM mobiel.werkvoorraad_vlak WHERE object_id IS NOT NULL
+        UNION
+   		 SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_punt w
+           INNER JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+           INNER JOIN objecten.terrein t ON ST_INTERSECTS(b.geom, t.geom)
+           WHERE bouwlaag_id IS NOT NULL
+        UNION
+   		 SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_label w
+           INNER JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+           INNER JOIN objecten.terrein t ON ST_INTERSECTS(b.geom, t.geom)
+           WHERE bouwlaag_id IS NOT NULL
+        UNION
+   		 SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_lijn w
+           INNER JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+           INNER JOIN objecten.terrein t ON ST_INTERSECTS(b.geom, t.geom)
+           WHERE bouwlaag_id IS NOT NULL
+        UNION
+   		 SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_vlak w
+           INNER JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+           INNER JOIN objecten.terrein t ON ST_INTERSECTS(b.geom, t.geom)
+           WHERE bouwlaag_id IS NOT NULL
+        ) sub
+     JOIN objecten.object o ON sub.object_id = o.id;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 4;
