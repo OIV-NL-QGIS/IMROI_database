@@ -76,6 +76,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.pand_id,
     o.formelenaam,
     o.id AS object_id,
+    o.min_bouwlaag,
+    o.max_bouwlaag,
     sub.hoogste_bouwlaag,
     sub.laagste_bouwlaag
    FROM objecten.object o
