@@ -20,7 +20,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.afw_binnendekking d ON st_intersects(t.geom, d.geom)
@@ -42,7 +42,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.bedrijfshulpverlening b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND b.datum_deleted IS NULL AND o.datum_deleted IS NULL;
 
@@ -61,7 +61,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.bereikbaarheid b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND b.datum_deleted IS NULL AND o.datum_deleted IS NULL;
 
@@ -82,7 +82,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     sub.laagste_bouwlaag
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.bouwlagen d ON st_intersects(t.geom, d.geom)
@@ -105,7 +105,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.contactpersoon b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND b.datum_deleted IS NULL AND o.datum_deleted IS NULL;
 
@@ -131,7 +131,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.dreiging d ON st_intersects(t.geom, d.geom)
@@ -160,7 +160,7 @@ AS SELECT b.id,
      JOIN objecten.dreiging b ON o.id = b.object_id
      JOIN objecten.dreiging_type vt ON b.dreiging_type_id = vt.id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND b.datum_deleted IS NULL AND o.datum_deleted IS NULL;
 
@@ -178,7 +178,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.gebiedsgerichte_aanpak b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND b.datum_deleted IS NULL AND o.datum_deleted IS NULL;
 
@@ -207,7 +207,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     st.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON st_intersects(t.geom, op.geom)
@@ -239,7 +239,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     st.size_object AS size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id
@@ -266,7 +266,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.grid b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -292,7 +292,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.ingang d ON st_intersects(t.geom, d.geom)
@@ -322,7 +322,7 @@ AS SELECT b.id,
      JOIN objecten.ingang b ON o.id = b.object_id
      JOIN objecten.ingang_type vt ON b.ingang_type_id = vt.id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -338,7 +338,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.isolijnen b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -361,7 +361,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     vt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.label d ON st_intersects(t.geom, d.geom)
@@ -387,7 +387,7 @@ AS SELECT b.id,
      JOIN objecten.label b ON o.id = b.object_id
      JOIN objecten.label_type vt ON b.soort::text = vt.naam::text
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -421,7 +421,7 @@ AS SELECT o.id,
              JOIN objecten.gebruiksfunctie_type gt ON g.gebruiksfunctie_type_id = gt.id
           GROUP BY g.object_id) gf ON o.id = gf.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime, typeobject FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id, typeobject) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL;
 
@@ -444,7 +444,7 @@ AS SELECT b.id,
      JOIN objecten.opstelplaats b ON o.id = b.object_id
      JOIN objecten.opstelplaats_type vt ON b.soort::text = vt.naam::text
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -468,7 +468,7 @@ AS SELECT b.id,
      JOIN objecten.points_of_interest b ON o.id = b.object_id
      JOIN objecten.points_of_interest_type vt ON b.points_of_interest_type_id = vt.id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -488,7 +488,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     b.bouwdeel
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.ruimten d ON st_intersects(t.geom, d.geom)
@@ -514,7 +514,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     concat(s.setting_value, COALESCE(d.file_name, st.file_name)) AS scenario_url
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.scenario_locatie op ON st_intersects(t.geom, op.geom)
@@ -544,7 +544,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     concat(s.setting_value, COALESCE(d.file_name, st.file_name)) AS scenario_url
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.scenario_locatie op ON o.id = op.object_id
      JOIN objecten.scenario d ON op.id = d.scenario_locatie_id
@@ -577,7 +577,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     gsc.soort
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON st_intersects(t.geom, op.geom)
@@ -608,7 +608,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     gsc.soort
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id
@@ -630,7 +630,7 @@ AS SELECT b.id,
    FROM objecten.object o
      JOIN objecten.sectoren b ON o.id = b.object_id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
@@ -660,7 +660,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.sleutelkluis d ON st_intersects(t.geom, d.geom)
@@ -693,7 +693,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size_object AS size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.ingang i ON o.id = i.object_id
      JOIN objecten.sleutelkluis d ON i.id = d.ingang_id
@@ -716,7 +716,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     b.bouwdeel
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.veiligh_bouwk d ON st_intersects(t.geom, d.geom)
@@ -746,7 +746,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     dt.size
    FROM objecten.object o
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.veiligh_install d ON st_intersects(t.geom, d.geom)
@@ -774,7 +774,7 @@ AS SELECT b.id,
      JOIN objecten.veiligh_ruimtelijk b ON o.id = b.object_id
      JOIN objecten.veiligh_ruimtelijk_type vt ON b.veiligh_ruimtelijk_type_id = vt.id
      JOIN (SELECT DISTINCT historie.object_id, max(historie.datum_aangemaakt) AS maxdatetime FROM objecten.historie 
-     		WHERE historie.status::text = 'in gebruik'::text
+     		WHERE historie.status::text = 'in gebruik'::text AND historie.datum_deleted IS NULL
   			GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.datum_deleted IS NULL AND b.datum_deleted IS NULL;
 
