@@ -134,7 +134,7 @@ AS $function$
 $function$
 ;
 
-DROP TABLE IF EXISTS mobiel.werkvoorraad_label;
+DROP TABLE IF EXISTS mobiel.werkvoorraad_label CASCADE;
 CREATE TABLE mobiel.werkvoorraad_label (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
@@ -284,7 +284,7 @@ SELECT id, 'veiligh_ruimtelijk', naam, 'algemeen', symbol_name, "size", True, Tr
 
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
-SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size", False, True, True, False, True , 'bouwlaag' FROM objecten.sleutelkluis_type;
+SELECT id, 'sleutelkluis', naam, 'ingang', symbol_name, "size"::int, False, True, True, False, True , 'bouwlaag' FROM objecten.sleutelkluis_type;
 
 INSERT INTO mobiel.punten_type
 (bron_id, brontabel, naam, categorie, symbol_name, "size", evenement, gebouw, waterongeval, bluswater, natuur, bouwlaag_object)
@@ -377,17 +377,20 @@ AS $function$
 $function$
 ;
 
-CREATE or replace TRIGGER trg_set_insert BEFORE
+DROP TRIGGER IF EXISTS trg_set_insert ON mobiel.werkvoorraad_punt;
+CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE or replace TRIGGER trg_set_upd BEFORE
+DROP TRIGGER IF EXISTS trg_set_upd ON mobiel.werkvoorraad_punt;
+CREATE TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-    
-CREATE or replace TRIGGER trg_after_insert AFTER
+
+DROP TRIGGER IF EXISTS trg_after_insert ON mobiel.werkvoorraad_punt;
+CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_punt();
@@ -609,17 +612,20 @@ AS $function$
 $function$
 ;
 
-CREATE or replace TRIGGER trg_set_insert BEFORE
+DROP TRIGGER IF EXISTS trg_set_insert ON mobiel.werkvoorraad_lijn;
+CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE or replace TRIGGER trg_set_upd BEFORE
+DROP TRIGGER IF EXISTS trg_set_upd ON mobiel.werkvoorraad_lijn;
+CREATE TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-    
-CREATE or replace TRIGGER trg_after_insert AFTER
+
+DROP TRIGGER IF EXISTS trg_after_insert ON mobiel.werkvoorraad_lijn;
+CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_lijn();
@@ -783,17 +789,20 @@ AS $function$
 $function$
 ;
 
-CREATE or replace TRIGGER trg_set_insert BEFORE
+DROP TRIGGER IF EXISTS trg_set_insert ON mobiel.werkvoorraad_vlak;
+CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
-CREATE or replace TRIGGER trg_set_upd BEFORE
+DROP TRIGGER IF EXISTS trg_set_upd ON mobiel.werkvoorraad_vlak;
+CREATE TRIGGER trg_set_upd BEFORE
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-    
-CREATE or replace TRIGGER trg_after_insert AFTER
+ 
+DROP TRIGGER IF EXISTS trg_after_insert ON mobiel.werkvoorraad_vlak;
+CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_vlak();
@@ -894,5 +903,6 @@ AS SELECT DISTINCT o.id,
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 4;
 UPDATE algemeen.applicatie SET revisie = 3;
-UPDATE algemeen.applicatie SET db_versie = 343; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET db_versie = 344; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET omschrijving = 'mobiel';
 UPDATE algemeen.applicatie SET datum = now();
