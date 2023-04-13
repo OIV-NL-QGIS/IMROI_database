@@ -227,8 +227,9 @@ CREATE OR REPLACE RULE labels_ins AS
   VALUES (new.geom, new.waarden_new, 'INSERT'::character varying, new.brontabel, new.bron_id, new.bouwlaag_id, 
   			new.omschrijving, new.rotatie, new.size, new.symbol_name, new.bouwlaag, false, new.binnen_buiten);
 
+DROP VIEW IF EXISTS mobiel.categorie_labels;
 CREATE OR REPLACE VIEW mobiel.categorie_labels AS 
-	SELECT DISTINCT label_type.categorie, label_type.brontabel, bouwlaag_object FROM mobiel.label_type;
+	SELECT DISTINCT row_number() OVER (ORDER BY label_type.categorie) AS gid, label_type.categorie, label_type.brontabel, bouwlaag_object FROM mobiel.label_type;
 
 --SYMBOLEN
 CREATE TABLE mobiel.punten_type (
@@ -515,8 +516,9 @@ UPDATE
     ON
     mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_symbol_update();
 
+DROP VIEW IF EXISTS mobiel.categorie_punten;
 CREATE OR REPLACE VIEW mobiel.categorie_punten
-AS SELECT DISTINCT punten_type.categorie, punten_type.brontabel, punten_type.bouwlaag_object FROM mobiel.punten_type;
+AS SELECT DISTINCT row_number() OVER (ORDER BY punten_type.categorie) AS gid, punten_type.categorie, punten_type.brontabel, punten_type.bouwlaag_object FROM mobiel.punten_type;
 
 --LIJNEN
 CREATE TABLE mobiel.lijnen_type (
@@ -691,8 +693,9 @@ UPDATE
     ON
     mobiel.lijnen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_lijn_update();
 
+DROP VIEW IF EXISTS mobiel.categorie_lijnen;
 CREATE OR REPLACE VIEW mobiel.categorie_lijnen
-AS SELECT DISTINCT lijnen_type.categorie, lijnen_type.brontabel, bouwlaag_object FROM mobiel.lijnen_type;
+AS SELECT DISTINCT row_number() OVER (ORDER BY lijnen_type.categorie) AS gid, lijnen_type.categorie, lijnen_type.brontabel, bouwlaag_object FROM mobiel.lijnen_type;
 
 --VLAKKEN
 CREATE TABLE mobiel.vlakken_type (
@@ -855,8 +858,9 @@ UPDATE
     ON
     mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel.funct_vlak_update();
 
+DROP VIEW IF EXISTS mobiel.categorie_vlakken;
 CREATE OR REPLACE VIEW mobiel.categorie_vlakken
-AS SELECT DISTINCT vlakken_type.categorie, vlakken_type.brontabel, bouwlaag_object FROM mobiel.vlakken_type;
+AS SELECT DISTINCT row_number() OVER (ORDER BY vlakken_type.categorie) AS gid, vlakken_type.categorie, vlakken_type.brontabel, bouwlaag_object FROM mobiel.vlakken_type;
 
 CREATE OR REPLACE VIEW mobiel.werkvoorraad_objecten
 AS SELECT DISTINCT o.id,
