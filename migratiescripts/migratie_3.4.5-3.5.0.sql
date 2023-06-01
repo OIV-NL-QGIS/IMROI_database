@@ -32,11 +32,46 @@ AS $function$
     $function$
 ;
 
+CREATE OR REPLACE FUNCTION objecten.func_dreiging_upd()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+    BEGIN 
+        IF NEW.applicatie = 'OIV' THEN 
+            UPDATE objecten.dreiging SET geom = new.geom, dreiging_type_id = new.dreiging_type_id, omschrijving = new.omschrijving, rotatie = new.rotatie, label = new.label, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+            WHERE (dreiging.id = new.id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.label, new.omschrijving) d));
 
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT dt."size" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            ELSE
+                size := (SELECT dt."size_object" FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, fotografie_id, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'dreiging', old.id, new.bouwlaag_id, new.object_id, NEW.rotatie, size, symbol_name, bouwlaag , new.fotografie_id, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'dreiging', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 4;
 UPDATE algemeen.applicatie SET revisie = 5;
 UPDATE algemeen.applicatie SET db_versie = 345; -- db versie == versie_sub_revisie
-UPDATE algemeen.applicatie SET omschrijving = '';
+UPDATE algemeen.applicatie SET omschrijving = 'beta2';
 UPDATE algemeen.applicatie SET datum = now();
