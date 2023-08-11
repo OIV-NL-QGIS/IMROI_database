@@ -22,7 +22,8 @@ ALTER TABLE objecten.historie ALTER COLUMN matrix_code_id DROP NOT NULL;
 ALTER TABLE objecten.aanwezig ALTER COLUMN aanwezig_type_id DROP NOT NULL;
 
 --CREATE SCHEMA mobiel
--- DROP SCHEMA mobiel;
+
+DROP SCHEMA IF EXISTS mobiel CASCADE;
 
 CREATE SCHEMA mobiel AUTHORIZATION oiv_admin;
 
@@ -513,8 +514,385 @@ CREATE TABLE mobiel.werkvoorraad_label (
 );
 CREATE INDEX werkvoorraad_label_geom_gist ON mobiel.werkvoorraad_label USING gist (geom);
 
--- Table Triggers
+CREATE OR REPLACE FUNCTION mobiel.complement_record_label()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE 
+    	objectid integer := NULL;
+    	bouwlaagid integer := NULL;
+    BEGIN 
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
+	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
+	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", bouwlaag_id = bouwlaagid
+			FROM
+			  (
+			    SELECT * FROM mobiel.label_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'bouwlaag'
+			  ) sub
+			WHERE werkvoorraad_label.id = NEW.id;
+	    ELSE
+	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", object_id = objectid
+			FROM
+			  (
+			    SELECT * FROM mobiel.label_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'object'
+			  ) sub
+			WHERE werkvoorraad_label.id = NEW.id;
+	    END IF;
+	   RETURN NULL;
+    END;
+    $function$
+;
 
+-- Permissions
+
+ALTER FUNCTION mobiel.complement_record_label() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_label() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.complement_record_lijn()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE 
+    	objectid integer := NULL;
+    	bouwlaagid integer := NULL;
+    BEGIN 
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
+	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
+	    ELSE
+	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+	    END IF;
+		UPDATE mobiel.werkvoorraad_lijn SET object_id = objectid, bouwlaag_id = bouwlaagid
+		WHERE werkvoorraad_lijn.id = NEW.id;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.complement_record_lijn() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_lijn() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.complement_record_punt()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE 
+    	objectid integer := NULL;
+    	bouwlaagid integer := NULL;
+    BEGIN 
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
+	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
+	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", bouwlaag_id = bouwlaagid
+			FROM
+			  (
+			    SELECT * FROM mobiel.punten_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'bouwlaag'
+			  ) sub
+			WHERE werkvoorraad_punt.id = NEW.id;
+	    ELSE
+	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", object_id = objectid
+			FROM
+			  (
+			    SELECT * FROM mobiel.punten_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'object'
+			  ) sub
+			WHERE werkvoorraad_punt.id = NEW.id;
+	    END IF;
+	   RETURN NULL;
+    END;
+    $function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.complement_record_punt() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_punt() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.complement_record_vlak()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE 
+    	objectid integer := NULL;
+    	bouwlaagid integer := NULL;
+    BEGIN 
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
+	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
+	    ELSE
+	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+	    END IF;
+		UPDATE mobiel.werkvoorraad_vlak SET object_id = objectid, bouwlaag_id = bouwlaagid 
+		WHERE werkvoorraad_vlak.id = NEW.id;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.complement_record_vlak() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_vlak() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_label_delete()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF OLD.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
+  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.rotatie, old.size, old.symbol_name, old.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_label
+			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
+				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, rotatie=old.rotatie, "size"=old.size, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
+			WHERE werkvoorraad_label.id = old.id;
+	    ELSE
+			DELETE FROM mobiel.werkvoorraad_label WHERE (id = OLD.id);
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_label_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_label_delete() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_label_update()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF NEW.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, omschrijving, rotatie, size, symbol_name, bouwlaag, accepted)
+  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.id, new.bouwlaag_id, new.omschrijving, new.rotatie, new.size, new.symbol_name, new.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_label
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.id, omschrijving=new.omschrijving,
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_label.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.id, new.brontabel, new.bouwlaag);
+            END IF;
+	    ELSE
+			UPDATE mobiel.werkvoorraad_label
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, omschrijving=new.omschrijving, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_label.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+            END IF;
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_label_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_label_update() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_lijn_delete()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF OLD.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_lijn (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
+  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.symbol_name, old.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_lijn
+			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
+				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
+			WHERE werkvoorraad_lijn.id = old.id;
+	    ELSE
+			DELETE FROM mobiel.werkvoorraad_lijn WHERE (id = OLD.id);
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_lijn_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_lijn_delete() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_lijn_update()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF NEW.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_lijn (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
+  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.bron_id, new.bouwlaag_id, new.symbol_name, new.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_lijn
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_lijn.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+			END IF;
+	    ELSE
+			UPDATE mobiel.werkvoorraad_lijn
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_lijn.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+			END IF;
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_lijn_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_lijn_update() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_symbol_delete()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF OLD.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
+  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.rotatie, old.size, old.symbol_name, old.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_punt
+			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
+				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, rotatie=old.rotatie, "size"=old.size, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
+			WHERE werkvoorraad_punt.id = old.id;
+	    ELSE
+			DELETE FROM mobiel.werkvoorraad_punt WHERE (id = OLD.id);
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_symbol_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_symbol_delete() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_symbol_update()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF NEW.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
+  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.id, new.bouwlaag_id, new.rotatie, new.size, new.symbol_name, new.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_punt
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_punt.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.id, new.brontabel, new.bouwlaag);
+			END IF;
+	    ELSE
+			UPDATE mobiel.werkvoorraad_punt
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie='UPDATE', brontabel=NEW.brontabel, bron_id=old.bron_id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_punt.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+			END IF;
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_symbol_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_symbol_update() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_vlak_delete()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF OLD.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_vlak (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
+  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.symbol_name, old.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_vlak
+			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
+				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
+			WHERE werkvoorraad_vlak.id = old.id;
+	    ELSE
+			DELETE FROM mobiel.werkvoorraad_vlak WHERE (id = OLD.id);
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_vlak_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_vlak_delete() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION mobiel.funct_vlak_update()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    BEGIN 
+	    IF NEW.bron = 'oiv' THEN
+			INSERT INTO mobiel.werkvoorraad_vlak (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
+  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.bron_id, new.bouwlaag_id, new.symbol_name, new.bouwlaag, false);
+  		
+			UPDATE mobiel.werkvoorraad_vlak
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_vlak.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+			END IF;
+	    ELSE
+			UPDATE mobiel.werkvoorraad_vlak
+			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
+				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
+			WHERE werkvoorraad_vlak.id = NEW.id;
+			IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
+                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
+			END IF;
+	    END IF;
+	    RETURN NULL;
+    END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION mobiel.funct_vlak_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_vlak_update() TO oiv_admin;
+
+
+-- Permissions
+
+GRANT ALL ON SCHEMA mobiel TO oiv_admin;
+GRANT USAGE ON SCHEMA mobiel TO oiv_read;
+
+-- Table Triggers
 CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
@@ -1388,386 +1766,6 @@ ALTER TABLE mobiel.werkvoorraad_objecten OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_objecten TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_objecten TO oiv_read;
 GRANT INSERT, DELETE, UPDATE ON TABLE mobiel.werkvoorraad_objecten TO oiv_write;
-
-
-
-CREATE OR REPLACE FUNCTION mobiel.complement_record_label()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    DECLARE 
-    	objectid integer := NULL;
-    	bouwlaagid integer := NULL;
-    BEGIN 
-	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
-	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
-	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", bouwlaag_id = bouwlaagid
-			FROM
-			  (
-			    SELECT * FROM mobiel.label_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'bouwlaag'
-			  ) sub
-			WHERE werkvoorraad_label.id = NEW.id;
-	    ELSE
-	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", object_id = objectid
-			FROM
-			  (
-			    SELECT * FROM mobiel.label_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'object'
-			  ) sub
-			WHERE werkvoorraad_label.id = NEW.id;
-	    END IF;
-	   RETURN NULL;
-    END;
-    $function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.complement_record_label() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.complement_record_label() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.complement_record_lijn()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    DECLARE 
-    	objectid integer := NULL;
-    	bouwlaagid integer := NULL;
-    BEGIN 
-	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
-	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
-	    ELSE
-	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-	    END IF;
-		UPDATE mobiel.werkvoorraad_lijn SET object_id = objectid, bouwlaag_id = bouwlaagid
-		WHERE werkvoorraad_lijn.id = NEW.id;
-        RETURN NEW;
-    END;
-    $function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.complement_record_lijn() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.complement_record_lijn() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.complement_record_punt()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    DECLARE 
-    	objectid integer := NULL;
-    	bouwlaagid integer := NULL;
-    BEGIN 
-	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
-	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
-	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", bouwlaag_id = bouwlaagid
-			FROM
-			  (
-			    SELECT * FROM mobiel.punten_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'bouwlaag'
-			  ) sub
-			WHERE werkvoorraad_punt.id = NEW.id;
-	    ELSE
-	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", object_id = objectid
-			FROM
-			  (
-			    SELECT * FROM mobiel.punten_type WHERE symbol_name = new.symbol_name AND bouwlaag_object = 'object'
-			  ) sub
-			WHERE werkvoorraad_punt.id = NEW.id;
-	    END IF;
-	   RETURN NULL;
-    END;
-    $function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.complement_record_punt() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.complement_record_punt() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.complement_record_vlak()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    DECLARE 
-    	objectid integer := NULL;
-    	bouwlaagid integer := NULL;
-    BEGIN 
-	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
-	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
-	    ELSE
-	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-	    END IF;
-		UPDATE mobiel.werkvoorraad_vlak SET object_id = objectid, bouwlaag_id = bouwlaagid 
-		WHERE werkvoorraad_vlak.id = NEW.id;
-        RETURN NEW;
-    END;
-    $function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.complement_record_vlak() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.complement_record_vlak() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_label_delete()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF OLD.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
-  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.rotatie, old.size, old.symbol_name, old.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_label
-			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
-				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, rotatie=old.rotatie, "size"=old.size, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
-			WHERE werkvoorraad_label.id = old.id;
-	    ELSE
-			DELETE FROM mobiel.werkvoorraad_label WHERE (id = OLD.id);
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_label_delete() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_label_delete() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_label_update()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF NEW.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, omschrijving, rotatie, size, symbol_name, bouwlaag, accepted)
-  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.id, new.bouwlaag_id, new.omschrijving, new.rotatie, new.size, new.symbol_name, new.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_label
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.id, omschrijving=new.omschrijving,
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_label.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.id, new.brontabel, new.bouwlaag);
-            END IF;
-	    ELSE
-			UPDATE mobiel.werkvoorraad_label
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, omschrijving=new.omschrijving, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_label.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-            END IF;
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_label_update() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_label_update() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_lijn_delete()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF OLD.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_lijn (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
-  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.symbol_name, old.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_lijn
-			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
-				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
-			WHERE werkvoorraad_lijn.id = old.id;
-	    ELSE
-			DELETE FROM mobiel.werkvoorraad_lijn WHERE (id = OLD.id);
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_lijn_delete() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_lijn_delete() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_lijn_update()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF NEW.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_lijn (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
-  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.bron_id, new.bouwlaag_id, new.symbol_name, new.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_lijn
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_lijn.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-			END IF;
-	    ELSE
-			UPDATE mobiel.werkvoorraad_lijn
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_lijn.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-			END IF;
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_lijn_update() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_lijn_update() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_symbol_delete()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF OLD.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
-  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.rotatie, old.size, old.symbol_name, old.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_punt
-			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
-				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, rotatie=old.rotatie, "size"=old.size, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
-			WHERE werkvoorraad_punt.id = old.id;
-	    ELSE
-			DELETE FROM mobiel.werkvoorraad_punt WHERE (id = OLD.id);
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_symbol_delete() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_symbol_delete() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_symbol_update()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF NEW.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, rotatie, size, symbol_name, bouwlaag, accepted)
-  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.id, new.bouwlaag_id, new.rotatie, new.size, new.symbol_name, new.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_punt
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_punt.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.id, new.brontabel, new.bouwlaag);
-			END IF;
-	    ELSE
-			UPDATE mobiel.werkvoorraad_punt
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie='UPDATE', brontabel=NEW.brontabel, bron_id=old.bron_id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, rotatie=NEW.rotatie, "size"=NEW.size, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_punt.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-			END IF;
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_symbol_update() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_symbol_update() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_vlak_delete()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF OLD.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_vlak (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
-  			VALUES (old.geom, old.waarden_new, 'DELETE', old.brontabel, old.id, old.bouwlaag_id, old.symbol_name, old.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_vlak
-			SET geom=old.geom, waarden_new=old.waarden_new, operatie=old.operatie, brontabel=old.brontabel, bron_id=old.id, 
-				object_id=old.object_id, bouwlaag_id=old.bouwlaag_id, symbol_name=old.symbol_name, bouwlaag=old.bouwlaag
-			WHERE werkvoorraad_vlak.id = old.id;
-	    ELSE
-			DELETE FROM mobiel.werkvoorraad_vlak WHERE (id = OLD.id);
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_vlak_delete() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_vlak_delete() TO oiv_admin;
-
-CREATE OR REPLACE FUNCTION mobiel.funct_vlak_update()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-    BEGIN 
-	    IF NEW.bron = 'oiv' THEN
-			INSERT INTO mobiel.werkvoorraad_vlak (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, accepted)
-  			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, old.bron_id, new.bouwlaag_id, new.symbol_name, new.bouwlaag, false);
-  		
-			UPDATE mobiel.werkvoorraad_vlak
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_vlak.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-			END IF;
-	    ELSE
-			UPDATE mobiel.werkvoorraad_vlak
-			SET geom=NEW.geom, waarden_new=NEW.waarden_new, operatie=NEW.operatie, brontabel=NEW.brontabel, bron_id=old.bron_id, 
-				object_id=NEW.object_id, bouwlaag_id=NEW.bouwlaag_id, symbol_name=NEW.symbol_name, bouwlaag=NEW.bouwlaag
-			WHERE werkvoorraad_vlak.id = NEW.id;
-			IF NOT ST_Equals(new.geom, old.geom) THEN
-                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) 
-                    VALUES (ST_MakeLine(ST_Centroid(old.geom), ST_Centroid(new.geom)), old.bron_id, new.brontabel, new.bouwlaag);
-			END IF;
-	    END IF;
-	    RETURN NULL;
-    END;
-$function$
-;
-
--- Permissions
-
-ALTER FUNCTION mobiel.funct_vlak_update() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION mobiel.funct_vlak_update() TO oiv_admin;
-
-
--- Permissions
-
-GRANT ALL ON SCHEMA mobiel TO oiv_admin;
-GRANT USAGE ON SCHEMA mobiel TO oiv_read;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 5;
