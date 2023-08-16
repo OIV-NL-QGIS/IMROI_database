@@ -70,8 +70,8 @@ AS $function$
 ;
 
 -- Update versie van de applicatie
-UPDATE algemeen.applicatie SET sub = 4;
-UPDATE algemeen.applicatie SET revisie = 5;
-UPDATE algemeen.applicatie SET db_versie = 345; -- db versie == versie_sub_revisie
-UPDATE algemeen.applicatie SET omschrijving = 'beta2';
+UPDATE algemeen.applicatie SET sub = 5;
+UPDATE algemeen.applicatie SET revisie = 0;
+UPDATE algemeen.applicatie SET db_versie = 350; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET omschrijving = '';
 UPDATE algemeen.applicatie SET datum = now();
