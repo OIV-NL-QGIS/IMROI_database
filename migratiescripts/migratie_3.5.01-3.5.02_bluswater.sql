@@ -1,9 +1,41 @@
 SET ROLE oiv_admin;
 
+DROP TABLE IF EXISTS bluswater.brandkranen_landelijk;
+
+CREATE TABLE bluswater.brandkranen_landelijk (
+	id int4 NOT NULL,
+	geom public.geometry(point, 28992) NULL,
+	bronhouder varchar NULL,
+	nen3610id varchar NULL,
+	volgnummer varchar NULL,
+	kraantype varchar NULL,
+	status varchar NULL,
+	ligging varchar NULL,
+	spindeltype varchar NULL,
+	diameter varchar NULL,
+	leidingmateriaal varchar NULL,
+	datum_aanleg varchar NULL,
+	datum_laatste_inspectie varchar NULL,
+	einddatum varchar NULL,
+	adres varchar NULL,
+	beveiligd varchar NULL,
+	gemeentecode varchar NULL,
+	gemeentenaam varchar NULL,
+	soortleiding varchar NULL,
+	capaciteit varchar NULL,
+	belanghebbende varchar NULL,
+	mutatiedatum varchar NULL,
+	x float8 NULL,
+	y float8 NULL,
+	CONSTRAINT brandkranen_landelijk2_pkey PRIMARY KEY (id)
+);
+CREATE INDEX brandkranen_alndelijk_geom_gist ON bluswater.brandkranen USING gist (geom);
+
+
 ALTER TABLE bluswater.brandkranen RENAME TO brandkranen_oud;
 ALTER TABLE bluswater.brandkranen_landelijk RENAME TO brandkranen;
 
-DROP VIEW bluswater.leidingen_huidig;
+DROP VIEW IF EXISTS bluswater.leidingen_huidig;
 
 UPDATE algemeen.veiligheidsregio_watergrenzen
 SET code = CASE WHEN LENGTH(code) = 1 THEN CONCAT('VR0', code)
@@ -99,6 +131,38 @@ DROP VIEW bluswater.rapport_inspectie_vandaag_pwn;
 DROP VIEW bluswater.rapport_inspectie_vandaag_gemeente;
 DROP VIEW bluswater.rapport_inspectie_defect;
 DROP VIEW bluswater.rapport_inspectie;
+
+DROP RULE brandkraan_inspectie_upd ON bluswater.brandkraan_inspectie; 
+CREATE RULE brandkraan_inspectie_upd AS
+    ON UPDATE TO bluswater.brandkraan_inspectie DO INSTEAD  INSERT INTO bluswater.inspectie (brandkraan_nummer, conditie, inspecteur, plaatsaanduiding, plaatsaanduiding_anders, toegankelijkheid, toegankelijkheid_anders, klauw, klauw_diepte, klauw_anders, werking, werking_anders, opmerking, foto)
+  VALUES (old.nummer, new.conditie, new.inspecteur, new.plaatsaanduiding, new.plaatsaanduiding_anders, new.toegankelijkheid, new.toegankelijkheid_anders, new.klauw, new.klauw_diepte, new.klauw_anders, new.werking, new.werking_anders, new.opmerking, new.foto)
+  RETURNING inspectie.brandkraan_nummer,
+    inspectie.id,
+    inspectie.brandkraan_nummer,
+    (SELECT geom FROM bluswater.brandkranen b WHERE inspectie.brandkraan_nummer = b.volgnummer),
+    inspectie.datum_aangemaakt,
+    inspectie.datum_gewijzigd,
+    inspectie.conditie,
+    inspectie.inspecteur,
+    inspectie.plaatsaanduiding,
+    inspectie.plaatsaanduiding_anders,
+    inspectie.toegankelijkheid,
+    inspectie.toegankelijkheid_anders,
+    inspectie.klauw,
+    inspectie.klauw_diepte,
+    inspectie.klauw_anders,
+    inspectie.werking,
+    inspectie.werking_anders,
+    inspectie.opmerking,
+    inspectie.foto,
+    inspectie.uitgezet_bij_pwn,
+    inspectie.uitgezet_bij_gemeente,
+    inspectie.opmerking_beheerder,
+    '' AS inlognaam,
+   (SELECT gemeentenaam FROM bluswater.brandkranen b WHERE inspectie.brandkraan_nummer = b.volgnummer);
+
+
+DROP VIEW IF EXISTS bluswater.brandkraan_huidig_plus;
 
 CREATE OR REPLACE VIEW bluswater.rapport_inspectie
 AS SELECT brandkranen.id::character varying AS id,
@@ -269,4 +333,4 @@ AS SELECT rapport_inspectie_defect.id,
    FROM bluswater.rapport_inspectie_defect
   WHERE rapport_inspectie_defect.mutatie::date = now()::date AND (rapport_inspectie_defect.plaatsaanduiding IS NOT NULL OR rapport_inspectie_defect.plaatsaanduiding_anders IS NOT NULL OR rapport_inspectie_defect.toegankelijkheid IS NOT NULL OR rapport_inspectie_defect.toegankelijkheid_anders IS NOT NULL);
 
-DROP TABLE blustwater.brandkranen_oud;
+DROP TABLE bluswater.brandkranen_oud;
