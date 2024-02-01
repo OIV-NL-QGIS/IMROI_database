@@ -15,7 +15,7 @@ CREATE TYPE algemeen.eindstijl_type AS ENUM (
 
 CREATE DOMAIN algemeen.emailadres AS character varying(254)
 	COLLATE "default"
-	CONSTRAINT CHECK (VALUE::text ~ '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'::text);
+	CONSTRAINT emailadres_check CHECK (VALUE::text ~ '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'::text);
 -- DROP TYPE algemeen.lijnstijl_type;
 
 CREATE TYPE algemeen.lijnstijl_type AS ENUM (
@@ -52,12 +52,27 @@ CREATE TYPE algemeen.vulstijl_type AS ENUM (
 	'dense7',
 	'no');
 
+-- DROP SEQUENCE algemeen."Veiligheidsregio-watergrenzen_id_seq";
+
+CREATE SEQUENCE algemeen."Veiligheidsregio-watergrenzen_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE algemeen."Veiligheidsregio-watergrenzen_id_seq" OWNER TO postgres;
+GRANT ALL ON SEQUENCE algemeen."Veiligheidsregio-watergrenzen_id_seq" TO postgres;
+
 -- DROP SEQUENCE algemeen.bag_extent_gid_seq;
 
 CREATE SEQUENCE algemeen.bag_extent_gid_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -66,7 +81,7 @@ CREATE SEQUENCE algemeen.bag_extent_gid_seq
 
 ALTER SEQUENCE algemeen.bag_extent_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.bag_extent_gid_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.bag_extent_gid_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.bag_extent_gid_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.bag_extent_gid_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.bgt_extent_gid_seq;
@@ -74,7 +89,7 @@ GRANT UPDATE ON SEQUENCE algemeen.bag_extent_gid_seq TO oiv_write;
 CREATE SEQUENCE algemeen.bgt_extent_gid_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -83,7 +98,7 @@ CREATE SEQUENCE algemeen.bgt_extent_gid_seq
 
 ALTER SEQUENCE algemeen.bgt_extent_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.bgt_extent_gid_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.bgt_extent_gid_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.bgt_extent_gid_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.bgt_extent_gid_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.fotografie_id_seq;
@@ -91,7 +106,7 @@ GRANT UPDATE ON SEQUENCE algemeen.bgt_extent_gid_seq TO oiv_write;
 CREATE SEQUENCE algemeen.fotografie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -100,7 +115,7 @@ CREATE SEQUENCE algemeen.fotografie_id_seq
 
 ALTER SEQUENCE algemeen.fotografie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.fotografie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.fotografie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.fotografie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.fotografie_id_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.settings_id_seq;
@@ -117,7 +132,7 @@ CREATE SEQUENCE algemeen.settings_id_seq
 
 ALTER SEQUENCE algemeen.settings_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.settings_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.settings_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.settings_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.settings_id_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.styles_id_seq;
@@ -125,7 +140,7 @@ GRANT UPDATE ON SEQUENCE algemeen.settings_id_seq TO oiv_write;
 CREATE SEQUENCE algemeen.styles_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -134,7 +149,7 @@ CREATE SEQUENCE algemeen.styles_id_seq
 
 ALTER SEQUENCE algemeen.styles_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.styles_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.styles_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.styles_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.styles_id_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.team_id_seq;
@@ -142,7 +157,7 @@ GRANT UPDATE ON SEQUENCE algemeen.styles_id_seq TO oiv_write;
 CREATE SEQUENCE algemeen.team_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -151,7 +166,7 @@ CREATE SEQUENCE algemeen.team_id_seq
 
 ALTER SEQUENCE algemeen.team_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.team_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.team_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.team_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.team_id_seq TO oiv_write;
 
 -- DROP SEQUENCE algemeen.teamlid_id_seq;
@@ -159,7 +174,7 @@ GRANT UPDATE ON SEQUENCE algemeen.team_id_seq TO oiv_write;
 CREATE SEQUENCE algemeen.teamlid_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -168,8 +183,30 @@ CREATE SEQUENCE algemeen.teamlid_id_seq
 
 ALTER SEQUENCE algemeen.teamlid_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE algemeen.teamlid_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE algemeen.teamlid_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE algemeen.teamlid_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE algemeen.teamlid_id_seq TO oiv_write;
+-- algemeen."Veiligheidsregio-watergrenzen" definition
+
+-- Drop table
+
+-- DROP TABLE algemeen."Veiligheidsregio-watergrenzen";
+
+CREATE TABLE algemeen."Veiligheidsregio-watergrenzen" (
+	id serial4 NOT NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
+	code varchar NULL,
+	naam varchar NULL,
+	naam_vol varchar NULL,
+	afkorting varchar NULL,
+	CONSTRAINT "Veiligheidsregio-watergrenzen_pkey" PRIMARY KEY (id)
+);
+
+-- Permissions
+
+ALTER TABLE algemeen."Veiligheidsregio-watergrenzen" OWNER TO postgres;
+GRANT ALL ON TABLE algemeen."Veiligheidsregio-watergrenzen" TO postgres;
+
+
 -- algemeen.applicatie definition
 
 -- Drop table
@@ -184,6 +221,7 @@ CREATE TABLE algemeen.applicatie (
 	omschrijving text NULL,
 	datum timestamptz NULL DEFAULT now(),
 	db_versie int2 NULL,
+	mobiel bool NULL,
 	CONSTRAINT applicatie_pkey PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX applicatie_idx ON algemeen.applicatie USING btree ((1));
@@ -205,12 +243,13 @@ CREATE TABLE algemeen.bag_extent (
 	gid serial4 NOT NULL,
 	identificatie text NULL,
 	status text NULL,
-	geovlak geometry(multipolygon, 28992) NULL,
+	geovlak public.geometry(multipolygon, 28992) NULL,
 	gebruiksdoel text NULL,
 	bron varchar(10) NULL,
 	bron_tbl varchar(254) NULL,
 	CONSTRAINT bag_extent_pkey PRIMARY KEY (gid)
 );
+CREATE INDEX idx_bag_extent_pand_id ON algemeen.bag_extent USING btree (identificatie);
 CREATE INDEX sidx_bag_extent_geom ON algemeen.bag_extent USING gist (geovlak);
 
 -- Permissions
@@ -218,7 +257,7 @@ CREATE INDEX sidx_bag_extent_geom ON algemeen.bag_extent USING gist (geovlak);
 ALTER TABLE algemeen.bag_extent OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.bag_extent TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.bag_extent TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.bag_extent TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.bag_extent TO oiv_write;
 
 
 -- algemeen.bgt_extent definition
@@ -230,7 +269,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.bag_extent TO oiv_write;
 CREATE TABLE algemeen.bgt_extent (
 	gid serial4 NOT NULL,
 	identificatie varchar NULL, -- gml_id vanuit BGT
-	geovlak geometry(curvepolygon, 28992) NULL,
+	geovlak public.geometry(curvepolygon, 28992) NULL,
 	lokaalid varchar NULL,
 	bron_tbl varchar(254) NULL,
 	bron varchar(10) NULL,
@@ -247,7 +286,7 @@ COMMENT ON COLUMN algemeen.bgt_extent.identificatie IS 'gml_id vanuit BGT';
 ALTER TABLE algemeen.bgt_extent OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.bgt_extent TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.bgt_extent TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.bgt_extent TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.bgt_extent TO oiv_write;
 
 
 -- algemeen.fotografie definition
@@ -258,7 +297,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.bgt_extent TO oiv_write;
 
 CREATE TABLE algemeen.fotografie (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NOT NULL,
+	geom public.geometry(point, 28992) NOT NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	uitgesloten bool NULL DEFAULT false,
@@ -281,7 +320,7 @@ COMMENT ON TABLE algemeen.fotografie IS 'Algemene fotografie tabel';
 ALTER TABLE algemeen.fotografie OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.fotografie TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.fotografie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.fotografie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.fotografie TO oiv_write;
 
 
 -- algemeen.gemeente_zonder_wtr definition
@@ -292,7 +331,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.fotografie TO oiv_write;
 
 CREATE TABLE algemeen.gemeente_zonder_wtr (
 	id int8 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	objectid int8 NULL,
 	gml_id varchar(254) NULL,
 	code varchar(6) NULL,
@@ -313,7 +352,7 @@ CREATE INDEX sidx_gemeente_geom ON algemeen.gemeente_zonder_wtr USING gist (geom
 ALTER TABLE algemeen.gemeente_zonder_wtr OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.gemeente_zonder_wtr TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.gemeente_zonder_wtr TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.gemeente_zonder_wtr TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.gemeente_zonder_wtr TO oiv_write;
 
 
 -- algemeen.gt_pk_metadata_table definition
@@ -338,7 +377,7 @@ CREATE TABLE algemeen.gt_pk_metadata_table (
 ALTER TABLE algemeen.gt_pk_metadata_table OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.gt_pk_metadata_table TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.gt_pk_metadata_table TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.gt_pk_metadata_table TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.gt_pk_metadata_table TO oiv_write;
 
 
 -- algemeen.settings definition
@@ -397,7 +436,7 @@ GRANT SELECT ON TABLE algemeen.styles TO oiv_read;
 
 CREATE TABLE algemeen.veiligheidsregio (
 	id int4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	statcode text NOT NULL,
 	statnaam text NULL,
 	rubriek text NULL,
@@ -411,7 +450,7 @@ CREATE INDEX sidx_veiligheidsregio_geom ON algemeen.veiligheidsregio USING gist 
 ALTER TABLE algemeen.veiligheidsregio OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.veiligheidsregio TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.veiligheidsregio TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.veiligheidsregio TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.veiligheidsregio TO oiv_write;
 
 
 -- algemeen.veiligheidsregio_watergrenzen definition
@@ -422,7 +461,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.veiligheidsregio TO oiv_write;
 
 CREATE TABLE algemeen.veiligheidsregio_watergrenzen (
 	id int4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	code varchar NULL,
 	naam varchar NULL,
 	CONSTRAINT veiligheidsregio_code_key UNIQUE (code),
@@ -435,7 +474,7 @@ CREATE INDEX sidx_veiligheidsregio_watergrens_geom ON algemeen.veiligheidsregio_
 ALTER TABLE algemeen.veiligheidsregio_watergrenzen OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.veiligheidsregio_watergrenzen TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.veiligheidsregio_watergrenzen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.veiligheidsregio_watergrenzen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.veiligheidsregio_watergrenzen TO oiv_write;
 
 
 -- algemeen.team definition
@@ -449,7 +488,7 @@ CREATE TABLE algemeen.team (
 	statcode text NOT NULL,
 	naam varchar(255) NOT NULL,
 	email algemeen.emailadres NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	CONSTRAINT team_pkey PRIMARY KEY (id),
 	CONSTRAINT team_statcode_fk FOREIGN KEY (statcode) REFERENCES algemeen.veiligheidsregio(statcode)
 );
@@ -506,7 +545,7 @@ AS SELECT fotografie.id,
 ALTER TABLE algemeen.fotografie_cogo OWNER TO oiv_admin;
 GRANT ALL ON TABLE algemeen.fotografie_cogo TO oiv_admin;
 GRANT SELECT ON TABLE algemeen.fotografie_cogo TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE algemeen.fotografie_cogo TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE algemeen.fotografie_cogo TO oiv_write;
 
 
 -- algemeen.veiligheidsregio_huidig source
@@ -518,7 +557,7 @@ AS SELECT veiligheidsregio.id,
     veiligheidsregio.statnaam,
     veiligheidsregio.rubriek
    FROM algemeen.veiligheidsregio
-  WHERE veiligheidsregio.statcode = 'VR11'::text;
+  WHERE veiligheidsregio.statcode = 'VR10'::text;
 
 -- Permissions
 

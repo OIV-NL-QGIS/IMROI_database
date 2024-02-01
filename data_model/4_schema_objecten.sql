@@ -9,7 +9,7 @@ COMMENT ON SCHEMA objecten IS 'OIV objecten';
 CREATE SEQUENCE objecten.aanwezig_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -18,7 +18,7 @@ CREATE SEQUENCE objecten.aanwezig_id_seq
 
 ALTER SEQUENCE objecten.aanwezig_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.aanwezig_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.aanwezig_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.aanwezig_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.aanwezig_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.afw_binnendekking_id_seq;
@@ -26,7 +26,7 @@ GRANT UPDATE ON SEQUENCE objecten.aanwezig_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.afw_binnendekking_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -35,7 +35,7 @@ CREATE SEQUENCE objecten.afw_binnendekking_id_seq
 
 ALTER SEQUENCE objecten.afw_binnendekking_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.afw_binnendekking_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.afw_binnendekking_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.afw_binnendekking_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.afw_binnendekking_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.bedrijfshulpverlening_id_seq;
@@ -43,7 +43,7 @@ GRANT UPDATE ON SEQUENCE objecten.afw_binnendekking_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.bedrijfshulpverlening_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -52,7 +52,7 @@ CREATE SEQUENCE objecten.bedrijfshulpverlening_id_seq
 
 ALTER SEQUENCE objecten.bedrijfshulpverlening_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.bedrijfshulpverlening_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.bedrijfshulpverlening_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.bedrijfshulpverlening_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.bedrijfshulpverlening_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.beheersmaatregelen_id_seq;
@@ -60,7 +60,7 @@ GRANT UPDATE ON SEQUENCE objecten.bedrijfshulpverlening_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.beheersmaatregelen_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -69,7 +69,7 @@ CREATE SEQUENCE objecten.beheersmaatregelen_id_seq
 
 ALTER SEQUENCE objecten.beheersmaatregelen_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.beheersmaatregelen_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.beheersmaatregelen_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.beheersmaatregelen_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.beheersmaatregelen_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.bereikbaarheid_id_seq;
@@ -77,7 +77,7 @@ GRANT UPDATE ON SEQUENCE objecten.beheersmaatregelen_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.bereikbaarheid_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -86,32 +86,15 @@ CREATE SEQUENCE objecten.bereikbaarheid_id_seq
 
 ALTER SEQUENCE objecten.bereikbaarheid_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.bereikbaarheid_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.bereikbaarheid_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.bereikbaarheid_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.bereikbaarheid_id_seq TO oiv_write;
-
--- DROP SEQUENCE objecten.bouwlaag_filter_id_seq;
-
-CREATE SEQUENCE objecten.bouwlaag_filter_id_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 2147483647
-	START 1
-	CACHE 1
-	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE objecten.bouwlaag_filter_id_seq OWNER TO oiv_admin;
-GRANT ALL ON SEQUENCE objecten.bouwlaag_filter_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.bouwlaag_filter_id_seq TO oiv_read;
-GRANT UPDATE ON SEQUENCE objecten.bouwlaag_filter_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.bouwlagen_id_seq;
 
 CREATE SEQUENCE objecten.bouwlagen_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -120,7 +103,7 @@ CREATE SEQUENCE objecten.bouwlagen_id_seq
 
 ALTER SEQUENCE objecten.bouwlagen_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.bouwlagen_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.bouwlagen_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.bouwlagen_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.bouwlagen_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.contactpersoon_id_seq;
@@ -128,7 +111,7 @@ GRANT UPDATE ON SEQUENCE objecten.bouwlagen_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.contactpersoon_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -137,7 +120,7 @@ CREATE SEQUENCE objecten.contactpersoon_id_seq
 
 ALTER SEQUENCE objecten.contactpersoon_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.contactpersoon_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.contactpersoon_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.contactpersoon_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.contactpersoon_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.dreiging_id_seq;
@@ -145,7 +128,7 @@ GRANT UPDATE ON SEQUENCE objecten.contactpersoon_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.dreiging_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -154,7 +137,7 @@ CREATE SEQUENCE objecten.dreiging_id_seq
 
 ALTER SEQUENCE objecten.dreiging_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.dreiging_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.dreiging_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.dreiging_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.dreiging_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq;
@@ -162,7 +145,7 @@ GRANT UPDATE ON SEQUENCE objecten.dreiging_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -171,7 +154,7 @@ CREATE SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq
 
 ALTER SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gebruiksfunctie_id_seq;
@@ -179,7 +162,7 @@ GRANT UPDATE ON SEQUENCE objecten.gebiedsgerichte_aanpak_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.gebruiksfunctie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -188,7 +171,7 @@ CREATE SEQUENCE objecten.gebruiksfunctie_id_seq
 
 ALTER SEQUENCE objecten.gebruiksfunctie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gebruiksfunctie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gebruiksfunctie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gebruiksfunctie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gebruiksfunctie_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gevaarlijkestof_id_seq;
@@ -196,7 +179,7 @@ GRANT UPDATE ON SEQUENCE objecten.gebruiksfunctie_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.gevaarlijkestof_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -205,7 +188,7 @@ CREATE SEQUENCE objecten.gevaarlijkestof_id_seq
 
 ALTER SEQUENCE objecten.gevaarlijkestof_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gevaarlijkestof_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gevaarlijkestof_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gevaarlijkestof_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gevaarlijkestof_opslag_id_seq;
@@ -213,7 +196,7 @@ GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.gevaarlijkestof_opslag_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -222,7 +205,7 @@ CREATE SEQUENCE objecten.gevaarlijkestof_opslag_id_seq
 
 ALTER SEQUENCE objecten.gevaarlijkestof_opslag_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gevaarlijkestof_opslag_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gevaarlijkestof_opslag_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gevaarlijkestof_opslag_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_opslag_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq;
@@ -230,7 +213,7 @@ GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_opslag_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -239,7 +222,7 @@ CREATE SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq
 
 ALTER SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq;
@@ -247,7 +230,7 @@ GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_schade_cirkel_id_seq TO oiv_wr
 CREATE SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -256,7 +239,7 @@ CREATE SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq
 
 ALTER SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.grid_id_seq;
@@ -264,7 +247,7 @@ GRANT UPDATE ON SEQUENCE objecten.gevaarlijkestof_vnnr_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.grid_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -273,7 +256,7 @@ CREATE SEQUENCE objecten.grid_id_seq
 
 ALTER SEQUENCE objecten.grid_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.grid_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.grid_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.grid_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.grid_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.historie_id_seq;
@@ -281,7 +264,7 @@ GRANT UPDATE ON SEQUENCE objecten.grid_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.historie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -290,7 +273,7 @@ CREATE SEQUENCE objecten.historie_id_seq
 
 ALTER SEQUENCE objecten.historie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.historie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.historie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.historie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.historie_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.ingang_id_seq;
@@ -298,7 +281,7 @@ GRANT UPDATE ON SEQUENCE objecten.historie_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.ingang_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -307,7 +290,7 @@ CREATE SEQUENCE objecten.ingang_id_seq
 
 ALTER SEQUENCE objecten.ingang_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.ingang_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.ingang_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.ingang_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.ingang_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.isolijnen_id_seq;
@@ -315,7 +298,7 @@ GRANT UPDATE ON SEQUENCE objecten.ingang_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.isolijnen_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -324,7 +307,7 @@ CREATE SEQUENCE objecten.isolijnen_id_seq
 
 ALTER SEQUENCE objecten.isolijnen_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.isolijnen_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.isolijnen_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.isolijnen_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.isolijnen_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.label_id_seq;
@@ -332,7 +315,7 @@ GRANT UPDATE ON SEQUENCE objecten.isolijnen_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.label_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -341,7 +324,7 @@ CREATE SEQUENCE objecten.label_id_seq
 
 ALTER SEQUENCE objecten.label_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.label_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.label_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.label_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.label_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.object_id_seq;
@@ -349,7 +332,7 @@ GRANT UPDATE ON SEQUENCE objecten.label_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.object_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -358,7 +341,7 @@ CREATE SEQUENCE objecten.object_id_seq
 
 ALTER SEQUENCE objecten.object_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.object_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.object_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.object_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.object_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.opstelplaats_id_seq;
@@ -366,7 +349,7 @@ GRANT UPDATE ON SEQUENCE objecten.object_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.opstelplaats_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -375,7 +358,7 @@ CREATE SEQUENCE objecten.opstelplaats_id_seq
 
 ALTER SEQUENCE objecten.opstelplaats_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.opstelplaats_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.opstelplaats_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.opstelplaats_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.opstelplaats_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.pictogram_zonder_object_id_seq;
@@ -383,7 +366,7 @@ GRANT UPDATE ON SEQUENCE objecten.opstelplaats_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.pictogram_zonder_object_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -392,7 +375,7 @@ CREATE SEQUENCE objecten.pictogram_zonder_object_id_seq
 
 ALTER SEQUENCE objecten.pictogram_zonder_object_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.pictogram_zonder_object_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.pictogram_zonder_object_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.pictogram_zonder_object_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.pictogram_zonder_object_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.points_of_interest_id_seq;
@@ -400,7 +383,7 @@ GRANT UPDATE ON SEQUENCE objecten.pictogram_zonder_object_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.points_of_interest_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -409,7 +392,7 @@ CREATE SEQUENCE objecten.points_of_interest_id_seq
 
 ALTER SEQUENCE objecten.points_of_interest_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.points_of_interest_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.points_of_interest_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.points_of_interest_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.points_of_interest_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.ruimten_id_seq;
@@ -417,7 +400,7 @@ GRANT UPDATE ON SEQUENCE objecten.points_of_interest_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.ruimten_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -426,7 +409,7 @@ CREATE SEQUENCE objecten.ruimten_id_seq
 
 ALTER SEQUENCE objecten.ruimten_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.ruimten_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.ruimten_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.ruimten_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.ruimten_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.ruimten_type_id_seq;
@@ -434,7 +417,7 @@ GRANT UPDATE ON SEQUENCE objecten.ruimten_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.ruimten_type_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -443,7 +426,7 @@ CREATE SEQUENCE objecten.ruimten_type_id_seq
 
 ALTER SEQUENCE objecten.ruimten_type_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.ruimten_type_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.ruimten_type_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.ruimten_type_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.ruimten_type_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.scenario_id_seq;
@@ -451,7 +434,7 @@ GRANT UPDATE ON SEQUENCE objecten.ruimten_type_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.scenario_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -460,7 +443,7 @@ CREATE SEQUENCE objecten.scenario_id_seq
 
 ALTER SEQUENCE objecten.scenario_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.scenario_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.scenario_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.scenario_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.scenario_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.scenario_locatie_id_seq;
@@ -477,7 +460,7 @@ CREATE SEQUENCE objecten.scenario_locatie_id_seq
 
 ALTER SEQUENCE objecten.scenario_locatie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.scenario_locatie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.scenario_locatie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.scenario_locatie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.scenario_locatie_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.sectoren_id_seq;
@@ -485,7 +468,7 @@ GRANT UPDATE ON SEQUENCE objecten.scenario_locatie_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.sectoren_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -494,7 +477,7 @@ CREATE SEQUENCE objecten.sectoren_id_seq
 
 ALTER SEQUENCE objecten.sectoren_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.sectoren_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.sectoren_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.sectoren_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.sectoren_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.sleutelkluis_id_seq;
@@ -502,7 +485,7 @@ GRANT UPDATE ON SEQUENCE objecten.sectoren_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.sleutelkluis_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -511,7 +494,7 @@ CREATE SEQUENCE objecten.sleutelkluis_id_seq
 
 ALTER SEQUENCE objecten.sleutelkluis_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.sleutelkluis_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.sleutelkluis_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.sleutelkluis_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.sleutelkluis_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.terrein_id_seq;
@@ -519,7 +502,7 @@ GRANT UPDATE ON SEQUENCE objecten.sleutelkluis_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.terrein_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -528,7 +511,7 @@ CREATE SEQUENCE objecten.terrein_id_seq
 
 ALTER SEQUENCE objecten.terrein_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.terrein_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.terrein_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.terrein_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.terrein_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.veiligh_bouwk_id_seq;
@@ -536,7 +519,7 @@ GRANT UPDATE ON SEQUENCE objecten.terrein_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.veiligh_bouwk_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -545,7 +528,7 @@ CREATE SEQUENCE objecten.veiligh_bouwk_id_seq
 
 ALTER SEQUENCE objecten.veiligh_bouwk_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.veiligh_bouwk_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.veiligh_bouwk_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.veiligh_bouwk_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.veiligh_bouwk_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.veiligh_install_id_seq;
@@ -553,7 +536,7 @@ GRANT UPDATE ON SEQUENCE objecten.veiligh_bouwk_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.veiligh_install_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -562,7 +545,7 @@ CREATE SEQUENCE objecten.veiligh_install_id_seq
 
 ALTER SEQUENCE objecten.veiligh_install_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.veiligh_install_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.veiligh_install_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.veiligh_install_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.veiligh_install_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.veiligh_ruimtelijk_id_seq;
@@ -570,7 +553,7 @@ GRANT UPDATE ON SEQUENCE objecten.veiligh_install_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.veiligh_ruimtelijk_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -579,7 +562,7 @@ CREATE SEQUENCE objecten.veiligh_ruimtelijk_id_seq
 
 ALTER SEQUENCE objecten.veiligh_ruimtelijk_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.veiligh_ruimtelijk_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.veiligh_ruimtelijk_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.veiligh_ruimtelijk_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.veiligh_ruimtelijk_id_seq TO oiv_write;
 
 -- DROP SEQUENCE objecten.veilighv_org_id_seq;
@@ -587,7 +570,7 @@ GRANT UPDATE ON SEQUENCE objecten.veiligh_ruimtelijk_id_seq TO oiv_write;
 CREATE SEQUENCE objecten.veilighv_org_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -596,7 +579,7 @@ CREATE SEQUENCE objecten.veilighv_org_id_seq
 
 ALTER SEQUENCE objecten.veilighv_org_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE objecten.veilighv_org_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE objecten.veilighv_org_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE objecten.veilighv_org_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE objecten.veilighv_org_id_seq TO oiv_write;
 -- objecten.aanwezig_type definition
 
@@ -630,7 +613,7 @@ CREATE TABLE objecten.afw_binnendekking_type (
 	naam varchar(50) NULL,
 	symbol_name text NULL,
 	"size" int4 NULL,
-	CONSTRAINT afw_binnendekking_type_new_naam_key UNIQUE (naam),
+	CONSTRAINT afw_binnendekking_naam_uk UNIQUE (naam),
 	CONSTRAINT afw_binnendekking_type_new_pkey PRIMARY KEY (id)
 );
 
@@ -639,7 +622,7 @@ CREATE TABLE objecten.afw_binnendekking_type (
 ALTER TABLE objecten.afw_binnendekking_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.afw_binnendekking_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.afw_binnendekking_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.afw_binnendekking_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.afw_binnendekking_type TO oiv_write;
 
 
 -- objecten.beheersmaatregelen_inzetfase definition
@@ -660,7 +643,7 @@ CREATE TABLE objecten.beheersmaatregelen_inzetfase (
 ALTER TABLE objecten.beheersmaatregelen_inzetfase OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.beheersmaatregelen_inzetfase TO oiv_admin;
 GRANT SELECT ON TABLE objecten.beheersmaatregelen_inzetfase TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.beheersmaatregelen_inzetfase TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.beheersmaatregelen_inzetfase TO oiv_write;
 
 
 -- objecten.bereikbaarheid_type definition
@@ -672,8 +655,8 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.beheersmaatregelen_inzetfase TO o
 CREATE TABLE objecten.bereikbaarheid_type (
 	id int2 NOT NULL,
 	naam varchar(50) NULL,
-	CONSTRAINT bereikbaarheid_type_new_naam_key UNIQUE (naam),
-	CONSTRAINT bereikbaarheid_type_new_pkey PRIMARY KEY (id)
+	CONSTRAINT bereikbaarheid_type_new_pkey PRIMARY KEY (id),
+	CONSTRAINT naam_uk UNIQUE (naam)
 );
 
 -- Permissions
@@ -681,7 +664,7 @@ CREATE TABLE objecten.bereikbaarheid_type (
 ALTER TABLE objecten.bereikbaarheid_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bereikbaarheid_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bereikbaarheid_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bereikbaarheid_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bereikbaarheid_type TO oiv_write;
 
 
 -- objecten.bodemgesteldheid_type definition
@@ -702,28 +685,61 @@ CREATE TABLE objecten.bodemgesteldheid_type (
 ALTER TABLE objecten.bodemgesteldheid_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bodemgesteldheid_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bodemgesteldheid_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bodemgesteldheid_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bodemgesteldheid_type TO oiv_write;
 
 
--- objecten.bouwlaag_filter definition
+-- objecten.bouwlagen definition
 
 -- Drop table
 
--- DROP TABLE objecten.bouwlaag_filter;
+-- DROP TABLE objecten.bouwlagen;
 
-CREATE TABLE objecten.bouwlaag_filter (
+CREATE TABLE objecten.bouwlagen (
 	id serial4 NOT NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
+	datum_aangemaakt timestamptz NULL DEFAULT now(),
+	datum_gewijzigd timestamptz NULL,
 	bouwlaag int4 NOT NULL,
-	geom geometry(multipolygon, 28992) NOT NULL,
-	CONSTRAINT bouwlaag_filter_pkey PRIMARY KEY (id)
+	bouwdeel varchar(25) NULL,
+	pand_id varchar(40) NOT NULL,
+	datum_deleted timestamptz NULL,
+	CONSTRAINT bouwlagen_pkey PRIMARY KEY (id),
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL)))
 );
+CREATE INDEX bouwlagen_bouwlaag_idx ON objecten.bouwlagen USING btree (bouwlaag);
+CREATE INDEX bouwlagen_geom_gist ON objecten.bouwlagen USING gist (geom);
+CREATE INDEX bouwlagen_pand_id_idx ON objecten.bouwlagen USING btree (pand_id);
+CREATE INDEX idx_bouwlagen_bouwlaag ON objecten.bouwlagen USING btree (bouwlaag);
+CREATE INDEX idx_bouwlagen_pand_id ON objecten.bouwlagen USING btree (pand_id);
+COMMENT ON TABLE objecten.bouwlagen IS 'Grid voor verdeling en verduidelijking locatie op terrein';
+
+-- Table Triggers
+
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
+CREATE TRIGGER bouwlagen_soft_del_cascade BEFORE
+DELETE
+    ON
+    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'bouwlagen',
+    'bouwlaag_id');
+CREATE TRIGGER trg_set_delete BEFORE
+DELETE
+    ON
+    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
 
 -- Permissions
 
-ALTER TABLE objecten.bouwlaag_filter OWNER TO oiv_admin;
-GRANT ALL ON TABLE objecten.bouwlaag_filter TO oiv_admin;
-GRANT SELECT ON TABLE objecten.bouwlaag_filter TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_filter TO oiv_write;
+ALTER TABLE objecten.bouwlagen OWNER TO oiv_admin;
+GRANT ALL ON TABLE objecten.bouwlagen TO oiv_admin;
+GRANT SELECT ON TABLE objecten.bouwlagen TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlagen TO oiv_write;
 
 
 -- objecten.contactpersoon_type definition
@@ -744,7 +760,7 @@ CREATE TABLE objecten.contactpersoon_type (
 ALTER TABLE objecten.contactpersoon_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.contactpersoon_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.contactpersoon_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.contactpersoon_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.contactpersoon_type TO oiv_write;
 
 
 -- objecten.dreiging_type definition
@@ -780,7 +796,7 @@ CREATE TABLE objecten.gebiedsgerichte_aanpak_type (
 	id int2 NOT NULL,
 	naam varchar(50) NULL,
 	CONSTRAINT gebiedsgerichte_aanpak_type_pkey PRIMARY KEY (id),
-	CONSTRAINT naam_uk UNIQUE (naam)
+	CONSTRAINT naam_gebied_uk UNIQUE (naam)
 );
 
 -- Permissions
@@ -788,7 +804,7 @@ CREATE TABLE objecten.gebiedsgerichte_aanpak_type (
 ALTER TABLE objecten.gebiedsgerichte_aanpak_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gebiedsgerichte_aanpak_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gebiedsgerichte_aanpak_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gebiedsgerichte_aanpak_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gebiedsgerichte_aanpak_type TO oiv_write;
 
 
 -- objecten.gebruiksfunctie_type definition
@@ -803,7 +819,6 @@ CREATE TABLE objecten.gebruiksfunctie_type (
 	omschrijving text NULL,
 	CONSTRAINT gebruiksfunctie_type_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE objecten.gebruiksfunctie_type IS 'Opzoeklijst voor gebruiksfunctie van repressief object';
 
 -- Permissions
 
@@ -830,7 +845,7 @@ CREATE TABLE objecten.gevaarlijkestof_eenheid (
 ALTER TABLE objecten.gevaarlijkestof_eenheid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_eenheid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_eenheid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_eenheid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_eenheid TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_opslag_type definition
@@ -854,7 +869,7 @@ CREATE TABLE objecten.gevaarlijkestof_opslag_type (
 ALTER TABLE objecten.gevaarlijkestof_opslag_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_opslag_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_opslag_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_opslag_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_opslag_type TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_schade_cirkel_type definition
@@ -875,7 +890,7 @@ CREATE TABLE objecten.gevaarlijkestof_schade_cirkel_type (
 ALTER TABLE objecten.gevaarlijkestof_schade_cirkel_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_schade_cirkel_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_schade_cirkel_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_schade_cirkel_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_schade_cirkel_type TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_toestand definition
@@ -896,7 +911,7 @@ CREATE TABLE objecten.gevaarlijkestof_toestand (
 ALTER TABLE objecten.gevaarlijkestof_toestand OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_toestand TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_toestand TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_toestand TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_toestand TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_vnnr definition
@@ -943,7 +958,7 @@ CREATE TABLE objecten.gt_pk_metadata_table (
 ALTER TABLE objecten.gt_pk_metadata_table OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gt_pk_metadata_table TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gt_pk_metadata_table TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gt_pk_metadata_table TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gt_pk_metadata_table TO oiv_write;
 
 
 -- objecten.historie_aanpassing_type definition
@@ -964,7 +979,7 @@ CREATE TABLE objecten.historie_aanpassing_type (
 ALTER TABLE objecten.historie_aanpassing_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.historie_aanpassing_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.historie_aanpassing_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.historie_aanpassing_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.historie_aanpassing_type TO oiv_write;
 
 
 -- objecten.historie_matrix_code definition
@@ -1008,7 +1023,7 @@ CREATE TABLE objecten.historie_status_type (
 ALTER TABLE objecten.historie_status_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.historie_status_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.historie_status_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.historie_status_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.historie_status_type TO oiv_write;
 
 
 -- objecten.ingang_type definition
@@ -1055,7 +1070,7 @@ CREATE TABLE objecten.label_type (
 ALTER TABLE objecten.label_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.label_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.label_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.label_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.label_type TO oiv_write;
 
 
 -- objecten.maatregel_type definition
@@ -1099,7 +1114,7 @@ CREATE TABLE objecten.object_type (
 ALTER TABLE objecten.object_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_type TO oiv_write;
 
 
 -- objecten.opstelplaats_type definition
@@ -1122,7 +1137,7 @@ CREATE TABLE objecten.opstelplaats_type (
 ALTER TABLE objecten.opstelplaats_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.opstelplaats_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.opstelplaats_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.opstelplaats_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.opstelplaats_type TO oiv_write;
 
 
 -- objecten.pictogram_zonder_object_type definition
@@ -1164,7 +1179,7 @@ CREATE TABLE objecten.points_of_interest_type (
 ALTER TABLE objecten.points_of_interest_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.points_of_interest_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.points_of_interest_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.points_of_interest_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.points_of_interest_type TO oiv_write;
 
 
 -- objecten.ruimten_type definition
@@ -1209,7 +1224,7 @@ CREATE TABLE objecten.scenario_locatie_type (
 ALTER TABLE objecten.scenario_locatie_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.scenario_locatie_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.scenario_locatie_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.scenario_locatie_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.scenario_locatie_type TO oiv_write;
 
 
 -- objecten.scenario_type definition
@@ -1252,7 +1267,7 @@ CREATE TABLE objecten.sectoren_type (
 ALTER TABLE objecten.sectoren_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.sectoren_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.sectoren_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.sectoren_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.sectoren_type TO oiv_write;
 
 
 -- objecten.sleuteldoel_type definition
@@ -1316,7 +1331,7 @@ CREATE TABLE objecten.veiligh_bouwk_type (
 ALTER TABLE objecten.veiligh_bouwk_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veiligh_bouwk_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veiligh_bouwk_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_bouwk_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veiligh_bouwk_type TO oiv_write;
 
 
 -- objecten.veiligh_install_type definition
@@ -1382,7 +1397,62 @@ CREATE TABLE objecten.veilighv_org_type (
 ALTER TABLE objecten.veilighv_org_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veilighv_org_type TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veilighv_org_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veilighv_org_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veilighv_org_type TO oiv_write;
+
+
+-- objecten.aanwezig definition
+
+-- Drop table
+
+-- DROP TABLE objecten.aanwezig;
+
+CREATE TABLE objecten.aanwezig (
+	id serial4 NOT NULL,
+	datum_aangemaakt timestamp NULL DEFAULT now(),
+	datum_gewijzigd timestamp NULL,
+	aanwezig_type_id int2 NULL,
+	dagen text NULL,
+	tijdvakbegin time NULL,
+	tijdvakeind time NULL,
+	aantal_totaal int2 NULL, -- Aantal aanwezig
+	aantal_nietzelf_bewoners int2 NULL, -- Aantal niet aanwezig
+	bouwlaag_id int4 NOT NULL,
+	aantal_personeel int2 NULL,
+	dieren bool NULL,
+	bijzonderheid text NULL,
+	datum_deleted timestamptz NULL,
+	CONSTRAINT aanwezig_pkey PRIMARY KEY (id),
+	CONSTRAINT aanwezig_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES objecten.bouwlagen(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT aanwezig_groep_id_fk FOREIGN KEY (aanwezig_type_id) REFERENCES objecten.aanwezig_type(id)
+);
+COMMENT ON TABLE objecten.aanwezig IS 'Aanwezige personen';
+
+-- Column comments
+
+COMMENT ON COLUMN objecten.aanwezig.aantal_totaal IS 'Aantal aanwezig';
+COMMENT ON COLUMN objecten.aanwezig.aantal_nietzelf_bewoners IS 'Aantal niet aanwezig';
+
+-- Table Triggers
+
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
+CREATE TRIGGER trg_set_delete BEFORE
+DELETE
+    ON
+    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
+
+-- Permissions
+
+ALTER TABLE objecten.aanwezig OWNER TO oiv_admin;
+GRANT ALL ON TABLE objecten.aanwezig TO oiv_admin;
+GRANT SELECT ON TABLE objecten.aanwezig TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.aanwezig TO oiv_write;
 
 
 -- objecten.pictogram_zonder_object definition
@@ -1393,7 +1463,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veilighv_org_type TO oiv_write;
 
 CREATE TABLE objecten.pictogram_zonder_object (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	voorziening_pictogram_id int2 NOT NULL,
@@ -1409,74 +1479,21 @@ COMMENT ON TABLE objecten.pictogram_zonder_object IS 'Voorzieningen zonder objec
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.pictogram_zonder_object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.pictogram_zonder_object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.pictogram_zonder_object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 
 -- Permissions
 
 ALTER TABLE objecten.pictogram_zonder_object OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.pictogram_zonder_object TO oiv_admin;
 GRANT SELECT ON TABLE objecten.pictogram_zonder_object TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.pictogram_zonder_object TO oiv_write;
-
-
--- objecten.aanwezig definition
-
--- Drop table
-
--- DROP TABLE objecten.aanwezig;
-
-CREATE TABLE objecten.aanwezig (
-	id serial4 NOT NULL,
-	datum_aangemaakt timestamp NULL DEFAULT now(),
-	datum_gewijzigd timestamp NULL,
-	aanwezig_type_id int2 NOT NULL,
-	dagen text NULL,
-	tijdvakbegin time NULL,
-	tijdvakeind time NULL,
-	aantal_totaal int2 NULL, -- Aantal aanwezig
-	aantal_nietzelf_bewoners int2 NULL, -- Aantal niet aanwezig
-	bouwlaag_id int4 NOT NULL,
-	aantal_personeel int2 NULL,
-	dieren bool NULL,
-	bijzonderheid text NULL,
-	datum_deleted timestamptz NULL,
-	CONSTRAINT aanwezig_pkey PRIMARY KEY (id)
-);
-COMMENT ON TABLE objecten.aanwezig IS 'Aanwezige personen';
-
--- Column comments
-
-COMMENT ON COLUMN objecten.aanwezig.aantal_totaal IS 'Aantal aanwezig';
-COMMENT ON COLUMN objecten.aanwezig.aantal_nietzelf_bewoners IS 'Aantal niet aanwezig';
-
--- Table Triggers
-
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-CREATE TRIGGER trg_set_insert BEFORE
-INSERT
-    ON
-    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
-CREATE TRIGGER trg_set_delete BEFORE
-DELETE
-    ON
-    objecten.aanwezig FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
-
--- Permissions
-
-ALTER TABLE objecten.aanwezig OWNER TO oiv_admin;
-GRANT ALL ON TABLE objecten.aanwezig TO oiv_admin;
-GRANT SELECT ON TABLE objecten.aanwezig TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.aanwezig TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.pictogram_zonder_object TO oiv_write;
 
 
 -- objecten.afw_binnendekking definition
@@ -1487,7 +1504,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.aanwezig TO oiv_write;
 
 CREATE TABLE objecten.afw_binnendekking (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	rotatie int4 NULL DEFAULT 0,
@@ -1505,14 +1522,14 @@ COMMENT ON TABLE objecten.afw_binnendekking IS 'Afwijkende binnendekking';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1523,7 +1540,7 @@ DELETE
 ALTER TABLE objecten.afw_binnendekking OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.afw_binnendekking TO oiv_admin;
 GRANT SELECT ON TABLE objecten.afw_binnendekking TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.afw_binnendekking TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.afw_binnendekking TO oiv_write;
 
 
 -- objecten.bedrijfshulpverlening definition
@@ -1549,14 +1566,14 @@ COMMENT ON TABLE objecten.bedrijfshulpverlening IS 'scenarios';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.bedrijfshulpverlening FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.bedrijfshulpverlening FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.bedrijfshulpverlening FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1567,7 +1584,7 @@ DELETE
 ALTER TABLE objecten.bedrijfshulpverlening OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bedrijfshulpverlening TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bedrijfshulpverlening TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bedrijfshulpverlening TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bedrijfshulpverlening TO oiv_write;
 
 
 -- objecten.beheersmaatregelen definition
@@ -1586,18 +1603,17 @@ CREATE TABLE objecten.beheersmaatregelen (
 	datum_deleted timestamptz NULL,
 	CONSTRAINT beheersmaatregelen_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE objecten.beheersmaatregelen IS 'Beheersmaatregelen t.b.v. dreiging';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.beheersmaatregelen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.beheersmaatregelen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.beheersmaatregelen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1608,7 +1624,7 @@ DELETE
 ALTER TABLE objecten.beheersmaatregelen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.beheersmaatregelen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.beheersmaatregelen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.beheersmaatregelen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.beheersmaatregelen TO oiv_write;
 
 
 -- objecten.bereikbaarheid definition
@@ -1619,7 +1635,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.beheersmaatregelen TO oiv_write;
 
 CREATE TABLE objecten.bereikbaarheid (
 	id serial4 NOT NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	obstakels varchar(50) NULL,
@@ -1629,21 +1645,22 @@ CREATE TABLE objecten.bereikbaarheid (
 	"label" varchar(254) NULL,
 	soort varchar(50) NULL,
 	datum_deleted timestamptz NULL,
-	CONSTRAINT bereikbaarheid_pkey PRIMARY KEY (id)
+	CONSTRAINT bereikbaarheid_pkey PRIMARY KEY (id),
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL)))
 );
 CREATE INDEX bereikbaarheid_geom_gist ON objecten.bereikbaarheid USING gist (geom);
 COMMENT ON TABLE objecten.bereikbaarheid IS 'Bereikbaarheids bijzonderheden per repressief object';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1654,53 +1671,7 @@ DELETE
 ALTER TABLE objecten.bereikbaarheid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bereikbaarheid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bereikbaarheid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bereikbaarheid TO oiv_write;
-
-
--- objecten.bouwlagen definition
-
--- Drop table
-
--- DROP TABLE objecten.bouwlagen;
-
-CREATE TABLE objecten.bouwlagen (
-	id serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
-	datum_aangemaakt timestamptz NULL DEFAULT now(),
-	datum_gewijzigd timestamptz NULL,
-	bouwlaag int4 NOT NULL,
-	bouwdeel varchar(25) NULL,
-	pand_id varchar(40) NOT NULL,
-	datum_deleted timestamptz NULL,
-	fotografie_id int4 NULL,
-	CONSTRAINT bouwlagen_pkey PRIMARY KEY (id)
-);
-CREATE INDEX bouwlagen_bouwlaag_idx ON objecten.bouwlagen USING btree (bouwlaag);
-CREATE INDEX bouwlagen_geom_gist ON objecten.bouwlagen USING gist (geom);
-CREATE INDEX bouwlagen_pand_id_idx ON objecten.bouwlagen USING btree (pand_id);
-COMMENT ON TABLE objecten.bouwlagen IS 'Grid voor verdeling en verduidelijking locatie op terrein';
-
--- Table Triggers
-
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-CREATE TRIGGER trg_set_insert BEFORE
-INSERT
-    ON
-    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
-CREATE TRIGGER trg_set_delete BEFORE
-DELETE
-    ON
-    objecten.bouwlagen FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
-
--- Permissions
-
-ALTER TABLE objecten.bouwlagen OWNER TO oiv_admin;
-GRANT ALL ON TABLE objecten.bouwlagen TO oiv_admin;
-GRANT SELECT ON TABLE objecten.bouwlagen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlagen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bereikbaarheid TO oiv_write;
 
 
 -- objecten.contactpersoon definition
@@ -1716,7 +1687,7 @@ CREATE TABLE objecten.contactpersoon (
 	dagen text NULL,
 	tijdvakbegin timestamp NULL,
 	tijdvakeind timestamp NULL,
-	telefoonnummer varchar(100) NULL,
+	telefoonnummer varchar(11) NULL,
 	object_id int4 NOT NULL,
 	soort varchar(50) NULL,
 	datum_deleted timestamptz NULL,
@@ -1726,14 +1697,14 @@ COMMENT ON TABLE objecten.contactpersoon IS 'Contactpersonen';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.contactpersoon FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.contactpersoon FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.contactpersoon FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1744,7 +1715,7 @@ DELETE
 ALTER TABLE objecten.contactpersoon OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.contactpersoon TO oiv_admin;
 GRANT SELECT ON TABLE objecten.contactpersoon TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.contactpersoon TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.contactpersoon TO oiv_write;
 
 
 -- objecten.dreiging definition
@@ -1755,7 +1726,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.contactpersoon TO oiv_write;
 
 CREATE TABLE objecten.dreiging (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	dreiging_type_id int4 NULL,
@@ -1774,14 +1745,14 @@ COMMENT ON TABLE objecten.dreiging IS 'Dreiging van een gevaar';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.dreiging FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.dreiging FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.dreiging FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1792,7 +1763,7 @@ DELETE
 ALTER TABLE objecten.dreiging OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.dreiging TO oiv_admin;
 GRANT SELECT ON TABLE objecten.dreiging TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.dreiging TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.dreiging TO oiv_write;
 
 
 -- objecten.gebiedsgerichte_aanpak definition
@@ -1803,7 +1774,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.dreiging TO oiv_write;
 
 CREATE TABLE objecten.gebiedsgerichte_aanpak (
 	id serial4 NOT NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	soort varchar(50) NULL,
@@ -1812,19 +1783,20 @@ CREATE TABLE objecten.gebiedsgerichte_aanpak (
 	object_id int4 NOT NULL,
 	fotografie_id int4 NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT gebiedsgerichte_aanpak_pkey PRIMARY KEY (id)
 );
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1835,7 +1807,7 @@ DELETE
 ALTER TABLE objecten.gebiedsgerichte_aanpak OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gebiedsgerichte_aanpak TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gebiedsgerichte_aanpak TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gebiedsgerichte_aanpak TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gebiedsgerichte_aanpak TO oiv_write;
 
 
 -- objecten.gebruiksfunctie definition
@@ -1853,18 +1825,17 @@ CREATE TABLE objecten.gebruiksfunctie (
 	datum_deleted timestamptz NULL,
 	CONSTRAINT gebruiksfunctie_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE objecten.gebruiksfunctie IS 'Opzoeklijst voor maatregelen t.b.v. dreiging';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.gebruiksfunctie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.gebruiksfunctie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.gebruiksfunctie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1875,7 +1846,7 @@ DELETE
 ALTER TABLE objecten.gebruiksfunctie OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gebruiksfunctie TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gebruiksfunctie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gebruiksfunctie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gebruiksfunctie TO oiv_write;
 
 
 -- objecten.gevaarlijkestof definition
@@ -1906,14 +1877,14 @@ COMMENT ON COLUMN objecten.gevaarlijkestof.gevaarlijkestof_vnnr_id IS 'Stofident
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.gevaarlijkestof FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.gevaarlijkestof FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.gevaarlijkestof FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -1924,7 +1895,7 @@ DELETE
 ALTER TABLE objecten.gevaarlijkestof OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_opslag definition
@@ -1935,7 +1906,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof TO oiv_write;
 
 CREATE TABLE objecten.gevaarlijkestof_opslag (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	locatie text NOT NULL,
@@ -1952,25 +1923,31 @@ COMMENT ON TABLE objecten.gevaarlijkestof_opslag IS 'Lokaties waar scenarios kun
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.gevaarlijkestof_opslag FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.gevaarlijkestof_opslag FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.gevaarlijkestof_opslag FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
     objecten.gevaarlijkestof_opslag FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
+CREATE TRIGGER gevaarlijke_soft_del_cascade BEFORE
+DELETE
+    ON
+    objecten.gevaarlijkestof_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'gevaarlijkestof_opslag',
+    'opslag_id');
 
 -- Permissions
 
 ALTER TABLE objecten.gevaarlijkestof_opslag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_opslag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_opslag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_opslag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_opslag TO oiv_write;
 
 
 -- objecten.gevaarlijkestof_schade_cirkel definition
@@ -1992,25 +1969,31 @@ CREATE TABLE objecten.gevaarlijkestof_schade_cirkel (
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.gevaarlijkestof_schade_cirkel FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.gevaarlijkestof_schade_cirkel FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.gevaarlijkestof_schade_cirkel FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
     objecten.gevaarlijkestof_schade_cirkel FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
+CREATE TRIGGER schade_cirkel_soft_del_cascade BEFORE
+DELETE
+    ON
+    objecten.gevaarlijkestof_schade_cirkel FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'gevaarlijkestof_schade_cirkel',
+    'gevaarlijkestof_id');
 
 -- Permissions
 
 ALTER TABLE objecten.gevaarlijkestof_schade_cirkel OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.gevaarlijkestof_schade_cirkel TO oiv_admin;
 GRANT SELECT ON TABLE objecten.gevaarlijkestof_schade_cirkel TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_schade_cirkel TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.gevaarlijkestof_schade_cirkel TO oiv_write;
 
 
 -- objecten.grid definition
@@ -2021,13 +2004,13 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.gevaarlijkestof_schade_cirkel TO 
 
 CREATE TABLE objecten.grid (
 	id serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
-	y_as_label text NULL,
-	x_as_label text NULL,
-	afstand int4 NULL,
+	y_as_label varchar(10) NULL,
+	x_as_label varchar(10) NULL,
 	object_id int4 NULL,
+	afstand int4 NULL,
 	vaknummer varchar(10) NULL,
 	"scale" int4 NULL,
 	papersize varchar(2) NULL,
@@ -2035,20 +2018,21 @@ CREATE TABLE objecten.grid (
 	"type" varchar(10) NOT NULL,
 	uuid text NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT grid_pkey PRIMARY KEY (id)
 );
 CREATE INDEX grid_geom_gist ON objecten.grid USING gist (geom);
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.grid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.grid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.grid FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2059,7 +2043,7 @@ DELETE
 ALTER TABLE objecten.grid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.grid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.grid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.grid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.grid TO oiv_write;
 
 
 -- objecten.historie definition
@@ -2075,24 +2059,26 @@ CREATE TABLE objecten.historie (
 	datum_gewijzigd timestamptz NULL,
 	teamlid_behandeld_id int4 NULL,
 	teamlid_afgehandeld_id int4 NULL,
-	matrix_code_id int2 NOT NULL,
+	matrix_code_id int2 NULL,
 	aanpassing varchar(50) NULL,
 	status varchar(50) NULL,
 	typeobject varchar(50) NULL,
 	datum_deleted timestamptz NULL,
 	CONSTRAINT historie_pkey PRIMARY KEY (id)
 );
+CREATE INDEX historie_status_idx ON objecten.historie USING btree (status);
+CREATE INDEX idx_historie_datum_aangemaakt ON objecten.historie USING btree (datum_aangemaakt);
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.historie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.historie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.historie FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2103,7 +2089,7 @@ DELETE
 ALTER TABLE objecten.historie OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.historie TO oiv_admin;
 GRANT SELECT ON TABLE objecten.historie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.historie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.historie TO oiv_write;
 
 
 -- objecten.ingang definition
@@ -2114,11 +2100,11 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.historie TO oiv_write;
 
 CREATE TABLE objecten.ingang (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	ingang_type_id int4 NULL,
-	rotatie int4 NULL DEFAULT 0,
+	rotatie int4 NULL,
 	"label" varchar(50) NULL,
 	belemmering varchar(254) NULL,
 	voorzieningen varchar(254) NULL,
@@ -2134,25 +2120,31 @@ COMMENT ON TABLE objecten.ingang IS 'Ingang t.b.v. een pand en dus een bouwlaag'
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.ingang FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.ingang FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.ingang FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
     objecten.ingang FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
+CREATE TRIGGER ingang_soft_del_cascade BEFORE
+DELETE
+    ON
+    objecten.ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'ingang',
+    'ingang_id');
 
 -- Permissions
 
 ALTER TABLE objecten.ingang OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.ingang TO oiv_admin;
 GRANT SELECT ON TABLE objecten.ingang TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.ingang TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.ingang TO oiv_write;
 
 
 -- objecten.isolijnen definition
@@ -2163,28 +2155,28 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.ingang TO oiv_write;
 
 CREATE TABLE objecten.isolijnen (
 	id serial4 NOT NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	hoogte int2 NULL,
 	omschrijving text NULL,
 	object_id int4 NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT isolijnen_pkey PRIMARY KEY (id)
 );
 CREATE INDEX isolijnen_geom_gist ON objecten.isolijnen USING gist (geom);
-COMMENT ON TABLE objecten.isolijnen IS 'Hoogte en dieptelijnen behorende bij repressief object';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2195,7 +2187,7 @@ DELETE
 ALTER TABLE objecten.isolijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.isolijnen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.isolijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.isolijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.isolijnen TO oiv_write;
 
 
 -- objecten."label" definition
@@ -2206,7 +2198,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.isolijnen TO oiv_write;
 
 CREATE TABLE objecten."label" (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	omschrijving varchar(254) NOT NULL,
@@ -2222,14 +2214,14 @@ CREATE INDEX labels_geom_gist ON objecten.label USING btree (geom);
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.label FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.label FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.label FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2240,7 +2232,7 @@ DELETE
 ALTER TABLE objecten."label" OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten."label" TO oiv_admin;
 GRANT SELECT ON TABLE objecten."label" TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten."label" TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten."label" TO oiv_write;
 
 
 -- objecten."object" definition
@@ -2251,7 +2243,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten."label" TO oiv_write;
 
 CREATE TABLE objecten."object" (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	basisreg_identifier varchar(254) NOT NULL,
@@ -2270,18 +2262,20 @@ CREATE TABLE objecten."object" (
 	datum_deleted timestamptz NULL,
 	CONSTRAINT object_pkey PRIMARY KEY (id)
 );
+CREATE INDEX object_datum_geldig_tot_idx ON objecten.object USING btree (datum_geldig_tot);
+CREATE INDEX object_datum_geldig_vanaf_idx ON objecten.object USING btree (datum_geldig_vanaf);
 CREATE INDEX object_geom_gist ON objecten.object USING btree (geom);
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.object FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2292,7 +2286,7 @@ DELETE
 ALTER TABLE objecten."object" OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten."object" TO oiv_admin;
 GRANT SELECT ON TABLE objecten."object" TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten."object" TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten."object" TO oiv_write;
 
 
 -- objecten.opstelplaats definition
@@ -2303,7 +2297,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten."object" TO oiv_write;
 
 CREATE TABLE objecten.opstelplaats (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	rotatie int4 NULL DEFAULT 0,
@@ -2319,14 +2313,14 @@ COMMENT ON TABLE objecten.opstelplaats IS 'Opstelplaatsen t.b.v. brandweervoertu
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2337,7 +2331,7 @@ DELETE
 ALTER TABLE objecten.opstelplaats OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.opstelplaats TO oiv_admin;
 GRANT SELECT ON TABLE objecten.opstelplaats TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.opstelplaats TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.opstelplaats TO oiv_write;
 
 
 -- objecten.points_of_interest definition
@@ -2348,7 +2342,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.opstelplaats TO oiv_write;
 
 CREATE TABLE objecten.points_of_interest (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	points_of_interest_type_id int4 NULL,
@@ -2363,14 +2357,14 @@ CREATE TABLE objecten.points_of_interest (
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2381,7 +2375,7 @@ DELETE
 ALTER TABLE objecten.points_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.points_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE objecten.points_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.points_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.points_of_interest TO oiv_write;
 
 
 -- objecten.ruimten definition
@@ -2392,7 +2386,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.points_of_interest TO oiv_write;
 
 CREATE TABLE objecten.ruimten (
 	id serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	ruimten_type_id text NULL,
@@ -2400,6 +2394,7 @@ CREATE TABLE objecten.ruimten (
 	bouwlaag_id int4 NOT NULL,
 	fotografie_id int4 NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT ruimten_pkey PRIMARY KEY (id)
 );
 CREATE INDEX ruimten_geom_gist ON objecten.ruimten USING gist (geom);
@@ -2407,14 +2402,14 @@ COMMENT ON TABLE objecten.ruimten IS 'Ruimten binnen een bouwlaag.';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.ruimten FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.ruimten FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.ruimten FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2425,7 +2420,7 @@ DELETE
 ALTER TABLE objecten.ruimten OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.ruimten TO oiv_admin;
 GRANT SELECT ON TABLE objecten.ruimten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.ruimten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.ruimten TO oiv_write;
 
 
 -- objecten.scenario definition
@@ -2448,14 +2443,14 @@ CREATE TABLE objecten.scenario (
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.scenario FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.scenario FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.scenario FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2466,7 +2461,7 @@ DELETE
 ALTER TABLE objecten.scenario OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.scenario TO oiv_admin;
 GRANT SELECT ON TABLE objecten.scenario TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.scenario TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.scenario TO oiv_write;
 
 
 -- objecten.scenario_locatie definition
@@ -2477,7 +2472,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.scenario TO oiv_write;
 
 CREATE TABLE objecten.scenario_locatie (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	datum_deleted timestamptz NULL,
@@ -2511,7 +2506,7 @@ DELETE
 ALTER TABLE objecten.scenario_locatie OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.scenario_locatie TO oiv_admin;
 GRANT SELECT ON TABLE objecten.scenario_locatie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.scenario_locatie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.scenario_locatie TO oiv_write;
 
 
 -- objecten.sectoren definition
@@ -2522,7 +2517,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.scenario_locatie TO oiv_write;
 
 CREATE TABLE objecten.sectoren (
 	id serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	omschrijving varchar(254) NULL,
@@ -2530,7 +2525,10 @@ CREATE TABLE objecten.sectoren (
 	object_id int4 NOT NULL,
 	fotografie_id int4 NULL,
 	soort varchar(50) NULL,
+	datum_geldig_vanaf timestamp NULL,
+	datum_geldig_tot timestamp NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT sectoren_pkey PRIMARY KEY (id)
 );
 CREATE INDEX sectoren_geom_gist ON objecten.sectoren USING gist (geom);
@@ -2556,7 +2554,7 @@ DELETE
 ALTER TABLE objecten.sectoren OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.sectoren TO oiv_admin;
 GRANT SELECT ON TABLE objecten.sectoren TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.sectoren TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.sectoren TO oiv_write;
 
 
 -- objecten.sleutelkluis definition
@@ -2567,7 +2565,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.sectoren TO oiv_write;
 
 CREATE TABLE objecten.sleutelkluis (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	sleutelkluis_type_id int4 NULL,
@@ -2585,14 +2583,14 @@ COMMENT ON TABLE objecten.sleutelkluis IS 'Sleutelkluizen t.b.v. ingang een pand
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2603,7 +2601,7 @@ DELETE
 ALTER TABLE objecten.sleutelkluis OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.sleutelkluis TO oiv_admin;
 GRANT SELECT ON TABLE objecten.sleutelkluis TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.sleutelkluis TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.sleutelkluis TO oiv_write;
 
 
 -- objecten.terrein definition
@@ -2614,26 +2612,29 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.sleutelkluis TO oiv_write;
 
 CREATE TABLE objecten.terrein (
 	id serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	omschrijving text NULL,
-	object_id int4 NULL,
+	object_id int4 NOT NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTIPOLYGON'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT terrein_pkey PRIMARY KEY (id)
 );
+CREATE INDEX terrein_datum_deleted_idx ON objecten.terrein USING btree (datum_deleted);
 CREATE INDEX terrein_geom_gist ON objecten.terrein USING gist (geom);
+CREATE INDEX terrein_object_id_idx ON objecten.terrein USING btree (object_id);
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.terrein FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.terrein FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.terrein FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2644,7 +2645,7 @@ DELETE
 ALTER TABLE objecten.terrein OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.terrein TO oiv_admin;
 GRANT SELECT ON TABLE objecten.terrein TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.terrein TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.terrein TO oiv_write;
 
 
 -- objecten.veiligh_bouwk definition
@@ -2655,28 +2656,31 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.terrein TO oiv_write;
 
 CREATE TABLE objecten.veiligh_bouwk (
 	id serial4 NOT NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	bouwlaag_id int4 NOT NULL,
 	fotografie_id int4 NULL,
 	soort varchar(50) NULL,
 	datum_deleted timestamptz NULL,
+	CONSTRAINT enforce_geotype_geom CHECK (((geometrytype(geom) = 'MULTILINESTRING'::text) AND (geom IS NOT NULL))),
 	CONSTRAINT veiligh_bouwk_pkey PRIMARY KEY (id)
 );
+CREATE INDEX veiligh_bouwk_bouwlaag_id_idx ON objecten.veiligh_bouwk USING btree (bouwlaag_id);
+CREATE INDEX veiligh_bouwk_datum_deleted_idx ON objecten.veiligh_bouwk USING btree (datum_deleted);
 CREATE INDEX veiligh_bouwk_geom_gist ON objecten.veiligh_bouwk USING gist (geom);
 COMMENT ON TABLE objecten.veiligh_bouwk IS 'Bouwkundige veiligheidsvoorzieningen';
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2687,7 +2691,7 @@ DELETE
 ALTER TABLE objecten.veiligh_bouwk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veiligh_bouwk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veiligh_bouwk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_bouwk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veiligh_bouwk TO oiv_write;
 
 
 -- objecten.veiligh_install definition
@@ -2698,7 +2702,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_bouwk TO oiv_write;
 
 CREATE TABLE objecten.veiligh_install (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	veiligh_install_type_id int4 NULL,
@@ -2715,14 +2719,14 @@ COMMENT ON TABLE objecten.veiligh_install IS 'Installatietechnische veiligheidsv
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2733,7 +2737,7 @@ DELETE
 ALTER TABLE objecten.veiligh_install OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veiligh_install TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veiligh_install TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_install TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veiligh_install TO oiv_write;
 
 
 -- objecten.veiligh_ruimtelijk definition
@@ -2744,7 +2748,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_install TO oiv_write;
 
 CREATE TABLE objecten.veiligh_ruimtelijk (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	veiligh_ruimtelijk_type_id int4 NULL,
@@ -2761,14 +2765,14 @@ COMMENT ON TABLE objecten.veiligh_ruimtelijk IS 'Ruimtelijke veiligheidsvoorzien
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2779,7 +2783,7 @@ DELETE
 ALTER TABLE objecten.veiligh_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veiligh_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veiligh_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veiligh_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veiligh_ruimtelijk TO oiv_write;
 
 
 -- objecten.veilighv_org definition
@@ -2802,14 +2806,14 @@ COMMENT ON TABLE objecten.veilighv_org IS 'Organisatorische veiligheidsvoorzieni
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    objecten.veilighv_org FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     objecten.veilighv_org FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    objecten.veilighv_org FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -2820,19 +2824,13 @@ DELETE
 ALTER TABLE objecten.veilighv_org OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veilighv_org TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veilighv_org TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.veilighv_org TO oiv_write;
-
-
--- objecten.aanwezig foreign keys
-
-ALTER TABLE objecten.aanwezig ADD CONSTRAINT aanwezig_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES objecten.bouwlagen(id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE objecten.aanwezig ADD CONSTRAINT aanwezig_groep_id_fk FOREIGN KEY (aanwezig_type_id) REFERENCES objecten.aanwezig_type(id);
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veilighv_org TO oiv_write;
 
 
 -- objecten.afw_binnendekking foreign keys
 
 ALTER TABLE objecten.afw_binnendekking ADD CONSTRAINT afw_binnendekking_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES objecten.bouwlagen(id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE objecten.afw_binnendekking ADD CONSTRAINT afw_binnendekking_object_id_fk FOREIGN KEY (object_id) REFERENCES objecten.bouwlagen(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE objecten.afw_binnendekking ADD CONSTRAINT afw_binnendekking_object_id_fk FOREIGN KEY (object_id) REFERENCES objecten."object"(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE objecten.afw_binnendekking ADD CONSTRAINT soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.afw_binnendekking_type(naam);
 
 
@@ -2853,11 +2851,6 @@ ALTER TABLE objecten.beheersmaatregelen ADD CONSTRAINT maatregel_type_id_fk FORE
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT bereikbaarheid_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie(id);
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT bereikbaarheid_object_id_fk FOREIGN KEY (object_id) REFERENCES objecten."object"(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.bereikbaarheid_type(naam);
-
-
--- objecten.bouwlagen foreign keys
-
-ALTER TABLE objecten.bouwlagen ADD CONSTRAINT bouwlagen_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie(id);
 
 
 -- objecten.contactpersoon foreign keys
@@ -2889,9 +2882,9 @@ ALTER TABLE objecten.gebruiksfunctie ADD CONSTRAINT gebruiksfunctie_type_id_fk F
 
 -- objecten.gevaarlijkestof foreign keys
 
-ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_eenheid_type_id_fk FOREIGN KEY (eenheid) REFERENCES objecten.gevaarlijkestof_eenheid(naam);
+ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof__toestand_type_id_fk FOREIGN KEY (toestand) REFERENCES objecten.gevaarlijkestof_toestand(naam);
 ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_opslag_id_fk FOREIGN KEY (opslag_id) REFERENCES objecten.gevaarlijkestof_opslag(id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_toestand_type_id_fk FOREIGN KEY (toestand) REFERENCES objecten.gevaarlijkestof_toestand(naam);
+ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_type_id_fk FOREIGN KEY (eenheid) REFERENCES objecten.gevaarlijkestof_eenheid(naam);
 ALTER TABLE objecten.gevaarlijkestof ADD CONSTRAINT gevaarlijkestof_vnnr_id_fk FOREIGN KEY (gevaarlijkestof_vnnr_id) REFERENCES objecten.gevaarlijkestof_vnnr(id);
 
 
@@ -2946,7 +2939,6 @@ ALTER TABLE objecten."label" ADD CONSTRAINT labels_object_id_fk FOREIGN KEY (obj
 
 -- objecten."object" foreign keys
 
-ALTER TABLE objecten."object" ADD CONSTRAINT object_bodemgesteldheid_type_id_fk FOREIGN KEY (bodemgesteldheid_type_id) REFERENCES objecten.bodemgesteldheid_type(id);
 ALTER TABLE objecten."object" ADD CONSTRAINT object_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie(id);
 
 
@@ -2968,7 +2960,6 @@ ALTER TABLE objecten.points_of_interest ADD CONSTRAINT points_of_interest_type_i
 
 ALTER TABLE objecten.ruimten ADD CONSTRAINT ruimten_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id) REFERENCES objecten.bouwlagen(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE objecten.ruimten ADD CONSTRAINT ruimten_fotografie_id_fk FOREIGN KEY (fotografie_id) REFERENCES algemeen.fotografie(id);
-ALTER TABLE objecten.ruimten ADD CONSTRAINT ruimten_type_id_fk FOREIGN KEY (ruimten_type_id) REFERENCES objecten.ruimten_type(naam);
 
 
 -- objecten.scenario foreign keys
@@ -3050,12 +3041,27 @@ AS SELECT v.id,
      JOIN objecten.afw_binnendekking_type st ON v.soort::text = st.naam::text
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER afw_binnendekking_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.func_afw_binnendekking_del();
+CREATE TRIGGER afw_binnendekking_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.func_afw_binnendekking_ins();
+CREATE TRIGGER afw_binnendekking_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_afw_binnendekking FOR EACH ROW EXECUTE FUNCTION objecten.func_afw_binnendekking_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_afw_binnendekking OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_afw_binnendekking TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_afw_binnendekking TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_afw_binnendekking TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_afw_binnendekking TO oiv_write;
 
 
 -- objecten.bouwlaag_bouwlagen source
@@ -3068,8 +3074,7 @@ AS SELECT b.id,
     b.bouwlaag,
     b.bouwdeel,
     b.pand_id,
-    b.datum_deleted,
-    b.fotografie_id
+    b.datum_deleted
    FROM objecten.bouwlagen b
   WHERE b.datum_deleted IS NULL;
 
@@ -3078,7 +3083,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.bouwlaag_bouwlagen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_bouwlagen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_bouwlagen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_bouwlagen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_bouwlagen TO oiv_write;
 
 
 -- objecten.bouwlaag_dreiging source
@@ -3102,12 +3107,33 @@ AS SELECT v.id,
      JOIN objecten.dreiging_type st ON v.dreiging_type_id = st.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_dreiging_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_del('bouwlaag');
+CREATE TRIGGER bouwlaag_dreiging_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_dreiging_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_upd('bouwlaag');
+CREATE TRIGGER bouwlaag_dreiging_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'dreiging',
+    'dreiging_id');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_dreiging OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_dreiging TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_dreiging TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_dreiging TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_dreiging TO oiv_write;
 
 
 -- objecten.bouwlaag_ingang source
@@ -3132,12 +3158,33 @@ AS SELECT v.id,
      JOIN objecten.ingang_type it ON v.ingang_type_id = it.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_ingang_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_del('bouwlaag');
+CREATE TRIGGER bouwlaag_ingang_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_ingang_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_upd('bouwlaag');
+CREATE TRIGGER bouwlaag_ingang_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'ingang',
+    'ingang_id');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_ingang OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_ingang TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_ingang TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_ingang TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_ingang TO oiv_write;
 
 
 -- objecten.bouwlaag_label source
@@ -3159,12 +3206,27 @@ AS SELECT l.id,
      JOIN objecten.label_type st ON l.soort::text = st.naam::text
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_label_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_del('bouwlaag');
+CREATE TRIGGER bouwlaag_label_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_label_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_upd('bouwlaag');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_label OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_label TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_label TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_label TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_label TO oiv_write;
 
 
 -- objecten.bouwlaag_opslag source
@@ -3188,12 +3250,33 @@ AS SELECT o.id,
      JOIN objecten.gevaarlijkestof_opslag_type st ON 'Opslag stoffen'::text = st.naam
   WHERE o.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_opslag_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_del('bouwlaag');
+CREATE TRIGGER bouwlaag_opslag_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_opslag_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'gevaarlijkestof_opslag',
+    'opslag_id');
+CREATE TRIGGER bouwlaag_opslag_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_upd('bouwlaag');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_opslag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_opslag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_opslag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_opslag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_opslag TO oiv_write;
 
 
 -- objecten.bouwlaag_ruimten source
@@ -3211,12 +3294,27 @@ AS SELECT v.id,
      JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER ruimten_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_ruimten FOR EACH ROW EXECUTE FUNCTION objecten.func_ruimten_del();
+CREATE TRIGGER ruimten_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_ruimten FOR EACH ROW EXECUTE FUNCTION objecten.func_ruimten_ins();
+CREATE TRIGGER ruimten_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_ruimten FOR EACH ROW EXECUTE FUNCTION objecten.func_ruimten_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_ruimten OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_ruimten TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_ruimten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_ruimten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_ruimten TO oiv_write;
 
 
 -- objecten.bouwlaag_scenario_locatie source
@@ -3240,12 +3338,27 @@ AS SELECT o.id,
      JOIN objecten.scenario_locatie_type st ON 'Scenario locatie'::text = st.naam
   WHERE o.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_scenario_locatie_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_del('bouwlaag');
+CREATE TRIGGER bouwlaag_scenario_locatie_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_scenario_locatie_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_upd('bouwlaag');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_scenario_locatie OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_scenario_locatie TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_scenario_locatie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_scenario_locatie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_scenario_locatie TO oiv_write;
 
 
 -- objecten.bouwlaag_sleutelkluis source
@@ -3273,12 +3386,27 @@ AS SELECT v.id,
      JOIN objecten.sleutelkluis_type it ON v.sleutelkluis_type_id = it.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_sleutelkluis_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_del('bouwlaag');
+CREATE TRIGGER bouwlaag_sleutelkluis_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_sleutelkluis_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_upd('bouwlaag');
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_sleutelkluis OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_sleutelkluis TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_sleutelkluis TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_sleutelkluis TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_sleutelkluis TO oiv_write;
 
 
 -- objecten.bouwlaag_veiligh_bouwk source
@@ -3295,12 +3423,27 @@ AS SELECT v.id,
      JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER veiligh_bouwk_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_bouwk_del();
+CREATE TRIGGER veiligh_bouwk_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_bouwk_ins();
+CREATE TRIGGER veiligh_bouwk_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_veiligh_bouwk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_bouwk_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_veiligh_bouwk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_veiligh_bouwk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_veiligh_bouwk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_veiligh_bouwk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_veiligh_bouwk TO oiv_write;
 
 
 -- objecten.bouwlaag_veiligh_install source
@@ -3325,12 +3468,27 @@ AS SELECT v.id,
      JOIN objecten.veiligh_install_type vt ON v.veiligh_install_type_id = vt.id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER veiligh_install_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_del();
+CREATE TRIGGER veiligh_install_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_ins();
+CREATE TRIGGER veiligh_install_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.bouwlaag_veiligh_install OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.bouwlaag_veiligh_install TO oiv_admin;
 GRANT SELECT ON TABLE objecten.bouwlaag_veiligh_install TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.bouwlaag_veiligh_install TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.bouwlaag_veiligh_install TO oiv_write;
 
 
 -- objecten.object_bereikbaarheid source
@@ -3358,12 +3516,27 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER bereikbaarheid_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.func_bereikbaarheid_del();
+CREATE TRIGGER bereikbaarheid_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.func_bereikbaarheid_ins();
+CREATE TRIGGER bereikbaarheid_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_bereikbaarheid FOR EACH ROW EXECUTE FUNCTION objecten.func_bereikbaarheid_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_bereikbaarheid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_bereikbaarheid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_bereikbaarheid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_bereikbaarheid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_bereikbaarheid TO oiv_write;
 
 
 -- objecten.object_bgt source
@@ -3400,7 +3573,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.object_bgt OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_bgt TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_bgt TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_bgt TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_bgt TO oiv_write;
 
 
 -- objecten.object_dreiging source
@@ -3434,12 +3607,33 @@ AS SELECT v.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_dreiging_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_del('object');
+CREATE TRIGGER object_dreiging_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_ins('object');
+CREATE TRIGGER object_dreiging_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_upd('object');
+CREATE TRIGGER object_dreiging_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.object_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'dreiging',
+    'dreiging_id');
+
 -- Permissions
 
 ALTER TABLE objecten.object_dreiging OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_dreiging TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_dreiging TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_dreiging TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_dreiging TO oiv_write;
 
 
 -- objecten.object_gebiedsgerichte_aanpak source
@@ -3468,12 +3662,27 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER gebiedsgerichte_aanpak_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.func_gebiedsgerichte_aanpak_del();
+CREATE TRIGGER gebiedsgerichte_aanpak_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.func_gebiedsgerichte_aanpak_ins();
+CREATE TRIGGER gebiedsgerichte_aanpak_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_gebiedsgerichte_aanpak FOR EACH ROW EXECUTE FUNCTION objecten.func_gebiedsgerichte_aanpak_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_gebiedsgerichte_aanpak OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_gebiedsgerichte_aanpak TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_gebiedsgerichte_aanpak TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_gebiedsgerichte_aanpak TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_gebiedsgerichte_aanpak TO oiv_write;
 
 
 -- objecten.object_grid source
@@ -3513,7 +3722,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.object_grid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_grid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_grid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_grid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_grid TO oiv_write;
 
 
 -- objecten.object_ingang source
@@ -3548,12 +3757,33 @@ AS SELECT v.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_ingang_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_del('object');
+CREATE TRIGGER object_ingang_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_ins('object');
+CREATE TRIGGER object_ingang_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_upd('object');
+CREATE TRIGGER object_ingang_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.object_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'ingang',
+    'ingang_id');
+
 -- Permissions
 
 ALTER TABLE objecten.object_ingang OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_ingang TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_ingang TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_ingang TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_ingang TO oiv_write;
 
 
 -- objecten.object_isolijnen source
@@ -3570,7 +3800,7 @@ AS SELECT l.id,
     b.datum_geldig_tot,
     part.typeobject
    FROM objecten.isolijnen l
-     JOIN objecten.object b ON l.object_id = b.id
+     LEFT JOIN objecten.object b ON l.object_id = b.id
      LEFT JOIN ( SELECT h.object_id,
             h.typeobject
            FROM objecten.historie h
@@ -3580,12 +3810,27 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER isolijnen_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.func_isolijnen_del();
+CREATE TRIGGER isolijnen_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.func_isolijnen_ins();
+CREATE TRIGGER isolijnen_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_isolijnen FOR EACH ROW EXECUTE FUNCTION objecten.func_isolijnen_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_isolijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_isolijnen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_isolijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_isolijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_isolijnen TO oiv_write;
 
 
 -- objecten.object_label source
@@ -3617,18 +3862,33 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_label_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_del('object');
+CREATE TRIGGER object_label_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_ins('object');
+CREATE TRIGGER object_label_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_label FOR EACH ROW EXECUTE FUNCTION objecten.func_label_upd('object');
+
 -- Permissions
 
 ALTER TABLE objecten.object_label OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_label TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_label TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_label TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_label TO oiv_write;
 
 
 -- objecten.object_objecten source
 
 CREATE OR REPLACE VIEW objecten.object_objecten
-AS SELECT b.id,
+AS SELECT DISTINCT b.id,
     b.geom,
     b.datum_aangemaakt,
     b.datum_gewijzigd,
@@ -3656,12 +3916,21 @@ AS SELECT b.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE b.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER objecten_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.object_objecten FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'object',
+    'object_id');
+
 -- Permissions
 
 ALTER TABLE objecten.object_objecten OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_objecten TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_objecten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_objecten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_objecten TO oiv_write;
 
 
 -- objecten.object_opslag source
@@ -3695,12 +3964,33 @@ AS SELECT o.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE o.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_opslag_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_del('object');
+CREATE TRIGGER object_opslag_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_ins('object');
+CREATE TRIGGER object_opslag_soft_del_cascade INSTEAD OF
+DELETE
+    ON
+    objecten.object_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_soft_delete_cascade('objecten',
+    'gevaarlijkestof_opslag',
+    'opslag_id');
+CREATE TRIGGER object_opslag_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_opslag FOR EACH ROW EXECUTE FUNCTION objecten.func_opslag_upd('object');
+
 -- Permissions
 
 ALTER TABLE objecten.object_opslag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_opslag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_opslag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_opslag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_opslag TO oiv_write;
 
 
 -- objecten.object_opstelplaats source
@@ -3732,12 +4022,27 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER opstelplaats_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.func_opstelplaats_del();
+CREATE TRIGGER opstelplaats_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.func_opstelplaats_ins();
+CREATE TRIGGER opstelplaats_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_opstelplaats FOR EACH ROW EXECUTE FUNCTION objecten.func_opstelplaats_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_opstelplaats OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_opstelplaats TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_opstelplaats TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_opstelplaats TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_opstelplaats TO oiv_write;
 
 
 -- objecten.object_points_of_interest source
@@ -3770,12 +4075,27 @@ AS SELECT b.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
   WHERE b.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER points_of_interest_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.func_points_of_interest_del();
+CREATE TRIGGER points_of_interest_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.func_points_of_interest_ins();
+CREATE TRIGGER points_of_interest_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.func_points_of_interest_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_points_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_points_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_points_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_points_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_points_of_interest TO oiv_write;
 
 
 -- objecten.object_scenario_locatie source
@@ -3808,12 +4128,27 @@ AS SELECT o.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE o.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_scenario_locatie_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_del('object');
+CREATE TRIGGER object_scenario_locatie_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_ins('object');
+CREATE TRIGGER object_scenario_locatie_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_scenario_locatie FOR EACH ROW EXECUTE FUNCTION objecten.func_scenario_locatie_upd('object');
+
 -- Permissions
 
 ALTER TABLE objecten.object_scenario_locatie OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_scenario_locatie TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_scenario_locatie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_scenario_locatie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_scenario_locatie TO oiv_write;
 
 
 -- objecten.object_sectoren source
@@ -3842,12 +4177,27 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER sectoren_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_sectoren FOR EACH ROW EXECUTE FUNCTION objecten.func_sectoren_del();
+CREATE TRIGGER sectoren_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_sectoren FOR EACH ROW EXECUTE FUNCTION objecten.func_sectoren_ins();
+CREATE TRIGGER sectoren_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_sectoren FOR EACH ROW EXECUTE FUNCTION objecten.func_sectoren_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_sectoren OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_sectoren TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_sectoren TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_sectoren TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_sectoren TO oiv_write;
 
 
 -- objecten.object_sleutelkluis source
@@ -3882,12 +4232,27 @@ AS SELECT v.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE v.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER object_sleutelkluis_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_del('object');
+CREATE TRIGGER object_sleutelkluis_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_ins('object');
+CREATE TRIGGER object_sleutelkluis_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_upd('object');
+
 -- Permissions
 
 ALTER TABLE objecten.object_sleutelkluis OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_sleutelkluis TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_sleutelkluis TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_sleutelkluis TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_sleutelkluis TO oiv_write;
 
 
 -- objecten.object_terrein source
@@ -3919,7 +4284,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.object_terrein OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_terrein TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_terrein TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_terrein TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_terrein TO oiv_write;
 
 
 -- objecten.object_veiligh_ruimtelijk source
@@ -3952,12 +4317,27 @@ AS SELECT b.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
   WHERE b.datum_deleted IS NULL;
 
+-- View Triggers
+
+CREATE TRIGGER veiligh_ruimtelijk_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_ruimtelijk_del();
+CREATE TRIGGER veiligh_ruimtelijk_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_ruimtelijk_ins();
+CREATE TRIGGER veiligh_ruimtelijk_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_veiligh_ruimtelijk FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_ruimtelijk_upd();
+
 -- Permissions
 
 ALTER TABLE objecten.object_veiligh_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.object_veiligh_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.object_veiligh_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.object_veiligh_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.object_veiligh_ruimtelijk TO oiv_write;
 
 
 -- objecten.schade_cirkel_calc source
@@ -3974,7 +4354,8 @@ AS SELECT sc.id,
      LEFT JOIN ( SELECT gb.id,
             ops.geom
            FROM objecten.gevaarlijkestof gb
-             LEFT JOIN objecten.gevaarlijkestof_opslag ops ON gb.opslag_id = ops.id) part ON sc.gevaarlijkestof_id = part.id;
+             LEFT JOIN objecten.gevaarlijkestof_opslag ops ON gb.opslag_id = ops.id) part ON sc.gevaarlijkestof_id = part.id
+  WHERE sc.datum_deleted IS NULL;
 
 -- Permissions
 
@@ -4111,7 +4492,7 @@ AS SELECT row_number() OVER (ORDER BY g.gemeentena) AS gid,
 ALTER TABLE objecten.stavaza_status_gemeente OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.stavaza_status_gemeente TO oiv_admin;
 GRANT SELECT ON TABLE objecten.stavaza_status_gemeente TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.stavaza_status_gemeente TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.stavaza_status_gemeente TO oiv_write;
 
 
 -- objecten.stavaza_update_gemeente source
@@ -4133,7 +4514,7 @@ AS SELECT row_number() OVER (ORDER BY g.gemeentena) AS gid,
 ALTER TABLE objecten.stavaza_update_gemeente OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.stavaza_update_gemeente TO oiv_admin;
 GRANT SELECT ON TABLE objecten.stavaza_update_gemeente TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.stavaza_update_gemeente TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.stavaza_update_gemeente TO oiv_write;
 
 
 -- objecten.stavaza_volgende_update source
@@ -4219,6 +4600,7 @@ AS SELECT row_number() OVER (ORDER BY e.enumlabel)::integer AS id,
 ALTER TABLE objecten.veiligh_bouwk_types OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.veiligh_bouwk_types TO oiv_admin;
 GRANT SELECT ON TABLE objecten.veiligh_bouwk_types TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.veiligh_bouwk_types TO oiv_write;
 
 
 -- objecten.view_afw_binnendekking source
@@ -4257,7 +4639,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_afw_binnendekking OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_afw_binnendekking TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_afw_binnendekking TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_afw_binnendekking TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_afw_binnendekking TO oiv_write;
 
 
 -- objecten.view_bedrijfshulpverlening source
@@ -4287,7 +4669,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_bedrijfshulpverlening OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_bedrijfshulpverlening TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_bedrijfshulpverlening TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_bedrijfshulpverlening TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_bedrijfshulpverlening TO oiv_write;
 
 
 -- objecten.view_bereikbaarheid source
@@ -4318,7 +4700,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_bereikbaarheid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_bereikbaarheid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_bereikbaarheid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_bereikbaarheid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_bereikbaarheid TO oiv_write;
 
 
 -- objecten.view_bouwlagen source
@@ -4358,7 +4740,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_bouwlagen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_bouwlagen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_bouwlagen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_bouwlagen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_bouwlagen TO oiv_write;
 
 
 -- objecten.view_contactpersoon source
@@ -4388,7 +4770,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_contactpersoon OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_contactpersoon TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_contactpersoon TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_contactpersoon TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_contactpersoon TO oiv_write;
 
 
 -- objecten.view_dreiging_bouwlaag source
@@ -4430,7 +4812,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_dreiging_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_dreiging_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_dreiging_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_dreiging_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_dreiging_bouwlaag TO oiv_write;
 
 
 -- objecten.view_dreiging_ruimtelijk source
@@ -4467,7 +4849,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_dreiging_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_dreiging_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_dreiging_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_dreiging_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_dreiging_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_gebiedsgerichte_aanpak source
@@ -4497,7 +4879,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_gebiedsgerichte_aanpak OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_gebiedsgerichte_aanpak TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_gebiedsgerichte_aanpak TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_gebiedsgerichte_aanpak TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_gebiedsgerichte_aanpak TO oiv_write;
 
 
 -- objecten.view_gevaarlijkestof_bouwlaag source
@@ -4544,7 +4926,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_gevaarlijkestof_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_gevaarlijkestof_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_gevaarlijkestof_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_gevaarlijkestof_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_gevaarlijkestof_bouwlaag TO oiv_write;
 
 
 -- objecten.view_gevaarlijkestof_ruimtelijk source
@@ -4586,7 +4968,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_gevaarlijkestof_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_gevaarlijkestof_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_gevaarlijkestof_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_gevaarlijkestof_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_gevaarlijkestof_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_grid source
@@ -4621,7 +5003,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_grid OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_grid TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_grid TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_grid TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_grid TO oiv_write;
 
 
 -- objecten.view_ingang_bouwlaag source
@@ -4663,7 +5045,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_ingang_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_ingang_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_ingang_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_ingang_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_ingang_bouwlaag TO oiv_write;
 
 
 -- objecten.view_ingang_ruimtelijk source
@@ -4701,7 +5083,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_ingang_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_ingang_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_ingang_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_ingang_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_ingang_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_isolijnen source
@@ -4729,7 +5111,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_isolijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_isolijnen TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_isolijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_isolijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_isolijnen TO oiv_write;
 
 
 -- objecten.view_label_bouwlaag source
@@ -4768,7 +5150,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_label_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_label_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_label_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_label_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_label_bouwlaag TO oiv_write;
 
 
 -- objecten.view_label_ruimtelijk source
@@ -4802,7 +5184,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_label_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_label_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_label_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_label_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_label_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_objectgegevens source
@@ -4849,7 +5231,57 @@ AS SELECT o.id,
 ALTER TABLE objecten.view_objectgegevens OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_objectgegevens TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_objectgegevens TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_objectgegevens TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_objectgegevens TO oiv_write;
+
+
+-- objecten.view_objectgegevens_liveop source
+
+CREATE OR REPLACE VIEW objecten.view_objectgegevens_liveop
+AS SELECT DISTINCT o.id,
+    o.formelenaam,
+    o.geom,
+    o.basisreg_identifier,
+    o.datum_aangemaakt,
+    o.datum_gewijzigd,
+    o.bijzonderheden,
+    o.pers_max,
+    o.pers_nietz_max,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    o.bron,
+    o.bron_tabel,
+    o.fotografie_id,
+    bg.naam AS bodemgesteldheid,
+    gf.gebruiksfuncties,
+    round(st_x(o.geom)) AS x,
+    round(st_y(o.geom)) AS y,
+    part.typeobject,
+    max(b.bouwlaag) AS hoogste_bouwlaag,
+    min(b.bouwlaag) AS laagste_bouwlaag
+   FROM objecten.object o
+     JOIN objecten.terrein t ON o.id = t.object_id
+     LEFT JOIN objecten.bodemgesteldheid_type bg ON o.bodemgesteldheid_type_id = bg.id
+     LEFT JOIN ( SELECT DISTINCT g.object_id,
+            string_agg(gt.naam, ', '::text) AS gebruiksfuncties
+           FROM objecten.gebruiksfunctie g
+             JOIN objecten.gebruiksfunctie_type gt ON g.gebruiksfunctie_type_id = gt.id
+          GROUP BY g.object_id) gf ON o.id = gf.object_id
+     JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  WHERE historie.status::text = 'in gebruik'::text
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+     LEFT JOIN objecten.bouwlagen b ON st_intersects(t.geom, b.geom)
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
+  GROUP BY o.id, o.formelenaam, o.geom, o.basisreg_identifier, o.datum_aangemaakt, o.datum_gewijzigd, o.bijzonderheden, o.pers_max, o.pers_nietz_max, o.datum_geldig_vanaf, o.datum_geldig_tot, o.bron, o.bron_tabel, o.fotografie_id, bg.naam, gf.gebruiksfuncties, part.typeobject;
+
+-- Permissions
+
+ALTER TABLE objecten.view_objectgegevens_liveop OWNER TO postgres;
+GRANT ALL ON TABLE objecten.view_objectgegevens_liveop TO postgres;
 
 
 -- objecten.view_opstelplaats source
@@ -4884,7 +5316,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_opstelplaats OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_opstelplaats TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_opstelplaats TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_opstelplaats TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_opstelplaats TO oiv_write;
 
 
 -- objecten.view_pictogram_zonder_object source
@@ -4908,7 +5340,7 @@ AS SELECT v.id,
 ALTER TABLE objecten.view_pictogram_zonder_object OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_pictogram_zonder_object TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_pictogram_zonder_object TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_pictogram_zonder_object TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_pictogram_zonder_object TO oiv_write;
 
 
 -- objecten.view_points_of_interest source
@@ -4944,7 +5376,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_points_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_points_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_points_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_points_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_points_of_interest TO oiv_write;
 
 
 -- objecten.view_ruimten source
@@ -4979,7 +5411,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_ruimten OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_ruimten TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_ruimten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_ruimten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_ruimten TO oiv_write;
 
 
 -- objecten.view_scenario_bouwlaag source
@@ -5021,7 +5453,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_scenario_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_scenario_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_scenario_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_scenario_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_scenario_bouwlaag TO oiv_write;
 
 
 -- objecten.view_scenario_ruimtelijk source
@@ -5061,7 +5493,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_scenario_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_scenario_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_scenario_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_scenario_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_scenario_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_schade_cirkel_bouwlaag source
@@ -5107,7 +5539,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_schade_cirkel_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_schade_cirkel_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_schade_cirkel_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_schade_cirkel_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_schade_cirkel_bouwlaag TO oiv_write;
 
 
 -- objecten.view_schade_cirkel_ruimtelijk source
@@ -5148,7 +5580,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_schade_cirkel_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_schade_cirkel_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_schade_cirkel_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_schade_cirkel_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_schade_cirkel_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_sectoren source
@@ -5178,7 +5610,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_sectoren OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_sectoren TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_sectoren TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_sectoren TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_sectoren TO oiv_write;
 
 
 -- objecten.view_sleutelkluis_bouwlaag source
@@ -5226,7 +5658,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_sleutelkluis_bouwlaag OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_sleutelkluis_bouwlaag TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_sleutelkluis_bouwlaag TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_sleutelkluis_bouwlaag TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_sleutelkluis_bouwlaag TO oiv_write;
 
 
 -- objecten.view_sleutelkluis_ruimtelijk source
@@ -5269,7 +5701,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_sleutelkluis_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_sleutelkluis_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_sleutelkluis_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_sleutelkluis_ruimtelijk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_sleutelkluis_ruimtelijk TO oiv_write;
 
 
 -- objecten.view_veiligh_bouwk source
@@ -5303,7 +5735,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_veiligh_bouwk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_veiligh_bouwk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_veiligh_bouwk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_veiligh_bouwk TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_veiligh_bouwk TO oiv_write;
 
 
 -- objecten.view_veiligh_install source
@@ -5346,7 +5778,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.view_veiligh_install OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_veiligh_install TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_veiligh_install TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_veiligh_install TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_veiligh_install TO oiv_write;
 
 
 -- objecten.view_veiligh_ruimtelijk source
@@ -5382,337 +5814,7 @@ AS SELECT b.id,
 ALTER TABLE objecten.view_veiligh_ruimtelijk OWNER TO oiv_admin;
 GRANT ALL ON TABLE objecten.view_veiligh_ruimtelijk TO oiv_admin;
 GRANT SELECT ON TABLE objecten.view_veiligh_ruimtelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE objecten.view_veiligh_ruimtelijk TO oiv_write;
-
-
--- objecten.vv_objecten source
-
-CREATE OR REPLACE VIEW objecten.vv_objecten
-AS SELECT o.id,
-    COALESCE(bwl.bouwlaag, 1) AS bouwlaag,
-    row_to_json(( SELECT d.*::record AS d
-           FROM ( SELECT concat(o.id, '_bouwlaag_', COALESCE(bwl.bouwlaag, 1)) AS id,
-                    o.formelenaam,
-                    st_astext(o.geom) AS location,
-                    o.bijzonderheden,
-                    o.pers_max,
-                    o.pers_nietz_max,
-                    gf.gebruiksfuncties AS gebruikstype_specifiek,
-                    part.typeobject AS symbool,
-                    bg.naam AS bodemgesteldheid,
-                    bbh.json_list AS lines,
-                    lbl.json_list AS labels,
-                    vhr.json_list AS symbols,
-                    drg.json_list AS danger_symbols,
-                    bwl.json_list AS buildings,
-                    grd.json_list AS grid_polygons,
-                    vrd.json_list AS verdiepingen,
-                    rmt.json_list AS custom_polygons) d)) AS json_string
-   FROM objecten.object o
-     LEFT JOIN objecten.terrein trn ON o.id = trn.object_id
-     LEFT JOIN objecten.bodemgesteldheid_type bg ON o.bodemgesteldheid_type_id = bg.id
-     LEFT JOIN ( SELECT DISTINCT g.object_id,
-            string_agg(gt.naam, ', '::text) AS gebruiksfuncties
-           FROM objecten.gebruiksfunctie g
-             JOIN objecten.gebruiksfunctie_type gt ON g.gebruiksfunctie_type_id = gt.id
-          GROUP BY g.object_id) gf ON o.id = gf.object_id
-     LEFT JOIN ( SELECT b.bouwlaag,
-            st_union(b.geom) AS geovlak,
-            json_agg(row_to_json(( SELECT b_1.*::record AS b
-                   FROM ( SELECT b.bouwlaag,
-                            b.bouwdeel,
-                            st_astext(b.geom) AS polygon) b_1))) AS json_list
-           FROM objecten.bouwlagen b
-          GROUP BY b.bouwlaag, b.pand_id) bwl ON st_intersects(trn.geom, bwl.geovlak)
-     LEFT JOIN ( SELECT b.object_id,
-            json_agg(row_to_json(( SELECT DISTINCT b_1.*::record AS b
-                   FROM ( SELECT b.bouwlaag,
-                                CASE
-                                    WHEN b.bouwlaag = 1 THEN true
-                                    ELSE false
-                                END AS is_hoofdobject,
-                            concat(b.object_id, '_bouwlaag_', COALESCE(b.bouwlaag, 1)) AS id) b_1))) AS json_list
-           FROM ( SELECT DISTINCT bo.bouwlaag,
-                    tren.object_id
-                   FROM objecten.bouwlagen bo
-                     JOIN objecten.terrein tren ON st_intersects(tren.geom, bo.geom)) b
-          GROUP BY b.object_id) vrd ON o.id = vrd.object_id
-     LEFT JOIN ( SELECT sub2.object_id,
-            sub2.bouwlaag,
-            json_agg(sub2.json_list) AS json_list
-           FROM ( SELECT COALESCE(sub1.object_id, t.object_id) AS object_id,
-                    COALESCE(b.bouwlaag, 1) AS bouwlaag,
-                    json_agg(row_to_json(( SELECT b_1.*::record AS b
-                           FROM ( SELECT sub1.omschrijving,
-                                    sub1.bijzonderheid,
-                                    sub1.label,
-                                    sub1.soort,
-                                    st_astext(sub1.geom) AS line) b_1))) AS json_list
-                   FROM ( SELECT vr.geom,
-                            vr.obstakels AS omschrijving,
-                            vr.wegafzetting AS bijzonderheid,
-                            vr.label,
-                            vr.soort,
-                            vr.object_id,
-                            NULL::integer AS bouwlaag_id
-                           FROM objecten.bereikbaarheid vr
-                        UNION
-                         SELECT vr.geom,
-                            vr.omschrijving,
-                            NULL::character varying AS bijzonderheid,
-                            concat(vr.hoogte::text, ' mtr.'::text) AS label,
-                            vr.hoogte::text AS hoogte,
-                            vr.object_id,
-                            NULL::integer AS bouwlaag_id
-                           FROM objecten.isolijnen vr
-                        UNION
-                         SELECT vr.geom,
-                            vr.bijzonderheden AS omschrijving,
-                            NULL::character varying AS bijzonderheid,
-                            vr.label,
-                            vr.soort,
-                            vr.object_id,
-                            NULL::integer AS bouwlaag_id
-                           FROM objecten.gebiedsgerichte_aanpak vr
-                        UNION
-                         SELECT vr.geom,
-                            NULL::character varying AS omschrijving,
-                            NULL::character varying AS bijzonderheid,
-                            NULL::character varying AS label,
-                            vr.soort,
-                            NULL::integer AS object_id,
-                            vr.bouwlaag_id
-                           FROM objecten.veiligh_bouwk vr) sub1
-                     LEFT JOIN objecten.bouwlagen b ON sub1.bouwlaag_id = b.id
-                     LEFT JOIN objecten.terrein t ON st_intersects(t.geom, sub1.geom)
-                  GROUP BY sub1.object_id, t.object_id, b.bouwlaag) sub2
-          GROUP BY sub2.object_id, sub2.bouwlaag) bbh ON o.id = bbh.object_id AND COALESCE(bwl.bouwlaag, 1) = bbh.bouwlaag
-     LEFT JOIN ( SELECT sub2.object_id,
-            sub2.bouwlaag,
-            json_agg(sub2.json_list) AS json_list
-           FROM ( SELECT COALESCE(sub1.object_id, t.object_id) AS object_id,
-                    COALESCE(b.bouwlaag, 1) AS bouwlaag,
-                    json_agg(row_to_json(( SELECT b_1.*::record AS b
-                           FROM ( SELECT sub1.omschrijving,
-                                    sub1.label,
-                                    sub1.soort,
-                                    st_astext(sub1.geom) AS polygon) b_1))) AS json_list
-                   FROM ( SELECT vr.geom,
-                            vr.omschrijving,
-                            vr.label,
-                            vr.soort,
-                            vr.object_id,
-                            NULL::integer AS bouwlaag_id
-                           FROM objecten.sectoren vr
-                        UNION
-                         SELECT vr.geom,
-                            vr.omschrijving,
-                            NULL::character varying AS label,
-                            vr.ruimten_type_id,
-                            NULL::integer AS object_id,
-                            vr.bouwlaag_id
-                           FROM objecten.ruimten vr) sub1
-                     LEFT JOIN objecten.bouwlagen b ON sub1.bouwlaag_id = b.id
-                     LEFT JOIN objecten.terrein t ON st_intersects(t.geom, sub1.geom)
-                  GROUP BY sub1.object_id, t.object_id, b.bouwlaag) sub2
-          GROUP BY sub2.object_id, sub2.bouwlaag) rmt ON o.id = rmt.object_id AND COALESCE(bwl.bouwlaag, 1) = rmt.bouwlaag
-     LEFT JOIN ( SELECT subquery.object_id,
-            subquery.bouwlaag,
-            json_agg(subquery.json_list) AS json_list
-           FROM ( SELECT COALESCE(l.object_id, t.object_id) AS object_id,
-                    COALESCE(b.bouwlaag, 1) AS bouwlaag,
-                    json_agg(row_to_json(( SELECT b_1.*::record AS b
-                           FROM ( SELECT l.omschrijving AS text,
-                                    l.rotatie,
-                                    l.soort,
-                                    st_astext(l.geom) AS location,
-                                    lt.size) b_1))) AS json_list
-                   FROM objecten.label l
-                     JOIN objecten.label_type lt ON l.soort::text = lt.naam::text
-                     LEFT JOIN objecten.bouwlagen b ON l.bouwlaag_id = b.id
-                     LEFT JOIN objecten.terrein t ON st_intersects(t.geom, l.geom)
-                  GROUP BY l.object_id, t.object_id, b.bouwlaag) subquery
-          GROUP BY subquery.object_id, subquery.bouwlaag) lbl ON o.id = lbl.object_id AND COALESCE(bwl.bouwlaag, 1) = lbl.bouwlaag
-     LEFT JOIN ( SELECT sub2.object_id,
-            sub2.bouwlaag,
-            json_agg(sub2.json_list) AS json_list
-           FROM ( SELECT COALESCE(sub1.object_id, t.object_id) AS object_id,
-                    COALESCE(b.bouwlaag, 1) AS bouwlaag,
-                    json_agg(row_to_json(( SELECT b_1.*::record AS b
-                           FROM ( SELECT sub1.bijzonderheid,
-                                    sub1.rotatie,
-                                    sub1.label,
-                                    sub1.naam,
-                                    sub1.symbol_name AS code,
-                                    st_astext(sub1.geom) AS location,
-                                    sub1.size) b_1))) AS json_list
-                   FROM ( SELECT vr.geom,
-                            vr.veiligh_ruimtelijk_type_id,
-                            vr.label,
-                            NULL::integer AS bouwlaag_id,
-                            vr.object_id,
-                            vr.rotatie,
-                            vr.bijzonderheid,
-                            lt.naam,
-                            lt.symbol_name,
-                            lt.size
-                           FROM objecten.veiligh_ruimtelijk vr
-                             JOIN objecten.veiligh_ruimtelijk_type lt ON vr.veiligh_ruimtelijk_type_id = lt.id
-                        UNION
-                         SELECT vr.geom,
-                            vr.ingang_type_id,
-                            vr.label,
-                            vr.bouwlaag_id,
-                            vr.object_id,
-                            vr.rotatie,
-                            vr.voorzieningen,
-                            lt.naam,
-                            lt.symbol_name,
-                            lt.size
-                           FROM objecten.ingang vr
-                             JOIN objecten.ingang_type lt ON vr.ingang_type_id = lt.id
-                        UNION
-                         SELECT s.geom,
-                            s.sleutelkluis_type_id,
-                            s.label,
-                            vr.bouwlaag_id,
-                            vr.object_id,
-                            s.rotatie,
-                            sdt.naam,
-                            skt.naam,
-                            skt.symbol_name,
-                            skt.size
-                           FROM objecten.sleutelkluis s
-                             JOIN objecten.ingang vr ON s.ingang_id = vr.id
-                             JOIN objecten.sleutelkluis_type skt ON s.sleutelkluis_type_id = skt.id
-                             LEFT JOIN objecten.sleuteldoel_type sdt ON s.sleuteldoel_type_id = sdt.id
-                        UNION
-                         SELECT op.geom,
-                            lt.id,
-                            op.label,
-                            NULL::integer AS bouwlaag_id,
-                            op.object_id,
-                            op.rotatie,
-                            NULL::text AS bijzonderheid,
-                            op.soort,
-                            lt.symbol_name,
-                            lt.size
-                           FROM objecten.opstelplaats op
-                             JOIN objecten.opstelplaats_type lt ON op.soort::text = lt.naam::text
-                        UNION
-                         SELECT op.geom,
-                            op.points_of_interest_type_id,
-                            op.label,
-                            NULL::integer AS bouwlaag_id,
-                            op.object_id,
-                            op.rotatie,
-                            op.bijzonderheid,
-                            lt.naam,
-                            lt.symbol_name,
-                            lt.size
-                           FROM objecten.points_of_interest op
-                             JOIN objecten.points_of_interest_type lt ON op.points_of_interest_type_id = lt.id
-                        UNION
-                         SELECT vr.geom,
-                            vr.veiligh_install_type_id,
-                            vr.label,
-                            vr.bouwlaag_id,
-                            NULL::integer AS object_id,
-                            vr.rotatie,
-                            vr.bijzonderheid,
-                            lt.naam,
-                            lt.symbol_name,
-                            lt.size
-                           FROM objecten.veiligh_install vr
-                             JOIN objecten.veiligh_install_type lt ON vr.veiligh_install_type_id = lt.id) sub1
-                     LEFT JOIN objecten.bouwlagen b ON sub1.bouwlaag_id = b.id
-                     LEFT JOIN objecten.terrein t ON st_intersects(t.geom, sub1.geom)
-                  GROUP BY sub1.object_id, t.object_id, b.bouwlaag) sub2
-          GROUP BY sub2.object_id, sub2.bouwlaag) vhr ON o.id = vhr.object_id AND COALESCE(bwl.bouwlaag, 1) = vhr.bouwlaag
-     LEFT JOIN ( SELECT subquery.object_id,
-            subquery.bouwlaag,
-            json_agg(subquery.json_list) AS json_list
-           FROM ( SELECT COALESCE(l.object_id, t.object_id) AS object_id,
-                    COALESCE(b.bouwlaag, 1) AS bouwlaag,
-                    json_agg(row_to_json(( SELECT b_1.*::record AS b
-                           FROM ( SELECT l.omschrijving,
-                                    l.rotatie,
-                                    l.label,
-                                    lt.naam,
-                                    lt.symbol_name AS code,
-                                    st_astext(l.geom) AS location,
-                                    lt.size) b_1))) AS json_list
-                   FROM objecten.dreiging l
-                     JOIN objecten.dreiging_type lt ON l.dreiging_type_id = lt.id
-                     LEFT JOIN objecten.bouwlagen b ON l.bouwlaag_id = b.id
-                     LEFT JOIN objecten.terrein t ON st_intersects(t.geom, l.geom)
-                  GROUP BY l.object_id, t.object_id, b.bouwlaag) subquery
-          GROUP BY subquery.object_id, subquery.bouwlaag) drg ON o.id = vhr.object_id
-     LEFT JOIN ( SELECT b.object_id,
-            json_agg(row_to_json(( SELECT b_1.*::record AS b
-                   FROM ( SELECT b.y_as_label,
-                            b.x_as_label,
-                            b.vaknummer,
-                            b.type,
-                            st_astext(b.geom) AS polygon) b_1))) AS json_list
-           FROM objecten.grid b
-          GROUP BY b.object_id) grd ON o.id = grd.object_id
-     JOIN ( SELECT h.object_id,
-            h.typeobject
-           FROM objecten.historie h
-             JOIN ( SELECT historie.object_id,
-                    max(historie.datum_aangemaakt) AS maxdatetime
-                   FROM objecten.historie
-                  WHERE historie.status::text = 'in gebruik'::text
-                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
-  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL);
-
--- Permissions
-
-ALTER TABLE objecten.vv_objecten OWNER TO webdev;
-GRANT ALL ON TABLE objecten.vv_objecten TO webdev;
-
-
--- objecten.vv_objecten_list source
-
-CREATE OR REPLACE VIEW objecten.vv_objecten_list
-AS SELECT row_to_json(( SELECT x.*::record AS x
-           FROM ( SELECT subq.id,
-                    st_astext(st_extent(subq.extent)::geometry) AS extent,
-                    subq.formelenaam,
-                    subq.pand_centroid,
-                    subq.symbool,
-                    subq.heeft_verdiepingen) x)) AS row_to_json
-   FROM ( SELECT concat(o.id, '_bouwlaag_', COALESCE(b.bouwlaag, 1)) AS id,
-            st_transform(trn.geom, 4326) AS extent,
-            o.formelenaam,
-            st_astext(o.geom) AS pand_centroid,
-            COALESCE(part.typeobject, ''::character varying) AS symbool,
-                CASE
-                    WHEN (( SELECT max(bwl.bouwlaag) AS max
-                       FROM objecten.bouwlagen bwl
-                      WHERE st_intersects(trn.geom, bwl.geom))) <> 1 THEN true
-                    ELSE false
-                END AS heeft_verdiepingen
-           FROM objecten.object o
-             JOIN objecten.terrein trn ON o.id = trn.object_id
-             LEFT JOIN objecten.bouwlagen b ON st_intersects(trn.geom, b.geom)
-             JOIN ( SELECT h.object_id,
-                    h.typeobject
-                   FROM objecten.historie h
-                     JOIN ( SELECT historie.object_id,
-                            max(historie.datum_aangemaakt) AS maxdatetime
-                           FROM objecten.historie
-                          WHERE historie.status::text = 'in gebruik'::text
-                          GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
-          WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
-          GROUP BY o.id, b.bouwlaag, part.typeobject, trn.geom) subq
-  GROUP BY subq.id, subq.formelenaam, subq.pand_centroid, subq.symbool, subq.heeft_verdiepingen;
-
--- Permissions
-
-ALTER TABLE objecten.vv_objecten_list OWNER TO webdev;
-GRANT ALL ON TABLE objecten.vv_objecten_list TO webdev;
+GRANT UPDATE, DELETE, INSERT ON TABLE objecten.view_veiligh_ruimtelijk TO oiv_write;
 
 
 
@@ -5722,8 +5824,10 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.afw_binnendekking WHERE (afw_binnendekking.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.handelingsaanwijzing) d));
@@ -5739,6 +5843,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_afw_binnendekking_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_ins()
@@ -5750,8 +5855,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.afw_binnendekking (geom, soort, label, rotatie, handelingsaanwijzing, bouwlaag_id)
             VALUES (new.geom, new.soort, new.label, new.rotatie, new.handelingsaanwijzing, new.bouwlaag_id);
         ELSE
@@ -5771,6 +5878,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_afw_binnendekking_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_upd()
@@ -5781,8 +5889,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.afw_binnendekking SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, handelingsaanwijzing = new.handelingsaanwijzing, bouwlaag_id = new.bouwlaag_id
             WHERE (afw_binnendekking.id = new.id);
         ELSE
@@ -5805,6 +5915,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_afw_binnendekking_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_afw_binnendekking_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_del()
@@ -5813,8 +5924,10 @@ CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.bereikbaarheid WHERE (bereikbaarheid.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.obstakels, old.wegafzetting) d));
@@ -5830,6 +5943,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_bereikbaarheid_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_ins()
@@ -5839,8 +5953,10 @@ AS $function$
     DECLARE
         objectid integer;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.bereikbaarheid (geom, obstakels, wegafzetting, soort, object_id, fotografie_id, label)
             VALUES (new.geom, new.obstakels, new.wegafzetting, new.soort, new.object_id, new.fotografie_id, new.label);
         ELSE
@@ -5858,6 +5974,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_bereikbaarheid_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_upd()
@@ -5866,8 +5983,10 @@ CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_upd()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN 
             UPDATE objecten.bereikbaarheid SET geom = new.geom, obstakels = new.obstakels, wegafzetting = new.wegafzetting, soort = new.soort, object_id = new.object_id, fotografie_id = new.fotografie_id, label = new.label
             WHERE (bereikbaarheid.id = new.id);
         ELSE
@@ -5889,6 +6008,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_bereikbaarheid_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_bereikbaarheid_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_dreiging_del()
@@ -5899,8 +6019,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.dreiging WHERE (dreiging.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.omschrijving) d));
@@ -5919,6 +6041,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_dreiging_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_dreiging_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_dreiging_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_dreiging_ins()
@@ -5933,8 +6056,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.dreiging (geom, dreiging_type_id, label, rotatie, bouwlaag_id, object_id, fotografie_id)
             VALUES (new.geom, new.dreiging_type_id, new.label, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id);
         ELSE
@@ -5962,6 +6087,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_dreiging_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_dreiging_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_dreiging_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_dreiging_upd()
@@ -5974,9 +6100,11 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
-            UPDATE objecten.dreiging SET geom = new.geom, dreiging_type_id = new.dreiging_type_id, rotatie = new.rotatie, label = new.label, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            UPDATE objecten.dreiging SET geom = new.geom, dreiging_type_id = new.dreiging_type_id, omschrijving = new.omschrijving, rotatie = new.rotatie, label = new.label, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (dreiging.id = new.id);
         ELSE
             symbol_name := (SELECT dt.symbol_name FROM objecten.dreiging_type dt WHERE dt.id = new.dreiging_type_id);
@@ -6004,6 +6132,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_dreiging_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_dreiging_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_dreiging_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_del()
@@ -6012,8 +6141,10 @@ CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.gebiedsgerichte_aanpak WHERE (gebiedsgerichte_aanpak.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheden) d)); 
@@ -6029,6 +6160,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_gebiedsgerichte_aanpak_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_ins()
@@ -6038,8 +6170,10 @@ AS $function$
     DECLARE
         objectid integer;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.gebiedsgerichte_aanpak (geom, soort, label, bijzonderheden, object_id, fotografie_id)
             VALUES (new.geom, new.soort, new.label, new.bijzonderheden, new.object_id, new.fotografie_id);
         ELSE
@@ -6057,6 +6191,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_gebiedsgerichte_aanpak_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_upd()
@@ -6065,8 +6200,10 @@ CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_upd()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.gebiedsgerichte_aanpak SET geom = new.geom, soort = new.soort, label = new.label, bijzonderheden = new.bijzonderheden, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (gebiedsgerichte_aanpak.id = new.id);
         ELSE
@@ -6088,6 +6225,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_gebiedsgerichte_aanpak_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_gebiedsgerichte_aanpak_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ingang_del()
@@ -6098,8 +6236,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.ingang WHERE (ingang.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.belemmering, old.voorzieningen) d));
@@ -6118,6 +6258,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ingang_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ingang_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_ingang_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ingang_ins()
@@ -6132,8 +6273,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.ingang (geom, ingang_type_id, label, rotatie, belemmering, voorzieningen, bouwlaag_id, object_id, fotografie_id)
             VALUES (new.geom, new.ingang_type_id, new.label, new.rotatie, new.belemmering, new.voorzieningen, new.bouwlaag_id, new.object_id, new.fotografie_id);
         ELSE
@@ -6161,6 +6304,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ingang_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ingang_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_ingang_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ingang_upd()
@@ -6173,8 +6317,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.ingang SET geom = new.geom, ingang_type_id = new.ingang_type_id, rotatie = new.rotatie, label = new.label, belemmering = new.belemmering, voorzieningen = new.voorzieningen, 
                     bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (ingang.id = new.id);
@@ -6204,6 +6350,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ingang_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ingang_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_ingang_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_isolijnen_del()
@@ -6212,8 +6359,10 @@ CREATE OR REPLACE FUNCTION objecten.func_isolijnen_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.isolijnen WHERE (isolijnen.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving) d));
@@ -6229,6 +6378,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_isolijnen_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_isolijnen_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_isolijnen_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_isolijnen_ins()
@@ -6238,8 +6388,10 @@ AS $function$
     DECLARE
         objectid integer;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.isolijnen (geom, hoogte, omschrijving, object_id)
             VALUES (new.geom, new.hoogte, new.omschrijving, new.object_id);
         ELSE
@@ -6257,6 +6409,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_isolijnen_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_isolijnen_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_isolijnen_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_isolijnen_upd()
@@ -6265,8 +6418,10 @@ CREATE OR REPLACE FUNCTION objecten.func_isolijnen_upd()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN 
             UPDATE objecten.isolijnen SET geom = new.geom, hoogte = new.hoogte, omschrijving = new.omschrijving, object_id = new.object_id
             WHERE (isolijnen.id = new.id);
         ELSE
@@ -6288,6 +6443,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_isolijnen_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_isolijnen_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_isolijnen_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_label_del()
@@ -6298,8 +6454,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.label WHERE (label.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving) d));
@@ -6318,6 +6476,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_label_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_label_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_label_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_label_ins()
@@ -6332,8 +6491,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.label (geom, soort, omschrijving, rotatie, bouwlaag_id, object_id)
             VALUES (new.geom, new.soort, new.omschrijving, new.rotatie, new.bouwlaag_id, new.object_id);
         ELSE
@@ -6361,6 +6522,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_label_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_label_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_label_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_label_upd()
@@ -6373,8 +6535,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.label SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, rotatie = new.rotatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id
             WHERE (label.id = new.id);
         ELSE
@@ -6403,6 +6567,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_label_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_label_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_label_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opslag_del()
@@ -6413,8 +6578,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.gevaarlijkestof_opslag WHERE (gevaarlijkestof_opslag.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.locatie) d));
@@ -6434,6 +6601,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opslag_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opslag_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_opslag_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opslag_ins()
@@ -6448,8 +6616,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.gevaarlijkestof_opslag (geom, locatie, bouwlaag_id, object_id, fotografie_id, rotatie)
             VALUES (new.geom, new.locatie, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie);
         ELSE
@@ -6477,6 +6647,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opslag_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opslag_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_opslag_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opslag_upd()
@@ -6489,8 +6660,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.gevaarlijkestof_opslag SET geom = new.geom, locatie = new.locatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (gevaarlijkestof_opslag.id = new.id);
         ELSE
@@ -6519,6 +6692,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opslag_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opslag_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_opslag_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opstelplaats_del()
@@ -6527,8 +6701,10 @@ CREATE OR REPLACE FUNCTION objecten.func_opstelplaats_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.opstelplaats WHERE (opstelplaats.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label) d));
@@ -6544,6 +6720,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opstelplaats_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opstelplaats_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_opstelplaats_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opstelplaats_ins()
@@ -6555,8 +6732,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.opstelplaats (geom, soort, label, rotatie, object_id, fotografie_id)
             VALUES (new.geom, new.soort, new.label, new.rotatie, new.object_id, new.fotografie_id);
         ELSE
@@ -6576,6 +6755,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opstelplaats_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opstelplaats_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_opstelplaats_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_opstelplaats_upd()
@@ -6586,8 +6766,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.opstelplaats SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (opstelplaats.id = new.id);
         ELSE
@@ -6610,6 +6792,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_opstelplaats_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_opstelplaats_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_opstelplaats_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_points_of_interest_del()
@@ -6618,8 +6801,10 @@ CREATE OR REPLACE FUNCTION objecten.func_points_of_interest_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF old.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.points_of_interest WHERE (points_of_interest.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheid) d)); 
@@ -6635,6 +6820,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_points_of_interest_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_points_of_interest_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_points_of_interest_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_points_of_interest_ins()
@@ -6646,8 +6832,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.points_of_interest (geom, points_of_interest_type_id, label, bijzonderheid, rotatie, object_id, fotografie_id)
             VALUES (new.geom, new.points_of_interest_type_id, new.label, new.bijzonderheid, new.rotatie, new.object_id, new.fotografie_id);
         ELSE
@@ -6667,6 +6855,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_points_of_interest_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_points_of_interest_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_points_of_interest_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_points_of_interest_upd()
@@ -6677,8 +6866,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
                 UPDATE objecten.points_of_interest SET geom = new.geom, points_of_interest_type_id = new.points_of_interest_type_id, rotatie = new.rotatie, bijzonderheid = new.bijzonderheid, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
                 WHERE (points_of_interest.id = new.id);
         ELSE
@@ -6701,6 +6892,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_points_of_interest_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_points_of_interest_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_points_of_interest_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ruimten_del()
@@ -6709,8 +6901,10 @@ CREATE OR REPLACE FUNCTION objecten.func_ruimten_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.ruimten WHERE (ruimten.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving) d));
@@ -6726,6 +6920,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ruimten_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ruimten_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_ruimten_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ruimten_ins()
@@ -6735,8 +6930,10 @@ AS $function$
     DECLARE
         bouwlaagid integer;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.ruimten (geom, ruimten_type_id, omschrijving, bouwlaag_id, fotografie_id)
             VALUES (new.geom, new.ruimten_type_id, new.omschrijving, new.bouwlaag_id, new.fotografie_id);
         ELSE
@@ -6754,6 +6951,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ruimten_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ruimten_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_ruimten_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_ruimten_upd()
@@ -6762,8 +6960,10 @@ CREATE OR REPLACE FUNCTION objecten.func_ruimten_upd()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.ruimten SET geom = new.geom, ruimten_type_id = new.ruimten_type_id, omschrijving = new.omschrijving, bouwlaag_id = new.bouwlaag_id, fotografie_id = new.fotografie_id
             WHERE (ruimten.id = new.id);
         ELSE
@@ -6785,6 +6985,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_ruimten_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_ruimten_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_ruimten_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_del()
@@ -6795,8 +6996,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.scenario_locatie WHERE (scenario_locatie.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.locatie) d));
@@ -6816,6 +7019,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_scenario_locatie_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_scenario_locatie_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_scenario_locatie_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_ins()
@@ -6830,8 +7034,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.scenario_locatie (geom, locatie, bouwlaag_id, object_id, fotografie_id, rotatie)
             VALUES (new.geom, new.locatie, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie);
         ELSE
@@ -6859,6 +7065,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_scenario_locatie_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_scenario_locatie_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_scenario_locatie_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_scenario_locatie_upd()
@@ -6871,8 +7078,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.scenario_locatie SET geom = new.geom, locatie = new.locatie, rotatie = new.rotatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (scenario_locatie.id = new.id);
         ELSE
@@ -6902,6 +7111,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_scenario_locatie_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_scenario_locatie_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_scenario_locatie_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sectoren_del()
@@ -6910,8 +7120,10 @@ CREATE OR REPLACE FUNCTION objecten.func_sectoren_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.sectoren WHERE (sectoren.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving, old.label) d));
@@ -6927,6 +7139,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sectoren_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sectoren_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_sectoren_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sectoren_ins()
@@ -6936,8 +7149,10 @@ AS $function$
     DECLARE
         objectid integer;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.sectoren (geom, soort, omschrijving, label, object_id, fotografie_id)
             VALUES (new.geom, new.soort, new.omschrijving, new.label, new.object_id, new.fotografie_id);
         ELSE
@@ -6955,6 +7170,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sectoren_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sectoren_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_sectoren_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sectoren_upd()
@@ -6963,8 +7179,10 @@ CREATE OR REPLACE FUNCTION objecten.func_sectoren_upd()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN 
             UPDATE objecten.sectoren SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
             WHERE (sectoren.id = new.id);
         ELSE
@@ -6986,6 +7204,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sectoren_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sectoren_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_sectoren_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_del()
@@ -6996,8 +7215,10 @@ AS $function$
         jsonstring JSON;
         bouwlaag integer := NULL;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.sleutelkluis WHERE (sleutelkluis.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.aanduiding_locatie, old.sleuteldoel_type_id) d));
@@ -7016,6 +7237,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sleutelkluis_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sleutelkluis_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_sleutelkluis_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_ins()
@@ -7029,8 +7251,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
     BEGIN
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.sleutelkluis (geom, sleutelkluis_type_id, label, rotatie, aanduiding_locatie, sleuteldoel_type_id, ingang_id, fotografie_id)
             VALUES (new.geom, new.sleutelkluis_type_id, new.label, new.rotatie, new.aanduiding_locatie, new.sleuteldoel_type_id, new.ingang_id, new.fotografie_id);
         ELSE
@@ -7059,6 +7283,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sleutelkluis_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sleutelkluis_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_sleutelkluis_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_upd()
@@ -7071,8 +7296,10 @@ AS $function$
         symbol_name TEXT;
         jsonstring JSON;
         bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN 
             UPDATE objecten.sleutelkluis SET geom = new.geom, sleutelkluis_type_id = new.sleutelkluis_type_id, rotatie = new.rotatie, label = new.label, aanduiding_locatie = new.aanduiding_locatie, sleuteldoel_type_id = new.sleuteldoel_type_id, 
                     ingang_id = new.ingang_id, fotografie_id = new.fotografie_id
             WHERE (sleutelkluis.id = new.id);
@@ -7102,9 +7329,46 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_sleutelkluis_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_sleutelkluis_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_sleutelkluis_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_soft_delete_cascade()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+       fk_table TEXT;
+       fk_schema TEXT;
+       schemaname TEXT := TG_ARGV[0]::TEXT;
+       tablename TEXT := TG_ARGV[1]::TEXT;
+       identifier TEXT := TG_ARGV[2]::TEXT;
+    BEGIN
+		FOR fk_schema, fk_table IN
+			SELECT 
+			       fk_tco.table_schema as fk_schema,
+			       fk_tco.table_name AS fk_table
+			FROM information_schema.referential_constraints rco
+			JOIN information_schema.table_constraints fk_tco ON rco.constraint_name = fk_tco.constraint_name AND rco.constraint_schema = fk_tco.table_schema
+			JOIN information_schema.table_constraints pk_tco ON rco.unique_constraint_name = pk_tco.constraint_name AND rco.unique_constraint_schema = pk_tco.table_schema
+			WHERE pk_tco.table_name = tablename AND pk_tco.table_schema = schemaname
+		LOOP
+			--verwijder alle kind objecten
+			EXECUTE format('DELETE FROM %I.%I WHERE %I = %s;', fk_schema, fk_table, identifier, OLD.id);
+
+		END LOOP;
+		--verwijder object zelf
+		EXECUTE format('DELETE FROM %I.%I WHERE id = %s;', schemaname, tablename, OLD.id);
+        RETURN OLD;
+    END;
+    $function$
+;
+
+-- Permissions
+
+ALTER FUNCTION objecten.func_soft_delete_cascade() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_soft_delete_cascade() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION objecten.func_soft_delete_cascade_test()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
@@ -7124,7 +7388,7 @@ AS $function$
 			JOIN information_schema.table_constraints pk_tco ON rco.unique_constraint_name = pk_tco.constraint_name AND rco.unique_constraint_schema = pk_tco.table_schema
 			WHERE pk_tco.table_name = tablename AND pk_tco.table_schema = schemaname
 		LOOP
-			EXECUTE format('DELETE FROM %I.%I WHERE $I = $1;', fk_table, fk_schema, identifier)
+			EXECUTE format('DELETE FROM %I.%I WHERE %I = $1;', fk_table, fk_schema, identifier)
 			USING OLD.id;
 		END LOOP;
         RETURN OLD;
@@ -7134,15 +7398,18 @@ AS $function$
 
 -- Permissions
 
-ALTER FUNCTION objecten.func_soft_delete_cascade() OWNER TO oiv_admin;
-GRANT ALL ON FUNCTION objecten.func_soft_delete_cascade() TO oiv_admin;
+ALTER FUNCTION objecten.func_soft_delete_cascade_test() OWNER TO postgres;
+GRANT ALL ON FUNCTION objecten.func_soft_delete_cascade_test() TO postgres;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_bouwk_del()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+	DECLARE
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.veiligh_bouwk WHERE (veiligh_bouwk.id = old.id);
         ELSE
             INSERT INTO mobiel.werkvoorraad_lijn (geom, operatie, brontabel, bron_id, bouwlaag_id, symbol_name, bouwlaag, fotografie_id, accepted)
@@ -7156,6 +7423,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_bouwk_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_bouwk_ins()
@@ -7164,8 +7432,10 @@ CREATE OR REPLACE FUNCTION objecten.func_veiligh_bouwk_ins()
 AS $function$
     DECLARE
         bouwlaagid integer;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.veiligh_bouwk (geom, soort, bouwlaag_id, fotografie_id)
             VALUES (new.geom, new.soort, new.bouwlaag_id, new.fotografie_id);
         ELSE
@@ -7183,14 +7453,18 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_bouwk_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_bouwk_upd()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+	DECLARE
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.veiligh_bouwk SET geom = new.geom, soort = new.soort, bouwlaag_id = new.bouwlaag_id, fotografie_id = new.fotografie_id
             WHERE (veiligh_bouwk.id = new.id);
         ELSE
@@ -7210,6 +7484,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_bouwk_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_bouwk_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_del()
@@ -7218,8 +7493,10 @@ CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN  
             DELETE FROM objecten.veiligh_install WHERE (veiligh_install.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheid) d));
@@ -7235,6 +7512,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_install_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_install_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_install_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_ins()
@@ -7246,8 +7524,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.veiligh_install (geom, veiligh_install_type_id, label, bijzonderheid, rotatie, bouwlaag_id, fotografie_id)
             VALUES (new.geom, new.veiligh_install_type_id, new.label, new.bijzonderheid, new.rotatie, new.bouwlaag_id, new.fotografie_id);
         ELSE
@@ -7268,6 +7548,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_install_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_install_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_install_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_upd()
@@ -7278,8 +7559,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             UPDATE objecten.veiligh_install SET geom = new.geom, veiligh_install_type_id = new.veiligh_install_type_id, bouwlaag_id = new.bouwlaag_id, label = new.label, rotatie = new.rotatie, fotografie_id = new.fotografie_id
             WHERE (veiligh_install.id = new.id);
         ELSE
@@ -7302,6 +7585,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_install_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_install_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_install_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_ruimtelijk_del()
@@ -7310,8 +7594,10 @@ CREATE OR REPLACE FUNCTION objecten.func_veiligh_ruimtelijk_del()
 AS $function$
     DECLARE
         jsonstring JSON;
-    BEGIN 
-        IF OLD.applicatie = 'OIV' THEN 
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
             DELETE FROM objecten.veiligh_ruimtelijk WHERE (veiligh_ruimtelijk.id = old.id);
         ELSE
             jsonstring := row_to_json((SELECT d FROM (SELECT old.label, old.bijzonderheid) d));        
@@ -7327,6 +7613,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_ruimtelijk_del() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_del() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_del() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_ruimtelijk_ins()
@@ -7338,8 +7625,10 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
             INSERT INTO objecten.veiligh_ruimtelijk (geom, veiligh_ruimtelijk_type_id, label, rotatie, object_id, fotografie_id)
             VALUES (new.geom, new.veiligh_ruimtelijk_type_id, new.label, new.rotatie, new.object_id, new.fotografie_id);
         ELSE
@@ -7359,6 +7648,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_ruimtelijk_ins() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_ins() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_ins() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_veiligh_ruimtelijk_upd()
@@ -7369,9 +7659,12 @@ AS $function$
         size integer;
         symbol_name TEXT;
         jsonstring JSON;
-    BEGIN 
-        IF NEW.applicatie = 'OIV' THEN 
-            UPDATE objecten.veiligh_ruimtelijk SET geom = new.geom, veiligh_ruimtelijk_type_id = new.veiligh_ruimtelijk_type_id, rotatie = new.rotatie, label = new.label, object_id = new.object_id, fotografie_id = new.fotografie_id
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            UPDATE objecten.veiligh_ruimtelijk SET geom = new.geom, veiligh_ruimtelijk_type_id = new.veiligh_ruimtelijk_type_id, rotatie = new.rotatie, label = new.label, object_id = new.object_id
+            , fotografie_id = new.fotografie_id, bijzonderheid = NEW.bijzonderheid
             WHERE (veiligh_ruimtelijk.id = new.id);
         ELSE
             size := (SELECT vt."size" FROM objecten.veiligh_ruimtelijk_type vt WHERE vt.id = new.veiligh_ruimtelijk_type_id);
@@ -7393,6 +7686,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION objecten.func_veiligh_ruimtelijk_upd() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_upd() TO public;
 GRANT ALL ON FUNCTION objecten.func_veiligh_ruimtelijk_upd() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.set_delete_timestamp()
@@ -7432,6 +7726,40 @@ ALTER FUNCTION objecten.set_timestamp() OWNER TO oiv_admin;
 GRANT ALL ON FUNCTION objecten.set_timestamp() TO public;
 GRANT ALL ON FUNCTION objecten.set_timestamp() TO oiv_admin;
 GRANT ALL ON FUNCTION objecten.set_timestamp() TO oiv_write;
+
+CREATE OR REPLACE FUNCTION objecten.set_timestamp_deleted()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+   NEW := NEW #= hstore(TG_ARGV[0], 'now()');
+   RETURN NEW;
+END
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION objecten.set_timestamp_deleted() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION objecten.set_timestamp_deleted() TO oiv_admin;
+
+CREATE OR REPLACE FUNCTION objecten.som()
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+	som integer;
+BEGIN
+   som := 1+5;
+   RETURN som;
+END;
+$function$
+;
+
+-- Permissions
+
+ALTER FUNCTION objecten.som() OWNER TO postgres;
+GRANT ALL ON FUNCTION objecten.som() TO postgres;
 
 
 -- Permissions

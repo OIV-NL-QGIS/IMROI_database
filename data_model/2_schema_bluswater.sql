@@ -9,7 +9,7 @@ COMMENT ON SCHEMA bluswater IS 'OIV bluswater';
 CREATE SEQUENCE bluswater.alternatieve_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -18,32 +18,15 @@ CREATE SEQUENCE bluswater.alternatieve_id_seq
 
 ALTER SEQUENCE bluswater.alternatieve_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE bluswater.alternatieve_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.alternatieve_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.alternatieve_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE bluswater.alternatieve_id_seq TO oiv_write;
-
--- DROP SEQUENCE bluswater.brandkranen_landelijk_id_seq;
-
-CREATE SEQUENCE bluswater.brandkranen_landelijk_id_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 2147483647
-	START 1
-	CACHE 1
-	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE bluswater.brandkranen_landelijk_id_seq OWNER TO oiv_admin;
-GRANT ALL ON SEQUENCE bluswater.brandkranen_landelijk_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.brandkranen_landelijk_id_seq TO oiv_read;
-GRANT UPDATE ON SEQUENCE bluswater.brandkranen_landelijk_id_seq TO oiv_write;
 
 -- DROP SEQUENCE bluswater.enum_conditie_id_seq;
 
 CREATE SEQUENCE bluswater.enum_conditie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -52,15 +35,32 @@ CREATE SEQUENCE bluswater.enum_conditie_id_seq
 
 ALTER SEQUENCE bluswater.enum_conditie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE bluswater.enum_conditie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.enum_conditie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.enum_conditie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE bluswater.enum_conditie_id_seq TO oiv_write;
+
+-- DROP SEQUENCE bluswater.foto_id_seq;
+
+CREATE SEQUENCE bluswater.foto_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE bluswater.foto_id_seq OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE bluswater.foto_id_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.foto_id_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE bluswater.foto_id_seq TO oiv_write;
 
 -- DROP SEQUENCE bluswater.inspectie_id_seq;
 
 CREATE SEQUENCE bluswater.inspectie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -69,7 +69,7 @@ CREATE SEQUENCE bluswater.inspectie_id_seq
 
 ALTER SEQUENCE bluswater.inspectie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE bluswater.inspectie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.inspectie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.inspectie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE bluswater.inspectie_id_seq TO oiv_write;
 
 -- DROP SEQUENCE bluswater.kavels_kavel_seq;
@@ -77,7 +77,7 @@ GRANT UPDATE ON SEQUENCE bluswater.inspectie_id_seq TO oiv_write;
 CREATE SEQUENCE bluswater.kavels_kavel_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -86,32 +86,32 @@ CREATE SEQUENCE bluswater.kavels_kavel_seq
 
 ALTER SEQUENCE bluswater.kavels_kavel_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE bluswater.kavels_kavel_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.kavels_kavel_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.kavels_kavel_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE bluswater.kavels_kavel_seq TO oiv_write;
 
--- DROP SEQUENCE bluswater.leidingen_id_seq;
+-- DROP SEQUENCE bluswater.leiding_2017_1_id_seq;
 
-CREATE SEQUENCE bluswater.leidingen_id_seq
+CREATE SEQUENCE bluswater.leiding_2017_1_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
 
 -- Permissions
 
-ALTER SEQUENCE bluswater.leidingen_id_seq OWNER TO oiv_admin;
-GRANT ALL ON SEQUENCE bluswater.leidingen_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.leidingen_id_seq TO oiv_read;
-GRANT UPDATE ON SEQUENCE bluswater.leidingen_id_seq TO oiv_write;
+ALTER SEQUENCE bluswater.leiding_2017_1_id_seq OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE bluswater.leiding_2017_1_id_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.leiding_2017_1_id_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE bluswater.leiding_2017_1_id_seq TO oiv_write;
 
 -- DROP SEQUENCE bluswater.plusinformatie_id_seq;
 
 CREATE SEQUENCE bluswater.plusinformatie_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -120,7 +120,7 @@ CREATE SEQUENCE bluswater.plusinformatie_id_seq
 
 ALTER SEQUENCE bluswater.plusinformatie_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE bluswater.plusinformatie_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE bluswater.plusinformatie_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE bluswater.plusinformatie_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE bluswater.plusinformatie_id_seq TO oiv_write;
 -- bluswater.alternatieve_type definition
 
@@ -151,50 +151,12 @@ GRANT SELECT ON TABLE bluswater.alternatieve_type TO oiv_read;
 -- DROP TABLE bluswater.brandkranen;
 
 CREATE TABLE bluswater.brandkranen (
-	nummer varchar NOT NULL,
-	geom geometry(point, 28992) NULL,
-	"type" varchar NULL,
-	diameter int2 NULL,
-	postcode varchar NULL,
-	straat varchar NULL,
-	huisnummer varchar NULL,
-	capaciteit int2 NULL,
-	plaats varchar NULL,
-	gemeentenaam varchar NULL,
-	datum_deleted timestamptz NULL,
-	CONSTRAINT brandkranen_pkey PRIMARY KEY (nummer)
-);
-CREATE INDEX brandkranen_geom_gist ON bluswater.brandkranen USING gist (geom);
-
--- Table Triggers
-
-CREATE TRIGGER trg_set_delete BEFORE
-DELETE
-    ON
-    bluswater.brandkranen FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
-
--- Permissions
-
-ALTER TABLE bluswater.brandkranen OWNER TO oiv_admin;
-GRANT ALL ON TABLE bluswater.brandkranen TO oiv_admin;
-GRANT SELECT ON TABLE bluswater.brandkranen TO oiv_read;
-
-
--- bluswater.brandkranen_landelijk definition
-
--- Drop table
-
--- DROP TABLE bluswater.brandkranen_landelijk;
-
-CREATE TABLE bluswater.brandkranen_landelijk (
-	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	id int4 NOT NULL,
+	geom public.geometry(point, 28992) NULL,
 	bronhouder varchar NULL,
 	nen3610id varchar NULL,
 	volgnummer varchar NULL,
 	kraantype varchar NULL,
-	x float8 NULL,
-	y float8 NULL,
 	status varchar NULL,
 	ligging varchar NULL,
 	spindeltype varchar NULL,
@@ -208,16 +170,21 @@ CREATE TABLE bluswater.brandkranen_landelijk (
 	gemeentecode varchar NULL,
 	gemeentenaam varchar NULL,
 	soortleiding varchar NULL,
+	capaciteit varchar NULL,
+	belanghebbende varchar NULL,
 	mutatiedatum varchar NULL,
+	x float8 NULL,
+	y float8 NULL,
 	CONSTRAINT brandkranen_landelijk_pkey PRIMARY KEY (id)
 );
+CREATE INDEX brandkranen_geom_gist ON bluswater.brandkranen USING gist (geom);
 
 -- Permissions
 
-ALTER TABLE bluswater.brandkranen_landelijk OWNER TO oiv_admin;
-GRANT ALL ON TABLE bluswater.brandkranen_landelijk TO oiv_admin;
-GRANT SELECT ON TABLE bluswater.brandkranen_landelijk TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.brandkranen_landelijk TO oiv_write;
+ALTER TABLE bluswater.brandkranen OWNER TO oiv_admin;
+GRANT ALL ON TABLE bluswater.brandkranen TO oiv_admin;
+GRANT SELECT ON TABLE bluswater.brandkranen TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.brandkranen TO oiv_write;
 
 
 -- bluswater.enum_conditie definition
@@ -238,7 +205,42 @@ CREATE TABLE bluswater.enum_conditie (
 ALTER TABLE bluswater.enum_conditie OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.enum_conditie TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.enum_conditie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.enum_conditie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.enum_conditie TO oiv_write;
+
+
+-- bluswater.foto definition
+
+-- Drop table
+
+-- DROP TABLE bluswater.foto;
+
+CREATE TABLE bluswater.foto (
+	id serial4 NOT NULL,
+	geom public.geometry(point, 28992) NOT NULL,
+	datum_aangemaakt timestamptz NULL DEFAULT now(),
+	datum_gewijzigd timestamptz NULL,
+	periode varchar NULL,
+	gebruiker varchar NULL,
+	"schema" varchar NULL,
+	tabel varchar NULL,
+	brandkraan_id varchar NULL,
+	foto text NOT NULL,
+	rd_x numeric NULL,
+	rd_y numeric NULL,
+	naam varchar(255) NULL,
+	bijzonderheden text NULL,
+	plusinfo text NULL,
+	alternatieve_id int4 NULL,
+	CONSTRAINT fotografie_pkey PRIMARY KEY (id)
+);
+CREATE INDEX sidx_fotografie_geom ON bluswater.foto USING gist (geom);
+
+-- Permissions
+
+ALTER TABLE bluswater.foto OWNER TO oiv_admin;
+GRANT ALL ON TABLE bluswater.foto TO oiv_admin;
+GRANT SELECT ON TABLE bluswater.foto TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.foto TO oiv_write;
 
 
 -- bluswater.gt_pk_metadata_table definition
@@ -263,7 +265,7 @@ CREATE TABLE bluswater.gt_pk_metadata_table (
 ALTER TABLE bluswater.gt_pk_metadata_table OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.gt_pk_metadata_table TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.gt_pk_metadata_table TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.gt_pk_metadata_table TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.gt_pk_metadata_table TO oiv_write;
 
 
 -- bluswater.kavels definition
@@ -274,7 +276,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.gt_pk_metadata_table TO oiv_writ
 
 CREATE TABLE bluswater.kavels (
 	kavel serial4 NOT NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	post varchar(50) NULL,
 	CONSTRAINT kavels_pkey PRIMARY KEY (kavel)
 );
@@ -285,7 +287,7 @@ CREATE INDEX kavels_geom_gist ON bluswater.kavels USING gist (geom);
 ALTER TABLE bluswater.kavels OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.kavels TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.kavels TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.kavels TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.kavels TO oiv_write;
 
 
 -- bluswater.leidingen definition
@@ -295,14 +297,14 @@ GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.kavels TO oiv_write;
 -- DROP TABLE bluswater.leidingen;
 
 CREATE TABLE bluswater.leidingen (
-	id serial4 NOT NULL,
-	geom geometry(linestring, 28992) NULL,
+	id int4 NOT NULL DEFAULT nextval('bluswater.leiding_2017_1_id_seq'::regclass),
+	geom public.geometry(linestring, 28992) NULL,
 	materiaal varchar NULL,
 	diameter numeric NULL,
 	datum_deleted timestamptz NULL,
-	CONSTRAINT leidingen_pkey PRIMARY KEY (id)
+	CONSTRAINT leiding_2017_1_pkey PRIMARY KEY (id)
 );
-CREATE INDEX leidingen_geom_gist ON bluswater.leidingen USING gist (geom);
+CREATE INDEX leiding_2017_1_geom_gist ON bluswater.leidingen USING gist (geom);
 
 -- Table Triggers
 
@@ -347,7 +349,7 @@ COMMENT ON COLUMN bluswater.plusinformatie.frequentie IS 'Inspectie frequentie i
 ALTER TABLE bluswater.plusinformatie OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.plusinformatie TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.plusinformatie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.plusinformatie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.plusinformatie TO oiv_write;
 
 
 -- bluswater.alternatieve definition
@@ -363,8 +365,10 @@ CREATE TABLE bluswater.alternatieve (
 	type_id int4 NULL,
 	liters_per int4 NULL,
 	"label" text NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	opmerking text NULL,
+	statische_cap int4 NULL,
+	oude_inhoud_json text NULL,
 	datum_deleted timestamptz NULL,
 	CONSTRAINT alternatieve_pkey PRIMARY KEY (id),
 	CONSTRAINT altern_type_id_fk FOREIGN KEY (type_id) REFERENCES bluswater.alternatieve_type(id)
@@ -391,7 +395,7 @@ DELETE
 ALTER TABLE bluswater.alternatieve OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.alternatieve TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.alternatieve TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.alternatieve TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.alternatieve TO oiv_write;
 
 
 -- bluswater.inspectie definition
@@ -440,7 +444,7 @@ DELETE
 ALTER TABLE bluswater.inspectie OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.inspectie TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.inspectie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.inspectie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.inspectie TO oiv_write;
 
 
 -- bluswater.afgekeurd_binnen_straal source
@@ -473,7 +477,10 @@ AS SELECT row_number() OVER (ORDER BY tot.bk_nummer) AS gid,
                   WHERE i.pos <= 5) nearest
           WHERE nearest.dist <= 120::double precision
           GROUP BY nearest.bk_nummer) tot
-     JOIN bluswater.brandkranen bk ON tot.bk_nummer::text = bk.nummer::text;
+     JOIN bluswater.brandkranen bk ON tot.bk_nummer::text = bk.volgnummer::text
+     JOIN algemeen.veiligheidsregio_watergrenzen vw ON st_intersects(bk.geom, vw.geom)
+     JOIN algemeen.veiligheidsregio_huidig vh ON vw.code::text = vh.statcode
+  WHERE bk.status::text = 'In bedrijf'::text;
 
 -- Permissions
 
@@ -502,71 +509,21 @@ AS SELECT row_number() OVER (ORDER BY g.gemeentena) AS gid,
 ALTER TABLE bluswater.bluswater_stavaza_gemeente OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.bluswater_stavaza_gemeente TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.bluswater_stavaza_gemeente TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.bluswater_stavaza_gemeente TO oiv_write;
-
-
--- bluswater.brandkraan_huidig source
-
-CREATE OR REPLACE VIEW bluswater.brandkraan_huidig
-AS SELECT brandkranen.nummer,
-    brandkranen.geom,
-    brandkranen.type,
-    brandkranen.diameter,
-    brandkranen.postcode,
-    brandkranen.straat,
-    brandkranen.huisnummer,
-    brandkranen.capaciteit,
-    brandkranen.plaats,
-    brandkranen.gemeentenaam
-   FROM bluswater.brandkranen;
-
--- Permissions
-
-ALTER TABLE bluswater.brandkraan_huidig OWNER TO oiv_admin;
-GRANT ALL ON TABLE bluswater.brandkraan_huidig TO oiv_admin;
-GRANT SELECT ON TABLE bluswater.brandkraan_huidig TO oiv_read;
-
-
--- bluswater.brandkraan_huidig_plus source
-
-CREATE OR REPLACE VIEW bluswater.brandkraan_huidig_plus
-AS SELECT brandkraan_huidig.nummer,
-    brandkraan_huidig.geom,
-    brandkraan_huidig.type,
-    brandkraan_huidig.diameter,
-    brandkraan_huidig.postcode,
-    brandkraan_huidig.straat,
-    brandkraan_huidig.huisnummer,
-    brandkraan_huidig.capaciteit,
-    brandkraan_huidig.plaats,
-    brandkraan_huidig.gemeentenaam,
-    COALESCE(plusinformatie.verwijderd, false) AS verwijderd,
-    COALESCE(plusinformatie.frequentie::integer, 24) AS frequentie,
-    plusinformatie.opmerking,
-    plusinformatie.inlognaam
-   FROM bluswater.brandkraan_huidig
-     LEFT JOIN bluswater.plusinformatie ON brandkraan_huidig.nummer::text = plusinformatie.brandkraan_nummer::text;
-
--- Permissions
-
-ALTER TABLE bluswater.brandkraan_huidig_plus OWNER TO oiv_admin;
-GRANT ALL ON TABLE bluswater.brandkraan_huidig_plus TO oiv_admin;
-GRANT SELECT ON TABLE bluswater.brandkraan_huidig_plus TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.brandkraan_huidig_plus TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.bluswater_stavaza_gemeente TO oiv_write;
 
 
 -- bluswater.brandkraan_inspectie source
 
 CREATE OR REPLACE VIEW bluswater.brandkraan_inspectie
-AS SELECT brandkraan_huidig_plus.nummer AS id,
+AS SELECT brandkranen.id::character varying AS id,
     inspectie.id AS inspectie_id,
-    brandkraan_huidig_plus.nummer,
-    brandkraan_huidig_plus.geom,
+    brandkranen.volgnummer AS nummer,
+    brandkranen.geom,
     inspectie.datum_aangemaakt,
     inspectie.datum_gewijzigd,
         CASE
-            WHEN (inspectie.datum_aangemaakt + brandkraan_huidig_plus.frequentie::double precision * '1 mon'::interval) < now() THEN 'inspecteren'::text
-            WHEN (inspectie.datum_aangemaakt + (brandkraan_huidig_plus.frequentie - 3)::double precision * '1 mon'::interval) < now() AND (inspectie.datum_aangemaakt + brandkraan_huidig_plus.frequentie::double precision * '1 mon'::interval) > now() THEN 'binnenkort inspecteren'::text
+            WHEN (inspectie.datum_aangemaakt + 24::double precision * '1 mon'::interval) < now() THEN 'inspecteren'::text
+            WHEN (inspectie.datum_aangemaakt + (24 - 3)::double precision * '1 mon'::interval) < now() AND (inspectie.datum_aangemaakt + 24::double precision * '1 mon'::interval) > now() THEN 'binnenkort inspecteren'::text
             ELSE COALESCE(inspectie.conditie, 'inspecteren'::text)
         END AS conditie,
     inspectie.inspecteur,
@@ -584,28 +541,30 @@ AS SELECT brandkraan_huidig_plus.nummer AS id,
     inspectie.uitgezet_bij_pwn AS uit_gezet_bij_pwn,
     inspectie.uitgezet_bij_gemeente AS uit_gezet_bij_gemeente,
     inspectie.opmerking_beheerder,
-    brandkraan_huidig_plus.inlognaam,
-    brandkraan_huidig_plus.gemeentenaam
-   FROM bluswater.brandkraan_huidig_plus
+    NULL::text AS inlognaam,
+    brandkranen.gemeentenaam
+   FROM bluswater.brandkranen
      LEFT JOIN bluswater.inspectie ON inspectie.id = (( SELECT leegfreq.id
            FROM bluswater.inspectie leegfreq
-          WHERE leegfreq.brandkraan_nummer::text = brandkraan_huidig_plus.nummer::text
+          WHERE leegfreq.brandkraan_nummer::text = brandkranen.volgnummer::text
           ORDER BY leegfreq.datum_aangemaakt DESC
          LIMIT 1))
-  WHERE brandkraan_huidig_plus.verwijderd = false;
+     JOIN algemeen.veiligheidsregio_watergrenzen vw ON st_intersects(brandkranen.geom, vw.geom)
+     JOIN algemeen.veiligheidsregio_huidig vh ON vw.code::text = vh.statcode
+  WHERE brandkranen.status::text = 'In bedrijf'::text;
 
 -- Permissions
 
 ALTER TABLE bluswater.brandkraan_inspectie OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.brandkraan_inspectie TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.brandkraan_inspectie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.brandkraan_inspectie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.brandkraan_inspectie TO oiv_write;
 
 
 -- bluswater.brandkraan_kavels source
 
 CREATE OR REPLACE VIEW bluswater.brandkraan_kavels
-AS SELECT b.nummer,
+AS SELECT b.volgnummer AS nummer,
     concat(lower(k.post::text), '@vrnhn.nl') AS inlognaam,
     k.kavel
    FROM bluswater.brandkranen b
@@ -616,40 +575,21 @@ AS SELECT b.nummer,
 ALTER TABLE bluswater.brandkraan_kavels OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.brandkraan_kavels TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.brandkraan_kavels TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.brandkraan_kavels TO oiv_write;
-
-
--- bluswater.leiding_huidig source
-
-CREATE OR REPLACE VIEW bluswater.leiding_huidig
-AS SELECT leidingen.id,
-    leidingen.geom,
-    leidingen.materiaal,
-    leidingen.diameter
-   FROM bluswater.leidingen;
-
--- Permissions
-
-ALTER TABLE bluswater.leiding_huidig OWNER TO oiv_admin;
-GRANT ALL ON TABLE bluswater.leiding_huidig TO oiv_admin;
-GRANT SELECT ON TABLE bluswater.leiding_huidig TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.brandkraan_kavels TO oiv_write;
 
 
 -- bluswater.rapport_inspectie source
 
 CREATE OR REPLACE VIEW bluswater.rapport_inspectie
-AS SELECT brandkraan_huidig_plus.nummer AS id,
+AS SELECT brandkranen.id::character varying AS id,
     inspectie.id AS inspectie_id,
-    brandkraan_huidig_plus.nummer,
-    brandkraan_huidig_plus.geom,
-    brandkraan_huidig_plus.type,
-    brandkraan_huidig_plus.diameter,
-    brandkraan_huidig_plus.postcode,
-    brandkraan_huidig_plus.straat,
-    brandkraan_huidig_plus.huisnummer,
-    brandkraan_huidig_plus.capaciteit,
-    brandkraan_huidig_plus.plaats,
-    brandkraan_huidig_plus.gemeentenaam,
+    brandkranen.volgnummer AS nummer,
+    brandkranen.geom,
+    brandkranen.kraantype AS type,
+    brandkranen.diameter::smallint AS diameter,
+    brandkranen.adres,
+    brandkranen.capaciteit::smallint AS capaciteit,
+    brandkranen.gemeentenaam,
     inspectie.datum_aangemaakt,
     inspectie.datum_gewijzigd,
     GREATEST(inspectie.datum_aangemaakt, inspectie.datum_gewijzigd) AS mutatie,
@@ -669,22 +609,22 @@ AS SELECT brandkraan_huidig_plus.nummer AS id,
     inspectie.uitgezet_bij_pwn,
     inspectie.uitgezet_bij_gemeente,
     inspectie.opmerking_beheerder
-   FROM bluswater.brandkraan_huidig_plus
+   FROM bluswater.brandkranen
      LEFT JOIN bluswater.inspectie ON inspectie.id = (( SELECT leegfreq.id
            FROM bluswater.inspectie leegfreq
-          WHERE leegfreq.brandkraan_nummer::text = brandkraan_huidig_plus.nummer::text
+          WHERE leegfreq.brandkraan_nummer::text = brandkranen.volgnummer::text
           ORDER BY leegfreq.datum_aangemaakt DESC
          LIMIT 1))
-  WHERE brandkraan_huidig_plus.verwijderd = false;
-
-COMMENT ON VIEW bluswater.rapport_inspectie IS 'Algemene view voor weergave in rapporten';
+     JOIN algemeen.veiligheidsregio_watergrenzen vw ON st_intersects(brandkranen.geom, vw.geom)
+     JOIN algemeen.veiligheidsregio_huidig vh ON vw.code::text = vh.statcode
+  WHERE brandkranen.status::text = 'In bedrijf'::text;
 
 -- Permissions
 
 ALTER TABLE bluswater.rapport_inspectie OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.rapport_inspectie TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.rapport_inspectie TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.rapport_inspectie TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.rapport_inspectie TO oiv_write;
 
 
 -- bluswater.rapport_inspectie_defect source
@@ -696,11 +636,8 @@ AS SELECT rapport_inspectie.id,
     rapport_inspectie.geom,
     rapport_inspectie.type,
     rapport_inspectie.diameter,
-    rapport_inspectie.postcode,
-    rapport_inspectie.straat,
-    rapport_inspectie.huisnummer,
+    rapport_inspectie.adres,
     rapport_inspectie.capaciteit,
-    rapport_inspectie.plaats,
     rapport_inspectie.gemeentenaam,
     rapport_inspectie.datum_aangemaakt,
     rapport_inspectie.datum_gewijzigd,
@@ -724,14 +661,12 @@ AS SELECT rapport_inspectie.id,
    FROM bluswater.rapport_inspectie
   WHERE rapport_inspectie.conditie ~~* 'afgekeurd'::text OR rapport_inspectie.conditie ~~* 'werkbaar'::text;
 
-COMMENT ON VIEW bluswater.rapport_inspectie_defect IS 'View voor afgekeurd en werkbaar, basis voor rapport vandaag pwn en gemeente';
-
 -- Permissions
 
 ALTER TABLE bluswater.rapport_inspectie_defect OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.rapport_inspectie_defect TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.rapport_inspectie_defect TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.rapport_inspectie_defect TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.rapport_inspectie_defect TO oiv_write;
 
 
 -- bluswater.rapport_inspectie_vandaag_gemeente source
@@ -743,11 +678,8 @@ AS SELECT rapport_inspectie_defect.id,
     rapport_inspectie_defect.geom,
     rapport_inspectie_defect.type,
     rapport_inspectie_defect.diameter,
-    rapport_inspectie_defect.postcode,
-    rapport_inspectie_defect.straat,
-    rapport_inspectie_defect.huisnummer,
+    rapport_inspectie_defect.adres,
     rapport_inspectie_defect.capaciteit,
-    rapport_inspectie_defect.plaats,
     rapport_inspectie_defect.gemeentenaam,
     rapport_inspectie_defect.datum_aangemaakt,
     rapport_inspectie_defect.datum_gewijzigd,
@@ -776,7 +708,7 @@ AS SELECT rapport_inspectie_defect.id,
 ALTER TABLE bluswater.rapport_inspectie_vandaag_gemeente OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.rapport_inspectie_vandaag_gemeente TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.rapport_inspectie_vandaag_gemeente TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.rapport_inspectie_vandaag_gemeente TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.rapport_inspectie_vandaag_gemeente TO oiv_write;
 
 
 -- bluswater.rapport_inspectie_vandaag_pwn source
@@ -788,11 +720,8 @@ AS SELECT rapport_inspectie_defect.id,
     rapport_inspectie_defect.geom,
     rapport_inspectie_defect.type,
     rapport_inspectie_defect.diameter,
-    rapport_inspectie_defect.postcode,
-    rapport_inspectie_defect.straat,
-    rapport_inspectie_defect.huisnummer,
+    rapport_inspectie_defect.adres,
     rapport_inspectie_defect.capaciteit,
-    rapport_inspectie_defect.plaats,
     rapport_inspectie_defect.gemeentenaam,
     rapport_inspectie_defect.datum_aangemaakt,
     rapport_inspectie_defect.datum_gewijzigd,
@@ -821,7 +750,7 @@ AS SELECT rapport_inspectie_defect.id,
 ALTER TABLE bluswater.rapport_inspectie_vandaag_pwn OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.rapport_inspectie_vandaag_pwn TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.rapport_inspectie_vandaag_pwn TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.rapport_inspectie_vandaag_pwn TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.rapport_inspectie_vandaag_pwn TO oiv_write;
 
 
 -- bluswater.rapport_weekoverzicht source
@@ -833,11 +762,8 @@ AS SELECT rapport_inspectie.id,
     rapport_inspectie.geom,
     rapport_inspectie.type,
     rapport_inspectie.diameter,
-    rapport_inspectie.postcode,
-    rapport_inspectie.straat,
-    rapport_inspectie.huisnummer,
+    rapport_inspectie.adres,
     rapport_inspectie.capaciteit,
-    rapport_inspectie.plaats,
     rapport_inspectie.gemeentenaam,
     rapport_inspectie.datum_aangemaakt,
     rapport_inspectie.datum_gewijzigd,
@@ -868,7 +794,7 @@ AS SELECT rapport_inspectie.id,
 ALTER TABLE bluswater.rapport_weekoverzicht OWNER TO oiv_admin;
 GRANT ALL ON TABLE bluswater.rapport_weekoverzicht TO oiv_admin;
 GRANT SELECT ON TABLE bluswater.rapport_weekoverzicht TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE bluswater.rapport_weekoverzicht TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE bluswater.rapport_weekoverzicht TO oiv_write;
 
 
 

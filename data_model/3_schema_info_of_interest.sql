@@ -7,7 +7,7 @@ CREATE SCHEMA info_of_interest AUTHORIZATION oiv_admin;
 CREATE SEQUENCE info_of_interest.labels_of_interest_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -16,7 +16,7 @@ CREATE SEQUENCE info_of_interest.labels_of_interest_id_seq
 
 ALTER SEQUENCE info_of_interest.labels_of_interest_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE info_of_interest.labels_of_interest_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE info_of_interest.labels_of_interest_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE info_of_interest.labels_of_interest_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE info_of_interest.labels_of_interest_id_seq TO oiv_write;
 
 -- DROP SEQUENCE info_of_interest.lines_of_interest_id_seq;
@@ -24,7 +24,7 @@ GRANT UPDATE ON SEQUENCE info_of_interest.labels_of_interest_id_seq TO oiv_write
 CREATE SEQUENCE info_of_interest.lines_of_interest_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -33,7 +33,7 @@ CREATE SEQUENCE info_of_interest.lines_of_interest_id_seq
 
 ALTER SEQUENCE info_of_interest.lines_of_interest_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE info_of_interest.lines_of_interest_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE info_of_interest.lines_of_interest_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE info_of_interest.lines_of_interest_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE info_of_interest.lines_of_interest_id_seq TO oiv_write;
 
 -- DROP SEQUENCE info_of_interest.points_of_interest_id_seq;
@@ -41,7 +41,7 @@ GRANT UPDATE ON SEQUENCE info_of_interest.lines_of_interest_id_seq TO oiv_write;
 CREATE SEQUENCE info_of_interest.points_of_interest_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -50,7 +50,7 @@ CREATE SEQUENCE info_of_interest.points_of_interest_id_seq
 
 ALTER SEQUENCE info_of_interest.points_of_interest_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE info_of_interest.points_of_interest_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE info_of_interest.points_of_interest_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE info_of_interest.points_of_interest_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE info_of_interest.points_of_interest_id_seq TO oiv_write;
 -- info_of_interest.labels_of_interest_type definition
 
@@ -72,7 +72,7 @@ CREATE TABLE info_of_interest.labels_of_interest_type (
 ALTER TABLE info_of_interest.labels_of_interest_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.labels_of_interest_type TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.labels_of_interest_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.labels_of_interest_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.labels_of_interest_type TO oiv_write;
 
 
 -- info_of_interest.lines_of_interest_type definition
@@ -93,7 +93,7 @@ CREATE TABLE info_of_interest.lines_of_interest_type (
 ALTER TABLE info_of_interest.lines_of_interest_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.lines_of_interest_type TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.lines_of_interest_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.lines_of_interest_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.lines_of_interest_type TO oiv_write;
 
 
 -- info_of_interest.points_of_interest_type definition
@@ -116,7 +116,7 @@ CREATE TABLE info_of_interest.points_of_interest_type (
 ALTER TABLE info_of_interest.points_of_interest_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.points_of_interest_type TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.points_of_interest_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.points_of_interest_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.points_of_interest_type TO oiv_write;
 
 
 -- info_of_interest.labels_of_interest definition
@@ -127,7 +127,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.points_of_interest_type T
 
 CREATE TABLE info_of_interest.labels_of_interest (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamptz NULL DEFAULT now(),
 	datum_gewijzigd timestamptz NULL,
 	omschrijving varchar(254) NOT NULL,
@@ -141,14 +141,14 @@ CREATE INDEX labels_of_interest_geom_gist ON info_of_interest.labels_of_interest
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    info_of_interest.labels_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     info_of_interest.labels_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    info_of_interest.labels_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -159,7 +159,7 @@ DELETE
 ALTER TABLE info_of_interest.labels_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.labels_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.labels_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.labels_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.labels_of_interest TO oiv_write;
 
 
 -- info_of_interest.lines_of_interest definition
@@ -170,7 +170,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.labels_of_interest TO oiv
 
 CREATE TABLE info_of_interest.lines_of_interest (
 	id serial4 NOT NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	soort varchar(50) NULL,
@@ -184,14 +184,14 @@ CREATE INDEX lines_of_interest_geom_gist ON info_of_interest.lines_of_interest U
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    info_of_interest.lines_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     info_of_interest.lines_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    info_of_interest.lines_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -202,7 +202,7 @@ DELETE
 ALTER TABLE info_of_interest.lines_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.lines_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.lines_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.lines_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.lines_of_interest TO oiv_write;
 
 
 -- info_of_interest.points_of_interest definition
@@ -213,7 +213,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.lines_of_interest TO oiv_
 
 CREATE TABLE info_of_interest.points_of_interest (
 	id serial4 NOT NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
 	points_of_interest_type_id int4 NULL,
@@ -228,14 +228,14 @@ CREATE INDEX points_of_interest_geom_gist ON info_of_interest.points_of_interest
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    info_of_interest.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_insert BEFORE
 INSERT
     ON
     info_of_interest.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    info_of_interest.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
     ON
@@ -246,7 +246,7 @@ DELETE
 ALTER TABLE info_of_interest.points_of_interest OWNER TO oiv_admin;
 GRANT ALL ON TABLE info_of_interest.points_of_interest TO oiv_admin;
 GRANT SELECT ON TABLE info_of_interest.points_of_interest TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE info_of_interest.points_of_interest TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE info_of_interest.points_of_interest TO oiv_write;
 
 
 -- info_of_interest.lines_of_interest foreign keys

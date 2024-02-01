@@ -16,8 +16,25 @@ CREATE SEQUENCE mobiel.label_type_gid_seq
 
 ALTER SEQUENCE mobiel.label_type_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.label_type_gid_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.label_type_gid_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.label_type_gid_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.label_type_gid_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.label_type_gid_seq1;
+
+CREATE SEQUENCE mobiel.label_type_gid_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.label_type_gid_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.label_type_gid_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.label_type_gid_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.label_type_gid_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.lijnen_type_gid_seq;
 
@@ -33,10 +50,12 @@ CREATE SEQUENCE mobiel.lijnen_type_gid_seq
 
 ALTER SEQUENCE mobiel.lijnen_type_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.lijnen_type_gid_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.lijnen_type_gid_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.lijnen_type_gid_seq TO oiv_write;
 
--- DROP SEQUENCE mobiel.log_werkvoorraad_id_seq;
+-- DROP SEQUENCE mobiel.lijnen_type_gid_seq1;
 
-CREATE SEQUENCE mobiel.log_werkvoorraad_id_seq
+CREATE SEQUENCE mobiel.lijnen_type_gid_seq1
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 2147483647
@@ -46,10 +65,44 @@ CREATE SEQUENCE mobiel.log_werkvoorraad_id_seq
 
 -- Permissions
 
+ALTER SEQUENCE mobiel.lijnen_type_gid_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.lijnen_type_gid_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.lijnen_type_gid_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.lijnen_type_gid_seq1 TO oiv_write;
+
+-- DROP SEQUENCE mobiel.log_werkvoorraad_id_seq;
+
+CREATE SEQUENCE mobiel.log_werkvoorraad_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
 ALTER SEQUENCE mobiel.log_werkvoorraad_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.log_werkvoorraad_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.log_werkvoorraad_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.log_werkvoorraad_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.log_werkvoorraad_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.log_werkvoorraad_id_seq1;
+
+CREATE SEQUENCE mobiel.log_werkvoorraad_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.log_werkvoorraad_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.log_werkvoorraad_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.log_werkvoorraad_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.log_werkvoorraad_id_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq;
 
@@ -65,8 +118,93 @@ CREATE SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq
 
 ALTER SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1;
+
+CREATE SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.punten_ruimtelijk_type_gid_seq1 TO oiv_write;
+
+-- DROP SEQUENCE mobiel.punten_type_gid_seq;
+
+CREATE SEQUENCE mobiel.punten_type_gid_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.punten_type_gid_seq OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.punten_type_gid_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.punten_type_gid_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.punten_type_gid_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.punten_type_gid_seq1;
+
+CREATE SEQUENCE mobiel.punten_type_gid_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.punten_type_gid_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.punten_type_gid_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.punten_type_gid_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.punten_type_gid_seq1 TO oiv_write;
+
+-- DROP SEQUENCE mobiel.scratchpad_id_seq;
+
+CREATE SEQUENCE mobiel.scratchpad_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.scratchpad_id_seq OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.scratchpad_id_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.scratchpad_id_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.scratchpad_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.scratchpad_id_seq1;
+
+CREATE SEQUENCE mobiel.scratchpad_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.scratchpad_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.scratchpad_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.scratchpad_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.scratchpad_id_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.vlakken_type_gid_seq;
 
@@ -82,10 +220,12 @@ CREATE SEQUENCE mobiel.vlakken_type_gid_seq
 
 ALTER SEQUENCE mobiel.vlakken_type_gid_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.vlakken_type_gid_seq TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.vlakken_type_gid_seq TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.vlakken_type_gid_seq TO oiv_write;
 
--- DROP SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq;
+-- DROP SEQUENCE mobiel.vlakken_type_gid_seq1;
 
-CREATE SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq
+CREATE SEQUENCE mobiel.vlakken_type_gid_seq1
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 2147483647
@@ -95,10 +235,44 @@ CREATE SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq
 
 -- Permissions
 
+ALTER SEQUENCE mobiel.vlakken_type_gid_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.vlakken_type_gid_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.vlakken_type_gid_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.vlakken_type_gid_seq1 TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq;
+
+CREATE SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
 ALTER SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1;
+
+CREATE SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_hulplijnen_id_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.werkvoorraad_label_id_seq;
 
@@ -114,15 +288,32 @@ CREATE SEQUENCE mobiel.werkvoorraad_label_id_seq
 
 ALTER SEQUENCE mobiel.werkvoorraad_label_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.werkvoorraad_label_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.werkvoorraad_label_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_label_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_label_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_label_id_seq1;
+
+CREATE SEQUENCE mobiel.werkvoorraad_label_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.werkvoorraad_label_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.werkvoorraad_label_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_label_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_label_id_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.werkvoorraad_lijn_id_seq;
 
 CREATE SEQUENCE mobiel.werkvoorraad_lijn_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -131,15 +322,32 @@ CREATE SEQUENCE mobiel.werkvoorraad_lijn_id_seq
 
 ALTER SEQUENCE mobiel.werkvoorraad_lijn_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_lijn_id_seq1;
+
+CREATE SEQUENCE mobiel.werkvoorraad_lijn_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.werkvoorraad_lijn_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_lijn_id_seq1 TO oiv_write;
 
 -- DROP SEQUENCE mobiel.werkvoorraad_punt_id_seq;
 
 CREATE SEQUENCE mobiel.werkvoorraad_punt_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
-	MAXVALUE 2147483647
+	MAXVALUE 9223372036854775807
 	START 1
 	CACHE 1
 	NO CYCLE;
@@ -148,12 +356,12 @@ CREATE SEQUENCE mobiel.werkvoorraad_punt_id_seq
 
 ALTER SEQUENCE mobiel.werkvoorraad_punt_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.werkvoorraad_punt_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.werkvoorraad_punt_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_punt_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_punt_id_seq TO oiv_write;
 
--- DROP SEQUENCE mobiel.werkvoorraad_vlak_id_seq;
+-- DROP SEQUENCE mobiel.werkvoorraad_punt_id_seq1;
 
-CREATE SEQUENCE mobiel.werkvoorraad_vlak_id_seq
+CREATE SEQUENCE mobiel.werkvoorraad_punt_id_seq1
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 2147483647
@@ -163,10 +371,44 @@ CREATE SEQUENCE mobiel.werkvoorraad_vlak_id_seq
 
 -- Permissions
 
+ALTER SEQUENCE mobiel.werkvoorraad_punt_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.werkvoorraad_punt_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_punt_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_punt_id_seq1 TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_vlak_id_seq;
+
+CREATE SEQUENCE mobiel.werkvoorraad_vlak_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
 ALTER SEQUENCE mobiel.werkvoorraad_vlak_id_seq OWNER TO oiv_admin;
 GRANT ALL ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq TO oiv_admin;
-GRANT USAGE, SELECT ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq TO oiv_read;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq TO oiv_read;
 GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq TO oiv_write;
+
+-- DROP SEQUENCE mobiel.werkvoorraad_vlak_id_seq1;
+
+CREATE SEQUENCE mobiel.werkvoorraad_vlak_id_seq1
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE mobiel.werkvoorraad_vlak_id_seq1 OWNER TO oiv_admin;
+GRANT ALL ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq1 TO oiv_admin;
+GRANT SELECT, USAGE ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq1 TO oiv_read;
+GRANT UPDATE ON SEQUENCE mobiel.werkvoorraad_vlak_id_seq1 TO oiv_write;
 -- mobiel.gt_pk_metadata_table definition
 
 -- Drop table
@@ -189,7 +431,7 @@ CREATE TABLE mobiel.gt_pk_metadata_table (
 ALTER TABLE mobiel.gt_pk_metadata_table OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.gt_pk_metadata_table TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.gt_pk_metadata_table TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.gt_pk_metadata_table TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.gt_pk_metadata_table TO oiv_write;
 
 
 -- mobiel.label_type definition
@@ -220,7 +462,7 @@ CREATE TABLE mobiel.label_type (
 ALTER TABLE mobiel.label_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.label_type TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.label_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.label_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.label_type TO oiv_write;
 
 
 -- mobiel.lijnen_type definition
@@ -248,6 +490,8 @@ CREATE TABLE mobiel.lijnen_type (
 
 ALTER TABLE mobiel.lijnen_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.lijnen_type TO oiv_admin;
+GRANT SELECT ON TABLE mobiel.lijnen_type TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.lijnen_type TO oiv_write;
 
 
 -- mobiel.log_werkvoorraad definition
@@ -260,7 +504,7 @@ CREATE TABLE mobiel.log_werkvoorraad (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL,
 	datum_gewijzigd timestamp NULL,
-	geom geometry(geometry, 28992) NULL,
+	geom public.geometry(geometry, 28992) NULL,
 	record json NULL,
 	CONSTRAINT log_werkvoorraad_pkey PRIMARY KEY (id)
 );
@@ -271,7 +515,36 @@ CREATE INDEX log_werkvoorraad_geom_gist ON mobiel.log_werkvoorraad USING gist (g
 ALTER TABLE mobiel.log_werkvoorraad OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.log_werkvoorraad TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.log_werkvoorraad TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.log_werkvoorraad TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.log_werkvoorraad TO oiv_write;
+
+
+-- mobiel.punten_ruimtelijk_type definition
+
+-- Drop table
+
+-- DROP TABLE mobiel.punten_ruimtelijk_type;
+
+CREATE TABLE mobiel.punten_ruimtelijk_type (
+	gid serial4 NOT NULL,
+	bron_id int4 NULL,
+	brontabel varchar(50) NULL,
+	naam text NULL,
+	symbol_name text NULL,
+	"size" int4 NULL,
+	size_object int4 NULL,
+	evenement bool NULL,
+	gebouw bool NULL,
+	waterongeval bool NULL,
+	bluswater bool NULL,
+	natuur bool NULL
+);
+
+-- Permissions
+
+ALTER TABLE mobiel.punten_ruimtelijk_type OWNER TO oiv_admin;
+GRANT ALL ON TABLE mobiel.punten_ruimtelijk_type TO oiv_admin;
+GRANT SELECT ON TABLE mobiel.punten_ruimtelijk_type TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.punten_ruimtelijk_type TO oiv_write;
 
 
 -- mobiel.punten_type definition
@@ -281,7 +554,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.log_werkvoorraad TO oiv_write;
 -- DROP TABLE mobiel.punten_type;
 
 CREATE TABLE mobiel.punten_type (
-	gid int4 NOT NULL DEFAULT nextval('mobiel.punten_ruimtelijk_type_gid_seq'::regclass),
+	gid serial4 NOT NULL,
 	bron_id int4 NULL,
 	brontabel varchar(50) NULL,
 	naam text NULL,
@@ -293,7 +566,8 @@ CREATE TABLE mobiel.punten_type (
 	waterongeval bool NULL,
 	bluswater bool NULL,
 	natuur bool NULL,
-	bouwlaag_object varchar(50) NULL
+	bouwlaag_object varchar(50) NULL,
+	CONSTRAINT punten_type_pkey PRIMARY KEY (gid)
 );
 
 -- Permissions
@@ -301,7 +575,31 @@ CREATE TABLE mobiel.punten_type (
 ALTER TABLE mobiel.punten_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.punten_type TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.punten_type TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.punten_type TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.punten_type TO oiv_write;
+
+
+-- mobiel.scratchpad definition
+
+-- Drop table
+
+-- DROP TABLE mobiel.scratchpad;
+
+CREATE TABLE mobiel.scratchpad (
+	id serial4 NOT NULL,
+	datum_aangemaakt timestamp NULL DEFAULT now(),
+	datum_gewijzigd timestamp NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
+	color varchar(10) NULL,
+	CONSTRAINT scratchpad_id_pkey PRIMARY KEY (id)
+);
+CREATE INDEX scratchpad_geom_gist ON mobiel.scratchpad USING gist (geom);
+
+-- Permissions
+
+ALTER TABLE mobiel.scratchpad OWNER TO oiv_admin;
+GRANT ALL ON TABLE mobiel.scratchpad TO oiv_admin;
+GRANT SELECT ON TABLE mobiel.scratchpad TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.scratchpad TO oiv_write;
 
 
 -- mobiel.vlakken_type definition
@@ -330,6 +628,8 @@ CREATE TABLE mobiel.vlakken_type (
 
 ALTER TABLE mobiel.vlakken_type OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.vlakken_type TO oiv_admin;
+GRANT SELECT ON TABLE mobiel.vlakken_type TO oiv_read;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.vlakken_type TO oiv_write;
 
 
 -- mobiel.werkvoorraad_hulplijnen definition
@@ -341,7 +641,7 @@ GRANT ALL ON TABLE mobiel.vlakken_type TO oiv_admin;
 CREATE TABLE mobiel.werkvoorraad_hulplijnen (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
-	geom geometry(linestring, 28992) NULL,
+	geom public.geometry(linestring, 28992) NULL,
 	bron_id int4 NULL,
 	brontabel varchar(50) NULL,
 	bouwlaag_id int4 NULL,
@@ -363,7 +663,7 @@ INSERT
 ALTER TABLE mobiel.werkvoorraad_hulplijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_hulplijnen TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_hulplijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_hulplijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_hulplijnen TO oiv_write;
 
 
 -- mobiel.werkvoorraad_label definition
@@ -376,7 +676,7 @@ CREATE TABLE mobiel.werkvoorraad_label (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	waarden_new json NULL,
 	operatie varchar(10) NULL,
 	brontabel varchar(50) NULL,
@@ -415,7 +715,7 @@ UPDATE
 ALTER TABLE mobiel.werkvoorraad_label OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_label TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_label TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_label TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_label TO oiv_write;
 
 
 -- mobiel.werkvoorraad_lijn definition
@@ -428,7 +728,7 @@ CREATE TABLE mobiel.werkvoorraad_lijn (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
-	geom geometry(multilinestring, 28992) NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
 	waarden_new json NULL,
 	operatie varchar(10) NULL,
 	brontabel varchar(50) NULL,
@@ -446,25 +746,29 @@ CREATE INDEX werkvoorraad_lijn_geom_gist ON mobiel.werkvoorraad_lijn USING gist 
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-CREATE TRIGGER trg_set_insert BEFORE
-INSERT
-    ON
-    mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_lijn();
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
+CREATE TRIGGER trg_set_upd BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_lijn FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 
 -- Permissions
 
 ALTER TABLE mobiel.werkvoorraad_lijn OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_lijn TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_lijn TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_lijn TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_lijn TO oiv_write;
 
 
 -- mobiel.werkvoorraad_punt definition
@@ -477,7 +781,7 @@ CREATE TABLE mobiel.werkvoorraad_punt (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
-	geom geometry(point, 28992) NULL,
+	geom public.geometry(point, 28992) NULL,
 	waarden_new json NULL,
 	operatie varchar(10) NULL,
 	brontabel varchar(50) NULL,
@@ -497,17 +801,29 @@ CREATE INDEX werkvoorraad_punt_geom_gist ON mobiel.werkvoorraad_punt USING gist 
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_insert AFTER
+CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_punt();
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
+CREATE TRIGGER trg_set_upd BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_punt FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 
 -- Permissions
 
 ALTER TABLE mobiel.werkvoorraad_punt OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_punt TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_punt TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_punt TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_punt TO oiv_write;
 
 
 -- mobiel.werkvoorraad_vlak definition
@@ -520,7 +836,7 @@ CREATE TABLE mobiel.werkvoorraad_vlak (
 	id serial4 NOT NULL,
 	datum_aangemaakt timestamp NULL DEFAULT now(),
 	datum_gewijzigd timestamp NULL,
-	geom geometry(multipolygon, 28992) NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
 	waarden_new json NULL,
 	operatie varchar(10) NULL,
 	brontabel varchar(50) NULL,
@@ -538,25 +854,29 @@ CREATE INDEX werkvoorraad_vlak_geom_gist ON mobiel.werkvoorraad_vlak USING gist 
 
 -- Table Triggers
 
-CREATE TRIGGER trg_set_mutatie BEFORE
-UPDATE
-    ON
-    mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
-CREATE TRIGGER trg_set_insert BEFORE
-INSERT
-    ON
-    mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 CREATE TRIGGER trg_after_insert AFTER
 INSERT
     ON
     mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION mobiel.complement_record_vlak();
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
+CREATE TRIGGER trg_set_upd BEFORE
+INSERT
+    ON
+    mobiel.werkvoorraad_vlak FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 
 -- Permissions
 
 ALTER TABLE mobiel.werkvoorraad_vlak OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_vlak TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_vlak TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_vlak TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_vlak TO oiv_write;
 
 
 -- mobiel.bouwlagen_binnen_object source
@@ -574,7 +894,7 @@ AS SELECT DISTINCT t.object_id,
 ALTER TABLE mobiel.bouwlagen_binnen_object OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.bouwlagen_binnen_object TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.bouwlagen_binnen_object TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.bouwlagen_binnen_object TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.bouwlagen_binnen_object TO oiv_write;
 
 
 -- mobiel.categorie_labels source
@@ -590,7 +910,7 @@ AS SELECT DISTINCT label_type.categorie,
 ALTER TABLE mobiel.categorie_labels OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.categorie_labels TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.categorie_labels TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.categorie_labels TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.categorie_labels TO oiv_write;
 
 
 -- mobiel.categorie_lijnen source
@@ -606,7 +926,7 @@ AS SELECT DISTINCT lijnen_type.categorie,
 ALTER TABLE mobiel.categorie_lijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.categorie_lijnen TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.categorie_lijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.categorie_lijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.categorie_lijnen TO oiv_write;
 
 
 -- mobiel.categorie_punten source
@@ -622,7 +942,7 @@ AS SELECT DISTINCT punten_type.categorie,
 ALTER TABLE mobiel.categorie_punten OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.categorie_punten TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.categorie_punten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.categorie_punten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.categorie_punten TO oiv_write;
 
 
 -- mobiel.categorie_vlakken source
@@ -638,7 +958,7 @@ AS SELECT DISTINCT vlakken_type.categorie,
 ALTER TABLE mobiel.categorie_vlakken OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.categorie_vlakken TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.categorie_vlakken TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.categorie_vlakken TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.categorie_vlakken TO oiv_write;
 
 
 -- mobiel.labels source
@@ -678,9 +998,9 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
         UNION ALL
          SELECT l.id,
             l.geom,
-            NULL::json,
-            ''::character varying,
-            'label'::character varying,
+            NULL::json AS json,
+            ''::character varying AS "varchar",
+            'label'::character varying AS "varchar",
             l.id,
             NULL::integer AS object_id,
             l.bouwlaag_id,
@@ -696,9 +1016,9 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
         UNION ALL
          SELECT l.id,
             l.geom,
-            NULL::json,
-            ''::character varying,
-            'label'::character varying,
+            NULL::json AS json,
+            ''::character varying AS "varchar",
+            'label'::character varying AS "varchar",
             l.id,
             l.object_id,
             NULL::integer AS bouwlaag_id,
@@ -712,12 +1032,23 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
            FROM objecten.object_label l
              JOIN objecten.label_type lt ON l.soort::text = lt.naam::text) sub;
 
+-- View Triggers
+
+CREATE TRIGGER trg_labels_del INSTEAD OF
+DELETE
+    ON
+    mobiel.labels FOR EACH ROW EXECUTE FUNCTION mobiel.funct_label_delete();
+CREATE TRIGGER trg_labels_upd INSTEAD OF
+UPDATE
+    ON
+    mobiel.labels FOR EACH ROW EXECUTE FUNCTION mobiel.funct_label_update();
+
 -- Permissions
 
 ALTER TABLE mobiel.labels OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.labels TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.labels TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.labels TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.labels TO oiv_write;
 
 
 -- mobiel.lijnen source
@@ -814,12 +1145,23 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
            FROM objecten.bouwlaag_veiligh_bouwk b
              JOIN objecten.veiligh_bouwk_type bt ON b.soort::text = bt.naam::text) sub;
 
+-- View Triggers
+
+CREATE TRIGGER trg_lijnen_del INSTEAD OF
+DELETE
+    ON
+    mobiel.lijnen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_lijn_delete();
+CREATE TRIGGER trg_lijnen_upd INSTEAD OF
+UPDATE
+    ON
+    mobiel.lijnen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_lijn_update();
+
 -- Permissions
 
 ALTER TABLE mobiel.lijnen OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.lijnen TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.lijnen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.lijnen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.lijnen TO oiv_write;
 
 
 -- mobiel.symbolen source
@@ -855,48 +1197,251 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
             'werkvoorraad'::text AS bron
            FROM mobiel.werkvoorraad_punt
         UNION ALL
-         SELECT bouwlaag_veiligh_install.id,
-            bouwlaag_veiligh_install.geom,
+         SELECT v.id,
+            v.geom,
             row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT bouwlaag_veiligh_install.label,
-                            bouwlaag_veiligh_install.bijzonderheid) d)) AS waarden_new,
+                   FROM ( SELECT v.label,
+                            v.bijzonderheid) d)) AS waarden_new,
             ''::character varying AS operatie,
             'veiligh_install'::character varying AS brontabel,
-            bouwlaag_veiligh_install.id AS bron_id,
+            v.id AS bron_id,
             NULL::integer AS object_id,
-            bouwlaag_veiligh_install.bouwlaag_id,
-            bouwlaag_veiligh_install.rotatie,
-            bouwlaag_veiligh_install.size,
-            bouwlaag_veiligh_install.symbol_name,
-            bouwlaag_veiligh_install.bouwlaag,
+            v.bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            b.bouwlaag,
             'bouwlaag'::text AS binnen_buiten,
             'oiv'::text AS bron
-           FROM objecten.bouwlaag_veiligh_install
+           FROM objecten.veiligh_install v
+             JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+             JOIN objecten.veiligh_install_type vt ON v.veiligh_install_type_id = vt.id
+          WHERE v.datum_deleted IS NULL
         UNION ALL
-         SELECT bouwlaag_dreiging.id,
-            bouwlaag_dreiging.geom,
+         SELECT v.id,
+            v.geom,
             row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT bouwlaag_dreiging.label,
-                            bouwlaag_dreiging.omschrijving) d)) AS waarden_new,
+                   FROM ( SELECT v.label,
+                            v.bijzonderheid) d)) AS waarden_new,
             ''::character varying AS operatie,
-            'dreiging_type_id'::character varying AS brontabel,
-            bouwlaag_dreiging.id AS bron_id,
-            bouwlaag_dreiging.object_id,
-            bouwlaag_dreiging.bouwlaag_id,
-            bouwlaag_dreiging.rotatie,
-            bouwlaag_dreiging.size,
-            bouwlaag_dreiging.symbol_name,
-            bouwlaag_dreiging.bouwlaag,
+            'veiligh_ruimtelijk'::character varying AS brontabel,
+            v.id AS bron_id,
+            v.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.veiligh_ruimtelijk v
+             JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id
+          WHERE v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.omschrijving) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'dreiging'::character varying AS brontabel,
+            v.id AS bron_id,
+            NULL::integer AS object_id,
+            v.bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            b.bouwlaag,
             'bouwlaag'::text AS binnen_buiten,
             'oiv'::text AS bron
-           FROM objecten.bouwlaag_dreiging) sub;
+           FROM objecten.dreiging v
+             JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+             JOIN objecten.dreiging_type vt ON v.dreiging_type_id = vt.id
+          WHERE v.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.omschrijving) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'dreiging'::character varying AS brontabel,
+            v.id AS bron_id,
+            v.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.dreiging v
+             JOIN objecten.dreiging_type vt ON v.dreiging_type_id = vt.id
+          WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.handelingsaanwijzing) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'afw_binnendekking'::character varying AS brontabel,
+            v.id AS bron_id,
+            NULL::integer AS object_id,
+            v.bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            b.bouwlaag,
+            'bouwlaag'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.afw_binnendekking v
+             JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+             JOIN objecten.afw_binnendekking_type vt ON v.soort::text = vt.naam::text
+          WHERE v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.belemmering,
+                            v.voorzieningen) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'ingang'::character varying AS brontabel,
+            v.id AS bron_id,
+            NULL::integer AS object_id,
+            v.bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            b.bouwlaag,
+            'bouwlaag'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.ingang v
+             JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+             JOIN objecten.ingang_type vt ON v.ingang_type_id = vt.id
+          WHERE v.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.belemmering,
+                            v.voorzieningen) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'ingang'::character varying AS brontabel,
+            v.id AS bron_id,
+            v.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.ingang v
+             JOIN objecten.ingang_type vt ON v.ingang_type_id = vt.id
+          WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'opstelplaats'::character varying AS brontabel,
+            v.id AS bron_id,
+            v.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.opstelplaats v
+             JOIN objecten.opstelplaats_type vt ON v.soort::text = vt.naam::text
+          WHERE v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.aanduiding_locatie) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'sleutelkluis'::character varying AS brontabel,
+            v.id AS bron_id,
+            NULL::integer AS object_id,
+            i.bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            b.bouwlaag,
+            'bouwlaag'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.sleutelkluis v
+             JOIN objecten.ingang i ON v.ingang_id = i.id
+             JOIN objecten.bouwlagen b ON i.bouwlaag_id = b.id
+             JOIN objecten.sleutelkluis_type vt ON v.sleutelkluis_type_id = vt.id
+          WHERE i.bouwlaag_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.aanduiding_locatie) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'sleutelkluis'::character varying AS brontabel,
+            v.id AS bron_id,
+            i.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.sleutelkluis v
+             JOIN objecten.ingang i ON v.ingang_id = i.id
+             JOIN objecten.sleutelkluis_type vt ON v.sleutelkluis_type_id = vt.id
+          WHERE i.object_id IS NOT NULL AND v.datum_deleted IS NULL
+        UNION ALL
+         SELECT v.id,
+            v.geom,
+            row_to_json(( SELECT d.*::record AS d
+                   FROM ( SELECT v.label,
+                            v.bijzonderheid) d)) AS waarden_new,
+            ''::character varying AS operatie,
+            'points_of_interest'::character varying AS brontabel,
+            v.id AS bron_id,
+            v.object_id,
+            NULL::integer AS bouwlaag_id,
+            v.rotatie,
+            vt.size,
+            vt.symbol_name,
+            NULL::integer AS bouwlaag,
+            'object'::text AS binnen_buiten,
+            'oiv'::text AS bron
+           FROM objecten.points_of_interest v
+             JOIN objecten.points_of_interest_type vt ON v.points_of_interest_type_id = vt.id
+          WHERE v.object_id IS NOT NULL AND v.datum_deleted IS NULL) sub;
+
+-- View Triggers
+
+CREATE TRIGGER trg_symbolen_del INSTEAD OF
+DELETE
+    ON
+    mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_symbol_delete();
+CREATE TRIGGER trg_symbolen_upd INSTEAD OF
+UPDATE
+    ON
+    mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel.funct_symbol_update();
 
 -- Permissions
 
 ALTER TABLE mobiel.symbolen OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.symbolen TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.symbolen TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.symbolen TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.symbolen TO oiv_write;
 
 
 -- mobiel.vlakken source
@@ -960,12 +1505,23 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
            FROM objecten.bouwlaag_ruimten b
              JOIN objecten.ruimten_type bt ON b.ruimten_type_id = bt.naam) sub;
 
+-- View Triggers
+
+CREATE TRIGGER trg_vlakken_del INSTEAD OF
+DELETE
+    ON
+    mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel.funct_vlak_delete();
+CREATE TRIGGER trg_vlakken_upd INSTEAD OF
+UPDATE
+    ON
+    mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel.funct_vlak_update();
+
 -- Permissions
 
 ALTER TABLE mobiel.vlakken OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.vlakken TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.vlakken TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.vlakken TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.vlakken TO oiv_write;
 
 
 -- mobiel.werkvoorraad_objecten source
@@ -976,12 +1532,43 @@ AS SELECT DISTINCT o.id,
     sub.object_id
    FROM ( SELECT DISTINCT werkvoorraad_punt.object_id
            FROM mobiel.werkvoorraad_punt
+          WHERE werkvoorraad_punt.object_id IS NOT NULL
+        UNION
+         SELECT DISTINCT werkvoorraad_label.object_id
+           FROM mobiel.werkvoorraad_label
+          WHERE werkvoorraad_label.object_id IS NOT NULL
         UNION
          SELECT DISTINCT werkvoorraad_lijn.object_id
            FROM mobiel.werkvoorraad_lijn
+          WHERE werkvoorraad_lijn.object_id IS NOT NULL
         UNION
          SELECT DISTINCT werkvoorraad_vlak.object_id
-           FROM mobiel.werkvoorraad_vlak) sub
+           FROM mobiel.werkvoorraad_vlak
+          WHERE werkvoorraad_vlak.object_id IS NOT NULL
+        UNION
+         SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_punt w
+             JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+             JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
+          WHERE w.bouwlaag_id IS NOT NULL
+        UNION
+         SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_label w
+             JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+             JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
+          WHERE w.bouwlaag_id IS NOT NULL
+        UNION
+         SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_lijn w
+             JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+             JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
+          WHERE w.bouwlaag_id IS NOT NULL
+        UNION
+         SELECT DISTINCT t.object_id
+           FROM mobiel.werkvoorraad_vlak w
+             JOIN objecten.bouwlagen b ON w.bouwlaag_id = b.id
+             JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
+          WHERE w.bouwlaag_id IS NOT NULL) sub
      JOIN objecten.object o ON sub.object_id = o.id;
 
 -- Permissions
@@ -989,7 +1576,7 @@ AS SELECT DISTINCT o.id,
 ALTER TABLE mobiel.werkvoorraad_objecten OWNER TO oiv_admin;
 GRANT ALL ON TABLE mobiel.werkvoorraad_objecten TO oiv_admin;
 GRANT SELECT ON TABLE mobiel.werkvoorraad_objecten TO oiv_read;
-GRANT DELETE, INSERT, UPDATE ON TABLE mobiel.werkvoorraad_objecten TO oiv_write;
+GRANT UPDATE, DELETE, INSERT ON TABLE mobiel.werkvoorraad_objecten TO oiv_write;
 
 
 
@@ -1001,7 +1588,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    	UPDATE mobiel.werkvoorraad_label SET "size" = sub."size", bouwlaag_id = bouwlaagid
 			FROM
@@ -1026,6 +1613,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.complement_record_label() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_label() TO public;
 GRANT ALL ON FUNCTION mobiel.complement_record_label() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_lijn()
@@ -1036,7 +1624,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    ELSE
 	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
@@ -1050,8 +1638,9 @@ AS $function$
 
 -- Permissions
 
-ALTER FUNCTION mobiel.complement_record_lijn() OWNER TO webdev;
-GRANT ALL ON FUNCTION mobiel.complement_record_lijn() TO webdev;
+ALTER FUNCTION mobiel.complement_record_lijn() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_lijn() TO public;
+GRANT ALL ON FUNCTION mobiel.complement_record_lijn() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_punt()
  RETURNS trigger
@@ -1061,7 +1650,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    	UPDATE mobiel.werkvoorraad_punt SET "size" = sub."size", bouwlaag_id = bouwlaagid
 			FROM
@@ -1086,6 +1675,7 @@ AS $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.complement_record_punt() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_punt() TO public;
 GRANT ALL ON FUNCTION mobiel.complement_record_punt() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.complement_record_vlak()
@@ -1096,7 +1686,7 @@ AS $function$
     	objectid integer := NULL;
     	bouwlaagid integer := NULL;
     BEGIN 
-	    IF NEW.bouwlaag_object = 'bouwlaag' THEN
+	    IF (NEW.bouwlaag_object = 'bouwlaag' OR NEW.bouwlaag_id IS NOT NULL) THEN
 	    	bouwlaagid := (SELECT b.id FROM (SELECT b.id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = NEW.bouwlaag ORDER BY dist LIMIT 1) b);
 	    ELSE
 	    	objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
@@ -1110,8 +1700,9 @@ AS $function$
 
 -- Permissions
 
-ALTER FUNCTION mobiel.complement_record_vlak() OWNER TO webdev;
-GRANT ALL ON FUNCTION mobiel.complement_record_vlak() TO webdev;
+ALTER FUNCTION mobiel.complement_record_vlak() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.complement_record_vlak() TO public;
+GRANT ALL ON FUNCTION mobiel.complement_record_vlak() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_label_delete()
  RETURNS trigger
@@ -1137,6 +1728,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_label_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_label_delete() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_label_delete() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_label_update()
@@ -1174,6 +1766,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_label_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_label_update() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_label_update() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_lijn_delete()
@@ -1200,6 +1793,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_lijn_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_lijn_delete() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_lijn_delete() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_lijn_update()
@@ -1237,6 +1831,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_lijn_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_lijn_update() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_lijn_update() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_symbol_delete()
@@ -1254,7 +1849,6 @@ AS $function$
 			WHERE werkvoorraad_punt.id = old.id;
 	    ELSE
 			DELETE FROM mobiel.werkvoorraad_punt WHERE (id = OLD.id);
-			DELETE FROM mobiel.werkvoorraad_hulplijnen WHERE (bron_id = OLD.id);
 	    END IF;
 	    RETURN NULL;
     END;
@@ -1264,6 +1858,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_symbol_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_symbol_delete() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_symbol_delete() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_symbol_update()
@@ -1301,6 +1896,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_symbol_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_symbol_update() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_symbol_update() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_vlak_delete()
@@ -1327,6 +1923,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_vlak_delete() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_vlak_delete() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_vlak_delete() TO oiv_admin;
 
 CREATE OR REPLACE FUNCTION mobiel.funct_vlak_update()
@@ -1364,6 +1961,7 @@ $function$
 -- Permissions
 
 ALTER FUNCTION mobiel.funct_vlak_update() OWNER TO oiv_admin;
+GRANT ALL ON FUNCTION mobiel.funct_vlak_update() TO public;
 GRANT ALL ON FUNCTION mobiel.funct_vlak_update() TO oiv_admin;
 
 
