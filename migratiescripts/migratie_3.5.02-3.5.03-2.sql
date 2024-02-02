@@ -83,7 +83,8 @@ ALTER TABLE gevaarlijkestof ADD PRIMARY KEY (id, datum_deleted);
 
 UPDATE gevaarlijkestof_opslag SET datum_deleted = 'infinity' WHERE datum_deleted IS NULL;
 ALTER TABLE gevaarlijkestof_opslag ALTER COLUMN datum_deleted SET DEFAULT 'infinity';
-ALTER TABLE gevaarlijkestof_opslag DROP CONSTRAINT gevaarlijkestof_opslag_pkey;
+ALTER TABLE gevaarlijkestof_opslag DROP CONSTRAINT IF EXISTS gevaarlijkestof_opslag_pkey;
+ALTER TABLE gevaarlijkestof_opslag DROP CONSTRAINT IF EXISTS opslag_pkey;
 ALTER TABLE gevaarlijkestof_opslag ADD PRIMARY KEY (id, datum_deleted);
 
 UPDATE grid SET datum_deleted = 'infinity' WHERE datum_deleted IS NULL;
@@ -272,7 +273,8 @@ AS SELECT b.id,
     b.bouwlaag,
     b.bouwdeel,
     b.pand_id,
-    b.datum_deleted
+    b.datum_deleted,
+    b.fotografie_id 
    FROM bouwlagen b
   WHERE b.datum_deleted = 'infinity';
 
