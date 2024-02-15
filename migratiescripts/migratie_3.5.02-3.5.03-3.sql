@@ -794,7 +794,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.afw_binnendekking d ON st_intersects(t.geom, d.geom)
@@ -820,7 +820,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)    
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -844,7 +844,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.bereikbaarheid_type st ON b.soort::text = st.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
@@ -871,7 +871,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.bouwlagen d ON st_intersects(t.geom, d.geom)
@@ -900,7 +900,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -930,7 +930,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.dreiging d ON st_intersects(t.geom, d.geom)
@@ -963,7 +963,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -986,7 +986,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.gebiedsgerichte_aanpak_type st ON b.soort::text = st.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
@@ -1020,7 +1020,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON st_intersects(t.geom, op.geom)
@@ -1056,7 +1056,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id
@@ -1088,7 +1088,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -1118,7 +1118,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.ingang d ON st_intersects(t.geom, d.geom)
@@ -1152,7 +1152,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -1174,7 +1174,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -1203,7 +1203,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.label d ON st_intersects(t.geom, d.geom)
@@ -1233,7 +1233,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)    
     AND o.self_deleted = 'infinity'::timestamp with time zone
@@ -1272,7 +1272,7 @@ AS SELECT o.id,
             max(historie.datum_aangemaakt) AS maxdatetime,
             historie.typeobject
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id, historie.typeobject) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone;
@@ -1298,7 +1298,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone 
@@ -1326,7 +1326,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone 
@@ -1351,7 +1351,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.ruimten d ON st_intersects(t.geom, d.geom)
@@ -1382,7 +1382,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.scenario_locatie op ON st_intersects(t.geom, op.geom)
@@ -1416,7 +1416,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.scenario_locatie op ON o.id = op.object_id
      JOIN objecten.scenario d ON op.id = d.scenario_locatie_id
@@ -1454,7 +1454,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON st_intersects(t.geom, op.geom)
@@ -1492,7 +1492,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id
@@ -1521,7 +1521,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone 
@@ -1555,7 +1555,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.sleutelkluis d ON st_intersects(t.geom, d.geom)
@@ -1592,7 +1592,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.ingang i ON o.id = i.object_id
      JOIN objecten.sleutelkluis d ON i.id = d.ingang_id
@@ -1620,7 +1620,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.veiligh_bouwk d ON st_intersects(t.geom, d.geom)
@@ -1655,7 +1655,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.terrein t ON o.id = t.object_id
      JOIN objecten.veiligh_install d ON st_intersects(t.geom, d.geom)
@@ -1687,7 +1687,7 @@ AS SELECT b.id,
      JOIN ( SELECT DISTINCT historie.object_id,
             max(historie.datum_aangemaakt) AS maxdatetime
            FROM objecten.historie
-          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone AND historie.self_deleted = 'infinity'::timestamp with time zone
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
     AND o.self_deleted = 'infinity'::timestamp with time zone 
