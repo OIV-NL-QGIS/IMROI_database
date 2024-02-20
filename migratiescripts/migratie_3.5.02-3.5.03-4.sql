@@ -37,22 +37,12 @@ CREATE RULE bouwlagen_upd AS
 UPDATE aanwezig SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE afw_binnendekking SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE bedrijfshulpverlening SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
-
-ALTER TABLE beheersmaatregelen RENAME COLUMN datum_deleted TO parent_deleted;
-ALTER TABLE beheersmaatregelen ADD COLUMN self_deleted timestamptz default 'infinity';
-CREATE TRIGGER trg_set_delete_after_parent AFTER UPDATE OF parent_deleted ON beheersmaatregelen FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
 UPDATE beheersmaatregelen SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
-
 UPDATE bereikbaarheid SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE contactpersoon SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE dreiging SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE gebiedsgerichte_aanpak SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
-
-ALTER TABLE gebruiksfunctie RENAME COLUMN datum_deleted TO parent_deleted;
-ALTER TABLE gebruiksfunctie ADD COLUMN self_deleted timestamptz default 'infinity';
-CREATE TRIGGER trg_set_delete_after_parent AFTER UPDATE OF parent_deleted ON gebruiksfunctie FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp();
 UPDATE gebruiksfunctie SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
-
 UPDATE gevaarlijkestof SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE gevaarlijkestof_opslag SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
 UPDATE gevaarlijkestof_schade_cirkel SET self_deleted = parent_deleted WHERE parent_deleted != 'infinity';
