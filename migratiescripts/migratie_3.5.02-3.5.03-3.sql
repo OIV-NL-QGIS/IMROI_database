@@ -18,18 +18,6 @@ AS SELECT v.id,
      JOIN objecten.afw_binnendekking_type st ON v.soort::text = st.naam::text
   WHERE v.parent_deleted = 'infinity'::timestamp with time zone AND v.self_deleted = 'infinity'::timestamp with time zone;
 
-CREATE OR REPLACE VIEW objecten.bouwlaag_bouwlagen
-AS SELECT b.id,
-    b.geom,
-    b.datum_aangemaakt,
-    b.datum_gewijzigd,
-    b.bouwlaag,
-    b.bouwdeel,
-    b.pand_id,
-    b.self_deleted AS datum_deleted
-   FROM objecten.bouwlagen b
-  WHERE b.self_deleted = 'infinity'::timestamp with time zone;
-
 CREATE OR REPLACE VIEW objecten.bouwlaag_dreiging
 AS SELECT v.id,
     v.geom,
