@@ -1168,6 +1168,7 @@ AS SELECT b.id,
     AND o.self_deleted = 'infinity'::timestamp with time zone 
     AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_points_of_interest;
 CREATE OR REPLACE VIEW objecten.view_points_of_interest
 AS SELECT b.id,
     b.geom,
