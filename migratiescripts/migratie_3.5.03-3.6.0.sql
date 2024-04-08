@@ -2,6 +2,46 @@ SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
 ALTER TABLE bluswater.alternatieve RENAME COLUMN datum_deleted TO self_deleted;
+UPDATE bluswater.alternatieve SET self_deleted = 'infinity' WHERE self_deleted IS NULL;
+
+CREATE OR REPLACE FUNCTION objecten.func_label_upd()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            UPDATE objecten.label SET geom = new.geom, soort = new.soort, omschrijving = new.omschrijving, rotatie = new.rotatie, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id
+            WHERE (label.id = new.id);
+        ELSE
+            symbol_name := (SELECT dt.symbol_name FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.omschrijving) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT dt."size" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            ELSE
+                size := (SELECT dt."size_object" FROM objecten.label_type dt WHERE dt.naam = new.soort);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, omschrijving, rotatie, SIZE, symbol_name, bouwlaag, accepted)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'label', OLD.id, NEW.bouwlaag_id, NEW.object_id, NEW.omschrijving, NEW.rotatie, size, symbol_name, bouwlaag, false);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'label', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
 
 CREATE OR REPLACE VIEW objecten.status_objectgegevens
 AS SELECT object.id,
@@ -291,8 +331,8 @@ AS SELECT object.id,
   WHERE object.self_deleted = 'infinity'::timestamp with time zone;
   
 -- Update versie van de applicatie
-UPDATE algemeen.applicatie SET sub = 5;
-UPDATE algemeen.applicatie SET revisie = 4;
-UPDATE algemeen.applicatie SET db_versie = 354; -- db versie == versie_sub_revisie
+UPDATE algemeen.applicatie SET sub = 6;
+UPDATE algemeen.applicatie SET revisie = 0;
+UPDATE algemeen.applicatie SET db_versie = 360; -- db versie == versie_sub_revisie
 UPDATE algemeen.applicatie SET omschrijving = '';
 UPDATE algemeen.applicatie SET datum = now();
