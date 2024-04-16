@@ -1,6 +1,37 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+CREATE OR REPLACE FUNCTION objecten.set_delete_timestamp_info_of_interest()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+      command text := ' SET datum_deleted = now() WHERE id = $1';
+    BEGIN
+      EXECUTE 'UPDATE "' || TG_TABLE_SCHEMA || '"."' || TG_TABLE_NAME || '" ' || command USING OLD.id;
+      RETURN NULL;
+    END;
+  $function$
+;
+
+DROP TRIGGER trg_set_delete ON info_of_interest.labels_of_interest;
+CREATE TRIGGER trg_set_delete BEFORE
+DELETE
+    ON
+    info_of_interest.labels_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp_info_of_interest();
+
+DROP TRIGGER trg_set_delete ON info_of_interest.lines_of_interest;
+CREATE TRIGGER trg_set_delete BEFORE
+DELETE
+    ON
+    info_of_interest.lines_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp_info_of_interest();
+    
+DROP TRIGGER trg_set_delete ON info_of_interest.points_of_interest;
+CREATE TRIGGER trg_set_delete BEFORE
+DELETE
+    ON
+    info_of_interest.points_of_interest FOR EACH ROW EXECUTE FUNCTION objecten.set_delete_timestamp_info_of_interest();
+
 DROP TABLE IF EXISTS mobiel.annotaties;
 CREATE TABLE mobiel.annotaties (
 	id serial NOT NULL PRIMARY KEY,
