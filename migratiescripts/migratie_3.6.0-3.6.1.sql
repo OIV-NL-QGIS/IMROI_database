@@ -14,6 +14,9 @@ AS $function$
   $function$
 ;
 
+ALTER TABLE bluswater.alternatieve ALTER COLUMN self_deleted SET DEFAULT 'infinity';
+UPDATE bluswater.alternatieve SET self_deleted = 'infinity' WHERE self_deleted IS NULL;
+
 DROP TRIGGER trg_set_delete ON info_of_interest.labels_of_interest;
 CREATE TRIGGER trg_set_delete BEFORE
 DELETE
