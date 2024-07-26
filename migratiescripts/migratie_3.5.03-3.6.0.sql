@@ -2,6 +2,7 @@ SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
 ALTER TABLE bluswater.alternatieve RENAME COLUMN datum_deleted TO self_deleted;
+ALTER TABLE bluswater.alternatieve ALTER COLUMN self_deleted SET DEFAULT 'infinity';
 UPDATE bluswater.alternatieve SET self_deleted = 'infinity' WHERE self_deleted IS NULL;
 
 CREATE OR REPLACE FUNCTION objecten.func_label_upd()
