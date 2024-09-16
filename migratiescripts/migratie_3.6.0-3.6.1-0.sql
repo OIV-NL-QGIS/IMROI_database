@@ -93,19 +93,24 @@ AS SELECT DISTINCT sub.object_id,
           GROUP BY t.object_id, w.bouwlaag
          ) sub;
 
-CREATE OR REPLACE VIEW mobiel.object_binnen_bouwlaag AS
-	SELECT DISTINCT b.pand_id, t.object_id FROM objecten.bouwlagen b 
-	INNER JOIN objecten.terrein t ON ST_INTERSECTS(b.geom, t.geom)
-	WHERE object_id IN 
-	(
-		SELECT DISTINCT object_id FROM mobiel.werkvoorraad_punt w
-		UNION
-		SELECT DISTINCT object_id FROM mobiel.werkvoorraad_label lb
-		UNION
-		SELECT DISTINCT object_id FROM mobiel.werkvoorraad_lijn l
-		UNION
-		SELECT DISTINCT object_id FROM mobiel.werkvoorraad_vlak v
-	);
+CREATE OR REPLACE VIEW mobiel.object_binnen_bouwlaag
+AS SELECT DISTINCT b.id AS bouwlaag_id,
+    b.pand_id,
+    t.object_id,
+    b.bouwlaag
+   FROM objecten.bouwlagen b
+     JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
+  WHERE (t.object_id IN ( SELECT DISTINCT w.object_id
+           FROM mobiel.werkvoorraad_punt w
+        UNION
+         SELECT DISTINCT lb.object_id
+           FROM mobiel.werkvoorraad_label lb
+        UNION
+         SELECT DISTINCT l.object_id
+           FROM mobiel.werkvoorraad_lijn l
+        UNION
+         SELECT DISTINCT v.object_id
+           FROM mobiel.werkvoorraad_vlak v));
 
 CREATE OR REPLACE VIEW mobiel.symbolen
 AS SELECT row_number() OVER (ORDER BY sub.id) AS id,

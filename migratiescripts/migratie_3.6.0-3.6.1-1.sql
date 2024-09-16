@@ -1,8 +1,51 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+CREATE OR REPLACE FUNCTION objecten.set_timestamp_self_deleted_alternatieve()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+   NEW := NEW #= hstore(TG_ARGV[0], 'infinity');
+   RETURN NEW;
+END
+$function$
+;
+
+CREATE TRIGGER trg_set_insert_self_deleted BEFORE
+INSERT
+    ON
+    bluswater.alternatieve FOR EACH ROW 
+    	EXECUTE FUNCTION objecten.set_timestamp_self_deleted_alternatieve('self_deleted');
+
 ALTER TABLE objecten.object ADD COLUMN share BOOLEAN DEFAULT TRUE;
 UPDATE objecten.OBJECT SET SHARE = TRUE;
+
+CREATE OR REPLACE VIEW objecten."_gevaarlijkestof"
+AS SELECT g.id,
+    g.opslag_id,
+    g.datum_aangemaakt,
+    g.datum_gewijzigd,
+    g.omschrijving,
+    g.gevaarlijkestof_vnnr_id,
+    g.locatie,
+    g.hoeveelheid,
+    g.handelingsaanwijzing,
+    g.eenheid,
+    g.toestand,
+    g.parent_deleted,
+    g.self_deleted
+   FROM objecten.gevaarlijkestof g
+  WHERE g.self_deleted = 'infinity'::timestamp with time zone;
+
+CREATE RULE gevaarlijkstof_ins AS
+  ON INSERT TO objecten._gevaarlijkestof DO INSTEAD  
+  INSERT INTO objecten.gevaarlijkestof (opslag_id, omschrijving, gevaarlijkestof_vnnr_id, locatie, hoeveelheid, handelingsaanwijzing, eenheid, toestand)
+  VALUES (NEW.opslag_id, NEW.omschrijving, NEW.gevaarlijkestof_vnnr_id, NEW.locatie, NEW.hoeveelheid, NEW.handelingsaanwijzing, NEW.eenheid, NEW.toestand)
+  RETURNING id, opslag_id, datum_aangemaakt, datum_gewijzigd, omschrijving, gevaarlijkestof_vnnr_id, locatie, hoeveelheid, handelingsaanwijzing, eenheid, toestand, parent_deleted, self_deleted;
+  
+CREATE RULE gevaarlijkestof_del AS
+  ON DELETE TO objecten._gevaarlijkestof DO INSTEAD  DELETE FROM objecten.gevaarlijkestof WHERE (gevaarlijkestof.id = old.id);
 
 CREATE OR REPLACE VIEW objecten.object_objecten
 AS SELECT DISTINCT b.id,
@@ -198,6 +241,7 @@ AS SELECT b.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_dreiging_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -209,6 +253,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.label,
     d.bouwlaag_id,
     d.fotografie_id,
+    d.omschrijving,
     round(st_x(d.geom)) AS x,
     round(st_y(d.geom)) AS y,
     o.formelenaam,
@@ -231,6 +276,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.dreiging_type dt ON d.dreiging_type_id = dt.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_dreiging_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk
 AS SELECT b.id,
     b.geom,
@@ -244,6 +290,7 @@ AS SELECT b.id,
     b.fotografie_id,
     vt.naam AS soort,
     o.formelenaam,
+    b.omschrijving,
     round(st_x(b.geom)) AS x,
     round(st_y(b.geom)) AS y,
     vt.symbol_name,
@@ -959,6 +1006,33 @@ AS SELECT o.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
      JOIN objecten.historie h2 ON maxdatetime = h2.datum_aangemaakt AND o.id = h2.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time ZONE;
+
+CREATE OR REPLACE FUNCTION objecten.func_label_del()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN 
+            DELETE FROM objecten.label WHERE (label.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.omschrijving) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, omschrijving, rotatie, SIZE, symbol_name, bouwlaag, accepted)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'label', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.omschrijving, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag, false);
+        END IF;
+        RETURN OLD;
+    END;
+    $function$
+;
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
