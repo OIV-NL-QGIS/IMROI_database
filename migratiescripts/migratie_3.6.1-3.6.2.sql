@@ -22,6 +22,7 @@ AS SELECT b.id,
 
 ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN LABEL varchar(50);
 
+DROP VIEW mobiel.symbolen;
 CREATE OR REPLACE VIEW mobiel.symbolen
 AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
     sub.geom,
@@ -308,7 +309,7 @@ AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
             werkvoorraad_punt.label
            FROM mobiel.werkvoorraad_punt) sub;
            
-DROP RULE symbolen_ins ON mobiel.symbolen;
+DROP RULE IF EXISTS symbolen_ins ON mobiel.symbolen;
 CREATE RULE symbolen_ins AS
     ON INSERT TO mobiel.symbolen DO INSTEAD  
     INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie,
@@ -366,7 +367,7 @@ AS $function$
 $function$
 ;
 
-DROP RULE labels_ins ON mobiel.labels;
+DROP RULE IF EXISTS labels_ins ON mobiel.labels;
 CREATE RULE labels_ins AS
     ON INSERT TO mobiel.labels DO INSTEAD  INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id,
         object_id, omschrijving, rotatie, size, symbol_name, bouwlaag, accepted, bouwlaag_object)
