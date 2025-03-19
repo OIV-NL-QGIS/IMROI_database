@@ -1,22 +1,22 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
-DELETE FROM algemeen.styles WHERE id = 79;
+DELETE FROM algemeen.styles WHERE laagnaam = 'isolijnen' and soortnaam= '-3';
 
 INSERT INTO algemeen.styles (id, laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl) 
-	VALUES(79, 'Bereikbaarheid', 'poort_bottom', 2.4, '#ff000000', 'solid'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'round'::algemeen.eindstijl_type);
+	VALUES(141, 'Bereikbaarheid', 'poort_bottom', 2.4, '#ff000000', 'solid'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'round'::algemeen.eindstijl_type);
 INSERT INTO algemeen.styles (id, laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl) 
-	VALUES(80, 'Bereikbaarheid', 'poort_top', 2, '#ffffffff', 'solid'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'round'::algemeen.eindstijl_type);
+	VALUES(142, 'Bereikbaarheid', 'poort_top', 2, '#ffffffff', 'solid'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'round'::algemeen.eindstijl_type);
 
 INSERT INTO algemeen.styles (id, laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl) 
-VALUES(81, 'Bereikbaarheid', 'oever-kade-bereikbaar', 0.3, '#ff58b65c', 'markbordered'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'flat'::algemeen.eindstijl_type);
+VALUES(143, 'Bereikbaarheid', 'oever-kade-bereikbaar', 0.3, '#ff58b65c', 'markbordered'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'flat'::algemeen.eindstijl_type);
 
 INSERT INTO algemeen.styles (id, laagnaam, soortnaam, lijndikte, lijnkleur, lijnstijl, vulkleur, vulstijl, verbindingsstijl, eindstijl) 
-VALUES(82, 'Bereikbaarheid', 'oever-kade-niet-bereikbaar', 0.3, '#ffe31a1c', 'markbordered'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'flat'::algemeen.eindstijl_type);
+VALUES(144, 'Bereikbaarheid', 'oever-kade-niet-bereikbaar', 0.3, '#ffe31a1c', 'markbordered'::algemeen.lijnstijl_type, NULL, NULL, 'bevel'::algemeen.verbindingsstijl_type, 'flat'::algemeen.eindstijl_type);
 	
-INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(30, 'poort', '79,80');
-INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(31, 'oever-kade-bereikbaar', '81');
-INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(32, 'oever-kade-niet-bereikbaar', '82');
+INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(30, 'poort', '141,140');
+INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(31, 'oever-kade-bereikbaar', '142');
+INSERT INTO objecten.bereikbaarheid_type (id, naam, style_ids) VALUES(32, 'oever-kade-niet-bereikbaar', '143');
 
 CREATE OR REPLACE VIEW mobiel.werkvoorraad_objecten
 AS SELECT DISTINCT o.id,
