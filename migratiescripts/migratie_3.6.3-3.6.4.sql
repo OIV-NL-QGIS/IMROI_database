@@ -72,6 +72,7 @@ AS SELECT DISTINCT o.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
   	 WHERE o.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW IF EXISTS mobiel.symbolen;
 CREATE OR REPLACE VIEW mobiel.symbolen
 AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
     sub.geom,
