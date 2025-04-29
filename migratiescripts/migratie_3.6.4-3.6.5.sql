@@ -2531,6 +2531,7 @@ AS $function$
 $function$
 ;
 
+DROP VIEW objecten.view_afw_binnendekking;
 CREATE OR REPLACE VIEW objecten.view_afw_binnendekking
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2566,6 +2567,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.bouwlagen b ON d.bouwlaag_id = b.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_dreiging_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2604,6 +2606,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.dreiging_type dt ON d.dreiging_type_id = dt.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_dreiging_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk
 AS SELECT b.id,
     b.geom,
@@ -2637,6 +2640,7 @@ AS SELECT b.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_gevaarlijkestof_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_gevaarlijkestof_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2681,6 +2685,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.gevaarlijkestof_vnnr vnnr ON d.gevaarlijkestof_vnnr_id = vnnr.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_gevaarlijkestof_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_gevaarlijkestof_ruimtelijk
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2720,6 +2725,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.gevaarlijkestof_opslag_type st ON 'Opslag stoffen'::text = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_ingang_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_ingang_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2758,6 +2764,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.ingang_type dt ON d.ingang_type_id = dt.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_ingang_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_ingang_ruimtelijk
 AS SELECT b.id,
     b.geom,
@@ -2792,6 +2799,7 @@ AS SELECT b.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_opstelplaats;
 CREATE OR REPLACE VIEW objecten.view_opstelplaats
 AS SELECT b.id,
     b.geom,
@@ -2823,6 +2831,7 @@ AS SELECT b.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_points_of_interest;
 CREATE OR REPLACE VIEW objecten.view_points_of_interest
 AS SELECT b.id,
     b.geom,
@@ -2855,6 +2864,7 @@ AS SELECT b.id,
           GROUP BY historie.object_id) part ON o.id = part.object_id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_scenario_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_scenario_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2894,6 +2904,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.settings s ON 'scenario_base_url'::text = s.setting_key::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_scenario_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_scenario_ruimtelijk
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2931,6 +2942,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.settings s ON 'scenario_base_url'::text = s.setting_key::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_sleutelkluis_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -2975,6 +2987,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      LEFT JOIN objecten.sleuteldoel_type dd ON d.sleuteldoel_type_id = dd.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_sleutelkluis_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_ruimtelijk
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -3014,6 +3027,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      LEFT JOIN objecten.sleuteldoel_type dd ON d.sleuteldoel_type_id = dd.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_veiligh_install;
 CREATE OR REPLACE VIEW objecten.view_veiligh_install
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -3053,6 +3067,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.veiligh_install_type dt ON d.veiligh_install_type_id = dt.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW objecten.view_veiligh_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_veiligh_ruimtelijk
 AS SELECT b.id,
     b.geom,
