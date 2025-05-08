@@ -673,8 +673,6 @@ AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
 
 ALTER TABLE objecten.sleutelkluis DROP COLUMN ingang_id;
 
-ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_bouwlaag algemeen.formaat;
-ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_object algemeen.formaat;
 UPDATE mobiel.werkvoorraad_punt SET formaat_bouwlaag = 'middel' WHERE bouwlaag_id IS NOT NULL;
 UPDATE mobiel.werkvoorraad_punt SET formaat_object = 'middel' WHERE object_id IS NOT NULL;
 

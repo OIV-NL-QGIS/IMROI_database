@@ -2459,7 +2459,7 @@ AS $function$
 			INSERT INTO mobiel.werkvoorraad_label (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, omschrijving, 
 				rotatie, size, symbol_name, bouwlaag, accepted, bouwlaag_object)
   			VALUES (new.geom, new.waarden_new, 'UPDATE', new.brontabel, new.bron_id, new.bouwlaag_id, NEW.object_id, new.omschrijving, 
-  				new.rotatie, new.size, new.symbol_name, new.bouwlaag, FALSE, binnen_buiten);
+  				new.rotatie, new.size, new.symbol_name, new.bouwlaag, FALSE, new.binnen_buiten);
   		
 			IF NOT ST_Equals(new.geom, old.geom) THEN
                 INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag, bouwlaag_id, object_id) 
