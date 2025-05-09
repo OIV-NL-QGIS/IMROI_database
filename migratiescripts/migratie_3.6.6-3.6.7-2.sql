@@ -1,6 +1,9 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
+--TODO:
+-- size in de functies aanpassen
+
 CREATE OR REPLACE VIEW objecten.bouwlaag_afw_binnendekking
 AS SELECT v.id,
     v.geom,
@@ -350,7 +353,7 @@ UPDATE
 CREATE OR REPLACE VIEW objecten.object_ingang
 AS SELECT v.id,
     v.geom,
-    v.soort AS ingang_type_id,
+    v.soort,
     v.label,
     v.belemmering,
     v.voorzieningen,
@@ -912,6 +915,504 @@ AS $function$
     END;
     $function$
 ;
+
+CREATE OR REPLACE VIEW objecten.bouwlaag_sleutelkluis
+AS SELECT v.id,
+    v.geom,
+    v.soort,
+    v.label,
+    v.aanduiding_locatie,
+    v.sleuteldoel,
+    v.fotografie_id,
+    v.bouwlaag_id,
+    v.object_id,
+    b.bouwlaag,
+    v.rotatie,
+    CONCAT(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+    CASE
+        WHEN v.formaat_bouwlaag = 'klein'::algemeen.formaat THEN st.size_bouwlaag_klein
+        WHEN v.formaat_bouwlaag = 'middel'::algemeen.formaat THEN st.size_bouwlaag_middel
+        WHEN v.formaat_bouwlaag = 'groot'::algemeen.formaat THEN st.size_bouwlaag_groot
+        ELSE NULL::numeric
+    END AS size,
+    ''::text AS applicatie,
+    v.label_positie,
+    v.formaat_bouwlaag,
+    v.formaat_object
+   FROM objecten.sleutelkluis v
+     JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+     JOIN objecten.sleutelkluis_type st ON v.soort = st.naam
+  WHERE v.parent_deleted = 'infinity'::timestamp with time zone AND v.self_deleted = 'infinity'::timestamp with time zone;
+
+-- View Triggers
+
+CREATE TRIGGER bouwlaag_sleutelkluis_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_del('bouwlaag');
+CREATE TRIGGER bouwlaag_sleutelkluis_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_ins('bouwlaag');
+CREATE TRIGGER bouwlaag_sleutelkluis_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_upd('bouwlaag');
+
+CREATE OR REPLACE VIEW objecten.object_sleutelkluis
+AS SELECT v.id,
+    v.geom,
+    v.soort,
+    v.label,
+    v.aanduiding_locatie,
+    v.sleuteldoel,
+    v.fotografie_id,
+    v.bouwlaag_id,
+    v.object_id,
+    b.formelenaam,
+    v.rotatie,
+    CONCAT(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+        CASE
+            WHEN v.formaat_object = 'klein'::algemeen.formaat THEN st.size_object_klein
+            WHEN v.formaat_object = 'middel'::algemeen.formaat THEN st.size_object_middel
+            WHEN v.formaat_object = 'groot'::algemeen.formaat THEN st.size_object_groot
+            ELSE NULL::numeric
+        END AS size,
+    ''::text AS applicatie,
+    b.datum_geldig_vanaf,
+    b.datum_geldig_tot,
+    part.typeobject,
+    v.label_positie,
+    v.formaat_object,
+    v.formaat_bouwlaag
+   FROM objecten.sleutelkluis v
+     JOIN objecten.sleutelkluis_type st ON v.soort = st.naam
+     JOIN objecten.object b ON v.object_id = b.id
+     LEFT JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
+  WHERE v.parent_deleted = 'infinity'::timestamp with time zone AND v.self_deleted = 'infinity'::timestamp with time zone;
+
+CREATE TRIGGER object_sleutelkluis_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_del('object');
+CREATE TRIGGER object_sleutelkluis_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_ins('object');
+CREATE TRIGGER object_sleutelkluis_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_sleutelkluis FOR EACH ROW EXECUTE FUNCTION objecten.func_sleutelkluis_upd('object');
+
+CREATE OR REPLACE VIEW objecten.view_sleutelkluis_bouwlaag
+AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
+    d.id,
+    d.geom,
+    d.datum_aangemaakt,
+    d.datum_gewijzigd,
+    d.soort,
+    d.aanduiding_locatie,
+    d.sleuteldoel,
+    d.rotatie,
+    d.label,
+    d.fotografie_id,
+    round(st_x(d.geom)) AS x,
+    round(st_y(d.geom)) AS y,
+    o.formelenaam,
+    o.id AS object_id,
+    b.bouwlaag,
+    b.bouwdeel,
+    d.bouwlaag_id,
+    CONCAT(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+    CASE
+        WHEN d.formaat_bouwlaag = 'klein'::algemeen.formaat THEN st.size_bouwlaag_klein
+        WHEN d.formaat_bouwlaag = 'middel'::algemeen.formaat THEN st.size_bouwlaag_middel
+        WHEN d.formaat_bouwlaag = 'groot'::algemeen.formaat THEN st.size_bouwlaag_groot
+        ELSE NULL::numeric
+    END AS size,
+    o.share,
+    d.label_positie
+   FROM objecten.object o
+     JOIN ( SELECT DISTINCT historie.object_id,
+            max(historie.datum_aangemaakt) AS maxdatetime
+           FROM objecten.historie
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          GROUP BY historie.object_id) part ON o.id = part.object_id
+     JOIN objecten.terrein t ON o.id = t.object_id
+     JOIN objecten.sleutelkluis d ON st_intersects(t.geom, d.geom)
+     JOIN objecten.bouwlagen b ON d.bouwlaag_id = b.id
+     JOIN objecten.sleutelkluis_type st ON d.soort = st.naam
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
+
+CREATE OR REPLACE VIEW objecten.view_sleutelkluis_ruimtelijk
+AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
+    d.id,
+    d.geom,
+    d.datum_aangemaakt,
+    d.datum_gewijzigd,
+    d.soort,
+    d.aanduiding_locatie,
+    d.sleuteldoel,
+    d.rotatie,
+    d.label,
+    d.fotografie_id,
+    round(st_x(d.geom)) AS x,
+    round(st_y(d.geom)) AS y,
+    o.formelenaam,
+    d.object_id,
+    CONCAT(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+        CASE
+            WHEN d.formaat_object = 'klein'::algemeen.formaat THEN st.size_object_klein
+            WHEN d.formaat_object = 'middel'::algemeen.formaat THEN st.size_object_middel
+            WHEN d.formaat_object = 'groot'::algemeen.formaat THEN st.size_object_groot
+            ELSE NULL::numeric
+        END AS size,
+    o.share,
+    d.label_positie
+   FROM objecten.object o
+     JOIN ( SELECT DISTINCT historie.object_id,
+            max(historie.datum_aangemaakt) AS maxdatetime
+           FROM objecten.historie
+          WHERE historie.status::text = 'in gebruik'::text AND historie.parent_deleted = 'infinity'::timestamp with time zone
+          GROUP BY historie.object_id) part ON o.id = part.object_id
+     JOIN objecten.sleutelkluis d ON o.id = d.object_id
+     JOIN objecten.sleutelkluis_type st ON d.soort = st.naam
+  WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
+
+CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_ins()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        objectid integer := NULL;
+		bouwlaagid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            INSERT INTO objecten.sleutelkluis (geom, soort, label, rotatie, aanduiding_locatie, sleuteldoel, bouwlaag_id, object_id, 
+												fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, new.soort, new.label, new.rotatie, new.aanduiding_locatie, new.sleuteldoel, new.bouwlaag_id, new.object_id, 
+						new.fotografie_id, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.aanduiding_locatie, new.sleuteldoel) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+                bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+                bouwlaag = new.bouwlaag;
+            ELSEIF bouwlaag_object = 'object'::text THEN
+                size := (SELECT st."size_object" FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+                objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, 
+													fotografie_id, accepted, label, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, row_to_json(NEW.*), 'INSERT', 'sleutelkluis', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, 
+						new.fotografie_id, false, new.label, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+CREATE OR REPLACE FUNCTION objecten.func_sleutelkluis_upd()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN 
+            UPDATE objecten.sleutelkluis SET geom = new.geom, soort = new.soort, rotatie = new.rotatie, label = new.label, aanduiding_locatie = new.aanduiding_locatie, sleuteldoel = new.sleuteldoel, 
+                    bouwlaag_id = new.bouwlaag_id, object_id = new.object_id, fotografie_id = new.fotografie_id, label_positie = new.label_positie, formaat_bouwlaag=new.formaat_bouwlaag, formaat_object=new.formaat_object
+            WHERE (sleutelkluis.id = new.id);
+        ELSE
+            symbol_name := (SELECT st.symbol_name FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.aanduiding_locatie, new.sleuteldoel) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                size := (SELECT st."size" FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+                bouwlaag := new.bouwlaag;
+            ELSE
+                size := (SELECT st."size_object" FROM objecten.sleutelkluis_type st WHERE st.naam = new.soort);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, 
+													fotografie_id, accepted, label, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'sleutelkluis', old.id, new.bouwlaag_id, new.object_id, NEW.rotatie, size, symbol_name, bouwlaag,
+						new.fotografie_id, false, new.label, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'sleutelkluis', bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+DROP VIEW IF EXISTS objecten.object_veiligh_install;
+CREATE OR REPLACE VIEW objecten.object_veiligh_install
+AS SELECT b.id,
+    b.geom,
+    b.soort,
+    b.label,
+    b.bijzonderheid,
+    b.fotografie_id,
+    b.bouwlaag_id,
+    b.object_id,
+    o.formelenaam,
+    b.rotatie,
+    concat(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+    CASE
+	    WHEN b.formaat_object = 'klein' THEN st.size_object_klein
+	    WHEN b.formaat_object = 'middel' THEN st.size_object_middel
+	    WHEN b.formaat_object = 'groot' THEN st.size_object_groot
+	END AS size,
+    ''::text AS applicatie,
+    o.datum_geldig_vanaf,
+    o.datum_geldig_tot,
+    part.typeobject,
+	b.label_positie,
+	b.formaat_object,
+	b.formaat_bouwlaag
+   FROM objecten.veiligh_install b
+     JOIN objecten.object o ON b.object_id = o.id
+     JOIN objecten.veiligh_install_type st ON b.soort = st.naam
+     LEFT JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON o.id = part.object_id
+  WHERE b.parent_deleted = 'infinity'::timestamp with time zone AND b.self_deleted = 'infinity'::timestamp with time zone;
+
+CREATE TRIGGER veiligh_ruimtelijk_del INSTEAD OF
+DELETE
+    ON
+    objecten.object_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_del('object');
+CREATE TRIGGER veiligh_ruimtelijk_ins INSTEAD OF
+INSERT
+    ON
+    objecten.object_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_ins('object');
+CREATE TRIGGER veiligh_ruimtelijk_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.object_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_upd('object');
+
+
+DROP VIEW IF EXISTS objecten.bouwlaag_veiligh_install;
+CREATE OR REPLACE VIEW objecten.bouwlaag_veiligh_install
+AS SELECT v.id,
+    v.geom,
+    v.datum_aangemaakt,
+    v.datum_gewijzigd,
+    v.soort,
+    v.label,
+    v.bijzonderheid,
+    v.bouwlaag_id,
+    v.object_id,
+    v.rotatie,
+    v.fotografie_id,
+    b.bouwlaag,
+    CASE
+	    WHEN v.formaat_bouwlaag = 'klein' THEN st.size_bouwlaag_klein
+	    WHEN v.formaat_bouwlaag = 'middel' THEN st.size_bouwlaag_middel
+	    WHEN v.formaat_bouwlaag = 'groot' THEN st.size_bouwlaag_groot
+	END AS size,
+    CONCAT(st.symbol_name, '_', st.symbol_type) AS symbol_name,
+    ''::text AS applicatie,
+    v.label_positie,
+	v.formaat_bouwlaag,
+	v.formaat_object
+   FROM objecten.veiligh_install v
+     JOIN objecten.bouwlagen b ON v.bouwlaag_id = b.id
+     JOIN objecten.veiligh_install_type st ON v.soort = st.naam
+  WHERE v.parent_deleted = 'infinity'::timestamp with time zone AND v.self_deleted = 'infinity'::timestamp with time zone;
+CREATE TRIGGER veiligh_install_del INSTEAD OF
+DELETE
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_del('bouwlaag');
+CREATE TRIGGER veiligh_install_ins INSTEAD OF
+INSERT
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_ins('bouwlaag');
+CREATE TRIGGER veiligh_install_upd INSTEAD OF
+UPDATE
+    ON
+    objecten.bouwlaag_veiligh_install FOR EACH ROW EXECUTE FUNCTION objecten.func_veiligh_install_upd('bouwlaag');
+
+CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_del()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        jsonstring JSON;
+        bouwlaag integer := NULL;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+	      mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (OLD.applicatie = 'OIV') OR (mobielAan = False) THEN  
+            DELETE FROM objecten.veiligh_install WHERE (veiligh_install.id = old.id);
+        ELSE
+            jsonstring := row_to_json((SELECT d FROM (SELECT old.bijzonderheid) d));
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := old.bouwlaag;
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag,
+					accepted, fotografie_id, label, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (OLD.geom, jsonstring, 'DELETE', 'veiligh_install', OLD.id, OLD.bouwlaag_id, OLD.object_id, OLD.rotatie, OLD.SIZE, OLD.symbol_name, bouwlaag,
+					false, OLD.fotografie_id, old.label, old.label_positie, old.formaat_bouwlaag, old.formaat_object);
+        END IF;
+        RETURN OLD;
+    END;
+    $function$
+;
+
+CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_ins()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        bouwlaagid integer := NULL;
+        objectid integer := NULL;
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            INSERT INTO objecten.veiligh_install (geom, soort, label, bijzonderheid, rotatie, bouwlaag_id, object_id, fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, new.soort, new.label, new.bijzonderheid, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+        ELSE
+            symbol_name := (SELECT vt.symbol_name FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.bijzonderheid) d));
+
+			IF bouwlaag_object = 'object'::text THEN
+				size := (SELECT vt."size_object" FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+				objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+			ELSEIF bouwlaag_object = 'bouwlaag'::text THEN
+				size := (SELECT vt."size" FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+            	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+				bouwlaag := new.bouwlaag;
+			END IF;
+            
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, bouwlaag, accepted, 
+                                                    fotografie_id, label, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, jsonstring, 'INSERT', 'veiligh_install', NULL, bouwlaagid, objectid, NEW.rotatie, size, symbol_name, bouwlaag, false, 
+                                                    new.fotografie_id, new.label, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+        
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+CREATE OR REPLACE FUNCTION objecten.func_veiligh_install_upd()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+    DECLARE
+        bouwlaag integer := NULL;
+        size integer;
+        symbol_name TEXT;
+        jsonstring JSON;
+        bouwlaag_object TEXT := TG_ARGV[0]::TEXT;
+        mobielAan boolean;
+    BEGIN
+        mobielAan := (SELECT mobiel FROM algemeen.applicatie WHERE id = 1);
+        IF (new.applicatie = 'OIV') OR (mobielAan = False) THEN
+            UPDATE objecten.veiligh_install SET geom = new.geom, soort = new.soort, bouwlaag_id = new.bouwlaag_id, object_id = new.object_id,
+					label = new.label, rotatie = new.rotatie, fotografie_id = new.fotografie_id, label_positie = new.label_positie, 
+					formaat_bouwlaag=new.formaat_bouwlaag, formaat_object=new.formaat_object
+            WHERE (veiligh_install.id = new.id);
+        ELSE
+            symbol_name := (SELECT vt.symbol_name FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+            jsonstring := row_to_json((SELECT d FROM (SELECT new.bijzonderheid) d));
+
+            IF bouwlaag_object = 'bouwlaag'::text THEN
+                bouwlaag := new.bouwlaag;
+                size := (SELECT vt."size" FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+            ELSE
+                size := (SELECT vt."size_object" FROM objecten.veiligh_install_type vt WHERE vt.naam = new.soort);
+            END IF;
+
+            INSERT INTO mobiel.werkvoorraad_punt (geom, waarden_new, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, SIZE, symbol_name, accepted, bouwlaag, 
+													fotografie_id, label, label_positie, formaat_bouwlaag, formaat_object)
+            VALUES (new.geom, jsonstring, 'UPDATE', 'veiligh_install', old.id, new.bouwlaag_id, new.object_id, NEW.rotatie, size, symbol_name, false, bouwlaag, 
+						new.fotografie_id, new.label, new.label_positie, new.formaat_bouwlaag, new.formaat_object);
+            
+            IF NOT ST_Equals(new.geom, old.geom) THEN
+                INSERT INTO mobiel.werkvoorraad_hulplijnen (geom, bron_id, brontabel, bouwlaag) VALUES (ST_MakeLine(old.geom, new.geom), old.id, 'veiligh_install', new.bouwlaag);
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+    $function$
+;
+
+CREATE OR REPLACE VIEW objecten.object_objecten
+AS SELECT DISTINCT b.id,
+    b.geom,
+    b.datum_aangemaakt,
+    b.datum_gewijzigd,
+    b.basisreg_identifier,
+    b.formelenaam,
+    b.bijzonderheden,
+    b.pers_max,
+    b.pers_nietz_max,
+    b.datum_geldig_tot,
+    b.datum_geldig_vanaf,
+    b.bron,
+    b.bron_tabel,
+    b.fotografie_id,
+    b.bodemgesteldheid_type_id,
+    b.min_bouwlaag,
+    b.max_bouwlaag,
+    part.typeobject,
+    b.share,
+    concat(ot.symbol_name, '_', ot.symbol_type) AS symbol_name,
+    ot.size
+   FROM objecten.object b
+     LEFT JOIN ( SELECT h.object_id,
+            h.typeobject
+           FROM objecten.historie h
+             JOIN ( SELECT historie.object_id,
+                    max(historie.datum_aangemaakt) AS maxdatetime
+                   FROM objecten.historie
+                  GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
+     LEFT JOIN objecten.object_type ot ON part.typeobject::text = ot.naam::text
+  WHERE b.self_deleted = 'infinity'::timestamp with time zone;
+
+DROP FUNCTION objecten.func_veiligh_ruimtelijk_del();
+DROP FUNCTION objecten.func_veiligh_ruimtelijk_ins();
+DROP FUNCTION objecten.func_veiligh_ruimtelijk_upd();
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;

@@ -173,6 +173,42 @@ WHERE soort = sub.id;
 ALTER TABLE objecten.points_of_interest_type ADD CONSTRAINT points_of_interest_type_naam_uc UNIQUE (naam);
 ALTER TABLE objecten.points_of_interest ADD CONSTRAINT points_of_interest_type_fk FOREIGN KEY (soort) REFERENCES objecten.points_of_interest_type(naam) ON UPDATE CASCADE;
 
+ALTER TABLE objecten.sleutelkluis DROP CONSTRAINT sleutelkluis_type_id_fk;
+ALTER TABLE objecten.sleutelkluis RENAME COLUMN sleutelkluis_type_id TO soort;
+
+DROP VIEW objecten.bouwlaag_sleutelkluis;
+DROP VIEW objecten.object_sleutelkluis;
+DROP VIEW objecten.view_sleutelkluis_bouwlaag;
+DROP VIEW objecten.view_sleutelkluis_ruimtelijk;
+
+DROP VIEW IF EXISTS objecten.mview_sleutelkluis_bouwlaag;
+DROP VIEW IF EXISTS objecten.mview_sleutelkluis_ruimtelijk;
+
+ALTER TABLE objecten.sleutelkluis ALTER COLUMN soort TYPE varchar(50);
+UPDATE objecten.sleutelkluis SET soort = sub.naam
+FROM 
+(
+	SELECT id::varchar, naam FROM objecten.sleutelkluis_type
+) sub
+WHERE soort = sub.id;
+
+ALTER TABLE objecten.sleutelkluis_type ADD CONSTRAINT sleutelkluis_type_naam_uc UNIQUE (naam);
+ALTER TABLE objecten.sleutelkluis ADD CONSTRAINT sleutelkluis_type_fk FOREIGN KEY (soort) REFERENCES objecten.sleutelkluis_type(naam) ON UPDATE CASCADE;
+
+ALTER TABLE objecten.sleutelkluis DROP CONSTRAINT sleuteldoel_type_id_fk;
+ALTER TABLE objecten.sleutelkluis RENAME COLUMN sleuteldoel_type_id TO sleuteldoel;
+
+ALTER TABLE objecten.sleutelkluis ALTER COLUMN sleuteldoel TYPE varchar(50);
+UPDATE objecten.sleutelkluis SET sleuteldoel = sub.naam
+FROM 
+(
+	SELECT id::varchar, naam FROM objecten.sleuteldoel_type
+) sub
+WHERE sleuteldoel = sub.id;
+
+ALTER TABLE objecten.sleuteldoel_type ADD CONSTRAINT sleuteldoel_type_naam_uc UNIQUE (naam);
+ALTER TABLE objecten.sleutelkluis ADD CONSTRAINT sleuteldoel_type_fk FOREIGN KEY (sleuteldoel) REFERENCES objecten.sleuteldoel_type(naam) ON UPDATE CASCADE;
+
 UPDATE objecten.afw_binnendekking_type SET naam = 'DMO', symbol_name_new='bbh001', symbol_type='c' WHERE symbol_name = 'dekkingsprobleem_dmo';
 UPDATE objecten.afw_binnendekking_type SET naam = 'TMO', symbol_name_new='bbh003', symbol_type='c' WHERE symbol_name = 'dekkingsprobleem_tmo';
 
@@ -344,10 +380,16 @@ INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, "size") VAL
 UPDATE objecten.points_of_interest_type SET symbol_name = symbol_name_new WHERE symbol_name_new IS NOT NULL;
 ALTER TABLE objecten.points_of_interest_type DROP COLUMN symbol_name_new;
 
-UPDATE objecten.sleutelkluis_type SET symbol_name_new='tgn013', symbol_type='c' WHERE symbol_name = 'sleutelkluis';
-UPDATE objecten.sleutelkluis_type SET symbol_name_new='tgn014', symbol_type='c' WHERE symbol_name = 'sleutelkluis_hbr';
---Hernoemen van een aantal symbolen, later samenvoegen met de andere met dezelfde symboolnaam, zie hierboven/-onder
-UPDATE objecten.sleutelkluis_type SET symbol_name_new='tgn013', symbol_type='c' WHERE symbol_name = 'sleutelkluis';
+UPDATE objecten.sleutelkluis_type SET naam = 'Sleutelkluis', symbol_name_new='tgn013', symbol_type='c' WHERE symbol_name = 'sleutelkluis';
+UPDATE objecten.sleutelkluis_type SET naam = 'Sleutelkuis Havenbedrijf', symbol_name_new='tgn014', symbol_type='c' WHERE symbol_name = 'sleutelkluis_hbr';
+
+INSERT INTO objecten.sleutelkluis_type (id, naam, symbol_name, "size", size_object) VALUES(2, 'SOS toegang', 'tgn015', 4, 8);
+
+UPDATE objecten.sleutelkluis SET soort = 'Sleutelkluis' WHERE soort = 'sleutelbuis';
+DELETE FROM objecten.sleutelkluis_type WHERE naam = 'sleutelbuis';
+
+UPDATE objecten.sleutelkluis_type SET symbol_name = symbol_name_new WHERE symbol_name_new IS NOT NULL;
+ALTER TABLE objecten.sleutelkluis_type DROP COLUMN symbol_name_new;
 
 UPDATE objecten.veiligh_install_type SET symbol_name_new='poi011', symbol_type='c' WHERE symbol_name = 'calamiteiten_coördinatiecentrum';
 UPDATE objecten.veiligh_install_type SET symbol_name_new='vvz001', symbol_type='c' WHERE symbol_name = 'activering_blussysteem';
@@ -500,6 +542,237 @@ UPDATE bluswater.alternatieve_type SET symbol_name_new='vvz030', symbol_type='c'
 UPDATE bluswater.alternatieve_type SET symbol_name_new='vvz009', symbol_type='c' WHERE symbol_name = 'afsluiter_omloop';
 UPDATE bluswater.alternatieve_type SET symbol_name_new='osp009', symbol_type='c' WHERE symbol_name = 'opstelplaats_wts';
 
+ALTER TABLE objecten.veiligh_install DROP CONSTRAINT veiligh_install_type_id_fk;
+ALTER TABLE objecten.veiligh_install RENAME COLUMN veiligh_install_type_id TO soort;
+
+DROP VIEW objecten.bouwlaag_veiligh_install;
+DROP VIEW objecten.view_veiligh_install;
+DROP VIEW IF EXISTS objecten.mview_veiligh_install_bouwlaag;
+
+ALTER TABLE objecten.veiligh_install ALTER COLUMN soort TYPE varchar(50);
+UPDATE objecten.veiligh_install SET soort = sub.naam
+FROM 
+(
+	SELECT id::varchar, naam FROM objecten.veiligh_install_type
+) sub
+WHERE soort = sub.id;
+
+ALTER TABLE objecten.veiligh_install_type ADD CONSTRAINT veiligh_install_type_naam_uc UNIQUE (naam);
+ALTER TABLE objecten.veiligh_install ADD CONSTRAINT veiligh_install_type_fk FOREIGN KEY (soort) REFERENCES objecten.veiligh_install_type(naam) ON UPDATE CASCADE;
+
+ALTER TABLE objecten.veiligh_install ADD COLUMN object_id int;
+ALTER TABLE objecten.veiligh_install ADD COLUMN formaat_object algemeen.formaat;
+ALTER TABLE objecten.veiligh_install ADD COLUMN bouwlaag_id DROP NOT NULL;
+
+ALTER TABLE objecten.veiligh_install ADD CONSTRAINT veiligh_install_object_id_fk FOREIGN KEY (object_id, parent_deleted) REFERENCES objecten.object(id, self_deleted) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN size_object_klein numeric(3, 1) DEFAULT 2 NULL;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN size_object_middel numeric(3, 1) DEFAULT 4 NULL;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN size_object_groot numeric(3, 1) DEFAULT 6 NULL;
+
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN size_object int;
+
+ALTER TABLE objecten.veiligh_ruimtelijk DROP CONSTRAINT veiligh_ruimtelijk_type_id_fk;
+ALTER TABLE objecten.veiligh_ruimtelijk ADD CONSTRAINT veiligh_ruimtelijk_type_id_fk FOREIGN KEY (veiligh_ruimtelijk_type_id) REFERENCES objecten.veiligh_ruimtelijk_type(id) ON UPDATE CASCADE;
+
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief)
+SELECT id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+WHERE naam NOT IN (SELECT naam FROM objecten.veiligh_install_type) AND symbol_name_new LIKE 'vvz%';
+
+INSERT INTO objecten.veiligh_install (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
+SELECT geom, datum_aangemaakt, datum_gewijzigd, vt.naam, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object 
+FROM objecten.veiligh_ruimtelijk v
+INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id
+WHERE vt.symbol_name_new LIKE 'vvz%';
+
+DELETE FROM objecten.veiligh_ruimtelijk
+WHERE id IN (SELECT v.id FROM objecten.veiligh_ruimtelijk v INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id WHERE vt.symbol_name_new LIKE 'vvz%');
+
+UPDATE objecten.veiligh_ruimtelijk SET veiligh_ruimtelijk_type_id = 1009 WHERE veiligh_ruimtelijk_type_id = 2006;
+UPDATE objecten.veiligh_ruimtelijk_type SET naam = 'Restaurant' WHERE naam = 'restaurant';
+DELETE FROM objecten.veiligh_ruimtelijk_type WHERE id = 2006;
+
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief)
+SELECT id, naam, symbol_name_new, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+WHERE naam NOT IN (SELECT naam FROM objecten.points_of_interest_type) AND symbol_name_new LIKE 'poi%';
+
+INSERT INTO objecten.points_of_interest (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
+SELECT geom, datum_aangemaakt, datum_gewijzigd, vt.naam, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object 
+FROM objecten.veiligh_ruimtelijk v
+INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id
+WHERE vt.symbol_name_new LIKE 'poi%';
+
+DELETE FROM objecten.veiligh_ruimtelijk
+WHERE id IN (SELECT v.id FROM objecten.veiligh_ruimtelijk v INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id WHERE vt.symbol_name_new LIKE 'poi%');
+
+UPDATE objecten.points_of_interest_type SET naam = 'Attractie' WHERE symbol_name = 'poi003';
+UPDATE objecten.points_of_interest_type SET naam = 'Feesttent' WHERE symbol_name = 'feesttent';
+UPDATE objecten.points_of_interest_type SET naam = 'Heli landingsplaats' WHERE symbol_name = 'poi016';
+UPDATE objecten.points_of_interest_type SET naam = 'Kleedkamer' WHERE symbol_name = 'poi020';
+UPDATE objecten.points_of_interest_type SET naam = 'Kraam elektra' WHERE symbol_name = 'poi021';
+UPDATE objecten.points_of_interest_type SET naam = 'Kraam gas' WHERE symbol_name = 'poi022';
+UPDATE objecten.points_of_interest_type SET naam = 'Opstapplaats RPA' WHERE symbol_name = 'poi027';
+UPDATE objecten.points_of_interest_type SET naam = 'Overdrachtsplaats ambulance-vervoer' WHERE symbol_name = 'poi028';
+UPDATE objecten.points_of_interest_type SET naam = 'Parkeerplaats' WHERE symbol_name = 'poi029';
+UPDATE objecten.points_of_interest_type SET naam = 'Passeerplaats' WHERE symbol_name = 'poi030';
+UPDATE objecten.points_of_interest_type SET naam = 'Straattheater' WHERE symbol_name = 'poi038';
+UPDATE objecten.points_of_interest_type SET naam = 'Verboden voor heli’s om te landen' WHERE symbol_name = 'poi042';
+UPDATE objecten.points_of_interest_type SET naam = 'Vuurhaard' WHERE symbol_name = 'poi043';
+UPDATE objecten.points_of_interest_type SET naam = 'Vuurwerkafsteekplaats' WHERE symbol_name = 'poi044';
+UPDATE objecten.points_of_interest_type SET naam = 'Wegafsluiting passeerbaar' WHERE symbol_name = 'poi045';
+UPDATE objecten.points_of_interest_type SET naam = 'Wegafsluiting' WHERE symbol_name = 'poi046';
+UPDATE objecten.points_of_interest_type SET naam = 'Zwaartepunt' WHERE symbol_name = 'poi051';
+
+UPDATE objecten.veiligh_install_type SET naam = 'Activering blussysteem' WHERE symbol_name_new = 'vvz001';
+UPDATE objecten.veiligh_install_type SET naam = 'AED' WHERE symbol_name_new = 'vvz002';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter CV' WHERE symbol_name_new = 'vvz003';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter elektra' WHERE symbol_name_new = 'vvz005';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter gas' WHERE symbol_name_new = 'vvz006';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter luchtbehandeling' WHERE symbol_name_new = 'vvz007';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter neon' WHERE symbol_name_new = 'vvz008';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter omloop' WHERE symbol_name_new = 'vvz009';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter rwa' WHERE symbol_name_new = 'vvz010';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter sprinkler' WHERE symbol_name_new = 'vvz011';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter SVM' WHERE symbol_name_new = 'vvz012';
+UPDATE objecten.veiligh_install_type SET naam = 'Afsluiter water' WHERE symbol_name_new = 'vvz013';
+UPDATE objecten.veiligh_install_type SET naam = 'Antidote tegengif' WHERE symbol_name_new = 'vvz014';
+UPDATE objecten.veiligh_install_type SET naam = 'Blusmonitor S (schuim)' WHERE symbol_name_new = 'vvz015';
+UPDATE objecten.veiligh_install_type SET naam = 'Blusmonitor W water (waterkanon)' WHERE symbol_name_new = 'vvz016';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem AFFF' WHERE symbol_name_new = 'vvz017';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem CO2 (koolstofdioxide)' WHERE symbol_name_new = 'vvz018';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem Hi-Fog (watermist)' WHERE symbol_name_new = 'vvz019';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem N2 (stikstof)' WHERE symbol_name_new = 'vvz020';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem S (schuim)' WHERE symbol_name_new = 'vvz021';
+UPDATE objecten.veiligh_install_type SET naam = 'Blussysteem W (water)' WHERE symbol_name_new = 'vvz022';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandbestrijdingsmateriaal' WHERE symbol_name_new = 'vvz023';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandbluspomp' WHERE symbol_name_new = 'vvz024';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandblusser' WHERE symbol_name_new = 'vvz025';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandmeldinstallatie (BMC)' WHERE symbol_name_new = 'vvz026';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandmeldpaneel (BMP)' WHERE symbol_name_new = 'vvz027';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandslanghaspel' WHERE symbol_name_new = 'vvz028';
+UPDATE objecten.veiligh_install_type SET naam = 'Brandweer info-kast' WHERE symbol_name_new = 'vvz029';
+UPDATE objecten.veiligh_install_type SET naam = 'Buisleiding HD afnamepunt' WHERE symbol_name_new = 'vvz031';
+UPDATE objecten.veiligh_install_type SET naam = 'Buisleiding HD vulpunt' WHERE symbol_name_new = 'vvz032';
+UPDATE objecten.veiligh_install_type SET naam = 'Buisleiding LD afnamepunt' WHERE symbol_name_new = 'vvz033';
+UPDATE objecten.veiligh_install_type SET naam = 'Buisleiding LD vulpunt' WHERE symbol_name_new = 'vvz034';
+UPDATE objecten.veiligh_install_type SET naam = 'Eerste hulp' WHERE symbol_name_new = 'vvz036';
+UPDATE objecten.veiligh_install_type SET naam = 'Flitslicht' WHERE symbol_name_new = 'vvz037';
+UPDATE objecten.veiligh_install_type SET naam = 'Gas detectiepaneel' WHERE symbol_name_new = 'vvz038';
+UPDATE objecten.veiligh_install_type SET naam = 'Generator' WHERE symbol_name_new = 'vvz039';
+UPDATE objecten.veiligh_install_type SET naam = 'Kadeaansluiting blusboot' WHERE symbol_name_new = 'vvz040';
+UPDATE objecten.veiligh_install_type SET naam = 'Meterkast elektra en gas' WHERE symbol_name_new = 'vvz041';
+UPDATE objecten.veiligh_install_type SET naam = 'Meterkast elektra en water' WHERE symbol_name_new = 'vvz042';
+UPDATE objecten.veiligh_install_type SET naam = 'Meterkast elektra, gas en water' WHERE symbol_name_new = 'vvz043';
+UPDATE objecten.veiligh_install_type SET naam = 'Meterkast gas en water' WHERE symbol_name_new = 'vvz044';
+UPDATE objecten.veiligh_install_type SET naam = 'Nevenpaneel (NP)' WHERE symbol_name_new = 'vvz045';
+UPDATE objecten.veiligh_install_type SET naam = 'Niet bruikbaar' WHERE symbol_name_new = 'vvz046';
+UPDATE objecten.veiligh_install_type SET naam = 'Nooddouche' WHERE symbol_name_new = 'vvz047';
+UPDATE objecten.veiligh_install_type SET naam = 'Noodstop' WHERE symbol_name_new = 'vvz048';
+UPDATE objecten.veiligh_install_type SET naam = 'Ontruimingspaneel' WHERE symbol_name_new = 'vvz050';
+UPDATE objecten.veiligh_install_type SET naam = 'Oogdouche' WHERE symbol_name_new = 'vvz051';
+UPDATE objecten.veiligh_install_type SET naam = 'Overdruk ventilatie' WHERE symbol_name_new = 'vvz052';
+UPDATE objecten.veiligh_install_type SET naam = 'Rookwarmteafvoer RWA' WHERE symbol_name_new = 'vvz053';
+UPDATE objecten.veiligh_install_type SET naam = 'Schacht of kanaal' WHERE symbol_name_new = 'vvz054';
+UPDATE objecten.veiligh_install_type SET naam = 'Verzamelplaats' WHERE symbol_name_new = 'vvz056';
+UPDATE objecten.veiligh_install_type SET naam = 'Water-reduceer (drukbegrenzer)' WHERE symbol_name_new = 'vvz057';
+
+UPDATE objecten.veiligh_install_type SET symbol_name = symbol_name_new WHERE symbol_name_new IS NOT NULL;
+ALTER TABLE objecten.veiligh_install_type DROP COLUMN symbol_name_new;
+
+UPDATE objecten.veiligh_install_type SET size_object = sub."size", size_object_middel = sub."size"
+FROM 
+(
+  SELECT id, "size" FROM objecten.veiligh_ruimtelijk_type
+) sub
+WHERE veiligh_install_type.id = sub.id;
+
+UPDATE objecten.veiligh_install_type SET "size_object" = 6 WHERE "size_object" IS NULL;
+
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief)
+SELECT id+7000, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+WHERE symbol_name_new IS NULL;
+
+INSERT INTO objecten.veiligh_install (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
+SELECT geom, datum_aangemaakt, datum_gewijzigd, vt.naam, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object 
+FROM objecten.veiligh_ruimtelijk v
+INNER JOIN objecten.veiligh_ruimtelijk_type vt ON v.veiligh_ruimtelijk_type_id = vt.id
+WHERE vt.symbol_name_new IS NULL;
+
+UPDATE objecten.veiligh_install_type SET "size" = 4 WHERE "size" IS NULL;
+
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size", size_object) VALUES(1100, 'Afsluiter diversen', 'vvz004', 4, 6);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size", size_object) VALUES(1101, 'Sprinklermeldinstallatie (SMC)', 'vvz055', 4, 6);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size", size_object) VALUES(1102, 'Buisleiding afnamepunt', 'vvz030', 4, 6);
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size", size_object) VALUES(1103, 'Buisleiding vulpunt', 'vvz035', 4, 6);
+
+INSERT INTO objecten.points_of_interest (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
+SELECT geom, datum_aangemaakt, datum_gewijzigd, vt.naam, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object 
+FROM objecten.veiligh_install v
+INNER JOIN objecten.veiligh_install_type vt ON v.soort = vt.naam
+WHERE vt.symbol_name = 'poi011';
+
+ALTER TABLE objecten.veiligh_install DISABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.veiligh_install WHERE soort = 'Calamiteiten coördinatiecentrum';
+ALTER TABLE objecten.veiligh_install ENABLE TRIGGER trg_set_delete;
+DELETE FROM objecten.veiligh_install_type WHERE naam = 'Calamiteiten coördinatiecentrum';
+
+UPDATE objecten.veiligh_install_type SET naam = 'Niet bruikbaar', symbol_name='vvz046', symbol_type='c' WHERE symbol_name = 'installatie_defect';
+
+UPDATE bluswater.alternatieve_type SET naam = 'Niet bruikbaar', symbol_name_new='vvz046', symbol_type='c' WHERE symbol_name = 'bluswater_defect';
+
+UPDATE bluswater.alternatieve_type SET symbol_name = symbol_name_new WHERE symbol_name_new IS NOT NULL;
+ALTER TABLE bluswater.alternatieve_type DROP COLUMN symbol_name_new;
+
+ALTER TABLE bluswater.alternatieve_type ALTER COLUMN naam TYPE varchar(50);
+UPDATE bluswater.alternatieve_type SET naam = 'Bluswaterriool' WHERE symbol_name = 'wwn001';
+UPDATE bluswater.alternatieve_type SET naam = 'Bovengrondse brandkraan' WHERE symbol_name = 'wwn002';
+UPDATE bluswater.alternatieve_type SET naam = 'Geboorde putten - dicht' WHERE symbol_name = 'wwn003';
+UPDATE bluswater.alternatieve_type SET naam = 'Geboorde putten - open' WHERE symbol_name = 'wwn004';
+UPDATE bluswater.alternatieve_type SET naam = 'Open water xxx zijde' WHERE symbol_name = 'wwn006';
+UPDATE bluswater.alternatieve_type SET naam = 'Open water' WHERE symbol_name = 'wwn007';
+UPDATE bluswater.alternatieve_type SET naam = 'Opvoerpomp of bronpomp' WHERE symbol_name = 'wwn008';
+UPDATE bluswater.alternatieve_type SET naam = 'Water innamepunt (WIP)' WHERE symbol_name = 'wwn009';
+UPDATE bluswater.alternatieve_type SET naam = 'Waterkelder - buffer' WHERE symbol_name = 'wwn010';
+UPDATE bluswater.alternatieve_type SET naam = 'Ondergrondse brandkraan (particulier)' WHERE symbol_name = 'wwn015';
+
+UPDATE bluswater.alternatieve_type SET naam = 'Opvoerpomp of bronpomp', symbol_name = 'wwn008' WHERE id = 1;
+UPDATE bluswater.alternatieve SET type_id = 23, opmerking = CONCAT(opmerking, CHR(13), CHR(10), 'geboorde put met voordruk') WHERE type_id = 1;
+DELETE FROM bluswater.alternatieve_type WHERE id = 1;
+
+UPDATE bluswater.alternatieve SET type_id = 10, opmerking = CONCAT(opmerking, CHR(13), CHR(10), 'openwater winput') WHERE type_id = 7;
+DELETE FROM bluswater.alternatieve_type WHERE id = 7;
+
+UPDATE bluswater.alternatieve SET type_id = 24 WHERE type_id = 21;
+DELETE FROM bluswater.alternatieve_type WHERE id = 21;
+
+UPDATE bluswater.alternatieve SET type_id = 9 WHERE type_id = 14;
+DELETE FROM bluswater.alternatieve_type WHERE id = 14;
+
+ALTER TABLE bluswater.alternatieve DROP CONSTRAINT altern_type_id_fk;
+ALTER TABLE bluswater.alternatieve RENAME COLUMN type_id TO soort;
+ALTER TABLE bluswater.alternatieve ALTER COLUMN soort TYPE varchar(50);
+
+UPDATE bluswater.alternatieve SET soort = sub.naam
+FROM 
+(
+	SELECT id::varchar, naam FROM bluswater.alternatieve_type
+) sub
+WHERE soort = sub.id;
+
+ALTER TABLE bluswater.alternatieve_type ADD CONSTRAINT alternatieve_type_naam_uc UNIQUE (naam);
+ALTER TABLE bluswater.alternatieve ADD CONSTRAINT alternatieve_type_fk FOREIGN KEY (soort) REFERENCES bluswater.alternatieve_type(naam) ON UPDATE CASCADE;
+
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (30, 'Bluswaterriool (particulier)','wwn011', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (31, 'Bovengrondse brandkraan (particulier)','wwn012', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (32, 'Geboorde putten - dicht (particulier)','wwn013', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (33, 'Geboorde putten - open (particulier)','wwn014', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (34, 'Open water xxx zijde (particulier)','wwn016', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (35, 'Open water (particulier)','wwn017', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (36, 'Opvoerpomp of bronpomp (particulier)','wwn018', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (37, 'Water innamepunt (WIP) (particulier)','wwn019', 6);
+INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (38, 'Waterkelder - buffer (particulier)','wwn020', 6);
+
+
 ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
 ALTER TABLE objecten.bereikbaarheid_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
 ALTER TABLE objecten.dreiging_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
@@ -517,11 +790,6 @@ ALTER TABLE objecten.sleutelkluis_type ADD COLUMN tabbladen algemeen.tabbladen[]
 ALTER TABLE objecten.veiligh_bouwk_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
 ALTER TABLE objecten.veiligh_install_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
 ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-
-
-
-
-
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
