@@ -1,61 +1,79 @@
 SET role oiv_admin;
 SET search_path = objecten, pg_catalog, public;
 
---TODO: naam aanpassingen vanuit Excel
--- 		categorie toevoegen
---		volgnummer toevoegen
---		symbolen toevoegen aan database
---		views aanpassen
-
---		bespreken niet gemapte symbolen
---		bespreken dubbele symbolen
-
 CREATE TYPE algemeen.symb_type AS ENUM ('a', 'b', 'c');
 CREATE TYPE algemeen.tabbladen AS ENUM ('Algemeen', 'Evenement', 'Gebouw', 'Infrastructuur', 'Natuur', 'Water');
+CREATE TYPE algemeen.anchorpoint AS ENUM ('top', 'center', 'bottom');
 
 ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.dreiging_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.dreiging_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.dreiging_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.dreiging_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.dreiging_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.dreiging_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.dreiging_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.ingang_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.ingang_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.ingang_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.ingang_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.ingang_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.ingang_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.ingang_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
+UPDATE objecten.ingang_type SET anchorpoint = 'top'
+  WHERE naam IN ('Brandweeringang', 'Neveningang', 'Neveningang  gebied terrein', 'Ingang gebied terrein');
 
 ALTER TABLE objecten.object_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.object_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.object_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.object_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
 
 ALTER TABLE objecten.opstelplaats_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.opstelplaats_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.opstelplaats_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.opstelplaats_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.opstelplaats_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.opstelplaats_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.points_of_interest_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.points_of_interest_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.points_of_interest_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.scenario_locatie_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.scenario_locatie_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.scenario_locatie_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.sleutelkluis_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.sleutelkluis_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.sleutelkluis_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.veiligh_install_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.veiligh_install_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.veiligh_install_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
 
 ALTER TABLE bluswater.alternatieve ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 ALTER TABLE bluswater.alternatieve ADD COLUMN formaat_object algemeen.formaat;
@@ -69,7 +87,9 @@ UPDATE bluswater.alternatieve_type SET size_object_middel = size;
 
 ALTER TABLE bluswater.alternatieve_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE bluswater.alternatieve_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
-ALTER TABLE bluswater.alternatieve_type ADD COLUMN actief boolean DEFAULT true;
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN snap boolean DEFAULT false;
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
 UPDATE objecten.points_of_interest SET geom = 
 	ST_Transform(ST_Project(ST_Transform(geom, 4326)::GEOGRAPHY, 0.7, RADIANS(106))::GEOMETRY, 28992);
@@ -772,24 +792,196 @@ INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (36
 INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (37, 'Water innamepunt (WIP) (particulier)','wwn019', 6);
 INSERT INTO bluswater.alternatieve_type (id, naam, symbol_name, size) VALUES (38, 'Waterkelder - buffer (particulier)','wwn020', 6);
 
+ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.bereikbaarheid_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.dreiging_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.gebiedsgerichte_aanpak_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.ingang_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.isolijnen_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.label_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.opstelplaats_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.ruimten_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.sectoren_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.veiligh_bouwk_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN tabbladen json;
+ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN tabbladen json;
+ALTER TABLE bluswater.alternatieve_type ADD COLUMN tabbladen json;
 
-ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.bereikbaarheid_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.dreiging_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.gebiedsgerichte_aanpak_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.ingang_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.isolijnen_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.label_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.opstelplaats_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.points_of_interest_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.ruimten_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.scenario_locatie_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.sectoren_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.sleutelkluis_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.veiligh_bouwk_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.veiligh_install_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
-ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN tabbladen algemeen.tabbladen[] DEFAULT ARRAY['Algemeen']::algemeen.tabbladen[];
+UPDATE objecten.afw_binnendekking_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.bereikbaarheid_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.dreiging_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.gebiedsgerichte_aanpak_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.gevaarlijkestof_opslag_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.ingang_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.isolijnen_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.label_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.opstelplaats_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.points_of_interest_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.ruimten_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.scenario_locatie_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.sectoren_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.sleutelkluis_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.veiligh_bouwk_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.veiligh_install_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE objecten.veiligh_ruimtelijk_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+UPDATE bluswater.alternatieve_type SET tabbladen = '{"Algemeen":1, "Evenement":0, "Gebouw":0, "Infrastructuur":0, "Natuur":0, "Water":0}';
+
+ALTER TABLE objecten.afw_binnendekking_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.bereikbaarheid_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.dreiging_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.gebiedsgerichte_aanpak_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.ingang_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.isolijnen_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.label_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.opstelplaats_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.ruimten_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.scenario_locatie_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.sectoren_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.sleutelkluis_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.veiligh_bouwk_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.veiligh_install_type ADD COLUMN volgnummer int;
+ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN volgnummer int;
+
+ALTER TABLE objecten.gebiedsgerichte_aanpak_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.isolijnen_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.label_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.label_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.ruimten_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.sectoren_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.veiligh_bouwk_type ADD COLUMN actief_bouwlaag boolean DEFAULT true;
+ALTER TABLE objecten.bereikbaarheid_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
+ALTER TABLE objecten.label_type ADD COLUMN snap boolean DEFAULT false;
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.afw_binnendekking_type)
+	UPDATE objecten.afw_binnendekking_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = afw_binnendekking_type.naam);
+ALTER TABLE objecten.afw_binnendekking_type ADD CONSTRAINT afw_binnendekking_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.bereikbaarheid_type)
+	UPDATE objecten.bereikbaarheid_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = bereikbaarheid_type.naam);
+ALTER TABLE objecten.bereikbaarheid_type ADD CONSTRAINT bereikbaarheid_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.dreiging_type)
+	UPDATE objecten.dreiging_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = dreiging_type.naam);
+ALTER TABLE objecten.dreiging_type ADD CONSTRAINT dreiging_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.gebiedsgerichte_aanpak_type)
+	UPDATE objecten.gebiedsgerichte_aanpak_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = gebiedsgerichte_aanpak_type.naam);
+ALTER TABLE objecten.gebiedsgerichte_aanpak_type ADD CONSTRAINT gebiedsgerichte_aanpak_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.gevaarlijkestof_opslag_type)
+	UPDATE objecten.gevaarlijkestof_opslag_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = gevaarlijkestof_opslag_type.naam);
+ALTER TABLE objecten.gevaarlijkestof_opslag_type ADD CONSTRAINT gevaarlijkestof_opslag_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.ingang_type)
+	UPDATE objecten.ingang_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = ingang_type.naam);
+ALTER TABLE objecten.ingang_type ADD CONSTRAINT ingang_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.isolijnen_type)
+	UPDATE objecten.isolijnen_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = isolijnen_type.naam);
+ALTER TABLE objecten.isolijnen_type ADD CONSTRAINT isolijnen_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.label_type)
+	UPDATE objecten.label_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = label_type.naam);
+ALTER TABLE objecten.label_type ADD CONSTRAINT label_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.opstelplaats_type)
+	UPDATE objecten.opstelplaats_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = opstelplaats_type.naam);
+ALTER TABLE objecten.opstelplaats_type ADD CONSTRAINT opstelplaats_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.points_of_interest_type)
+	UPDATE objecten.points_of_interest_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = points_of_interest_type.naam);
+ALTER TABLE objecten.points_of_interest_type ADD CONSTRAINT points_of_interest_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.ruimten_type)
+	UPDATE objecten.ruimten_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = ruimten_type.naam);
+ALTER TABLE objecten.ruimten_type ADD CONSTRAINT ruimten_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.scenario_locatie_type)
+	UPDATE objecten.scenario_locatie_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = scenario_locatie_type.naam);
+ALTER TABLE objecten.scenario_locatie_type ADD CONSTRAINT scenario_locatie_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.sectoren_type)
+	UPDATE objecten.sectoren_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = sectoren_type.naam);
+ALTER TABLE objecten.sectoren_type ADD CONSTRAINT sectoren_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.sleutelkluis_type)
+	UPDATE objecten.sleutelkluis_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = sleutelkluis_type.naam);
+ALTER TABLE objecten.sleutelkluis_type ADD CONSTRAINT sleutelkluis_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.veiligh_bouwk_type)
+	UPDATE objecten.veiligh_bouwk_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = veiligh_bouwk_type.naam);
+ALTER TABLE objecten.veiligh_bouwk_type ADD CONSTRAINT veiligh_bouwk_type_volgnummer_uc UNIQUE (volgnummer);
+
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM objecten.veiligh_install_type)
+	UPDATE objecten.veiligh_install_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = veiligh_install_type.naam);
+ALTER TABLE objecten.veiligh_install_type ADD CONSTRAINT veiligh_install_type_volgnummer_uc UNIQUE (volgnummer);
+
+ALTER TABLE objecten."label" DROP CONSTRAINT label_soort_id_fk;
+ALTER TABLE objecten."label" ADD CONSTRAINT label_soort_fk FOREIGN KEY (soort) REFERENCES objecten.label_type(naam) ON UPDATE CASCADE;
+
+UPDATE objecten.label_type SET symbol_name = 'calamiteiten_coordinatiecentrum', naam = 'Calamiteiten coördinatiecentrum' WHERE naam = 'CCR';
+
+ALTER TABLE objecten.veiligh_bouwk DROP CONSTRAINT veiligh_bouwk_soort_id_fk;
+ALTER TABLE objecten.veiligh_bouwk ADD CONSTRAINT veiligh_bouwk_soort_id_fk FOREIGN KEY (soort) REFERENCES objecten.veiligh_bouwk_type(naam) ON UPDATE CASCADE;
+
+UPDATE objecten.veiligh_bouwk_type SET naam = 'blusleiding' WHERE naam = 'blusleiding_bouwlaag';
+UPDATE objecten.veiligh_bouwk_type SET naam = 'contouren' WHERE naam = 'contouren_bouwlaag';
+UPDATE objecten.veiligh_bouwk_type SET naam = 'hulplijn' WHERE naam = 'hulplijn_bouwlaag';
+UPDATE objecten.veiligh_bouwk_type SET naam = 'slagboom' WHERE naam = 'slagboom_bouwlaag';
+
+ALTER TABLE objecten.ruimten DROP CONSTRAINT ruimten_type_id_fk;
+ALTER TABLE objecten.ruimten ADD CONSTRAINT ruimten_soort_fk FOREIGN KEY (ruimten_type_id) REFERENCES objecten.ruimten_type(naam) ON UPDATE CASCADE;
+
+UPDATE objecten.ruimten_type SET naam = 'zwembad' WHERE naam = 'zwembad binnen';
+
+DROP VIEW objecten.bouwlaag_ruimten;
+DROP VIEW objecten.view_ruimten;
+
+ALTER TABLE objecten.ruimten RENAME COLUMN ruimten_type_id TO soort;
+
+UPDATE objecten.dreiging SET soort = 'Brandgevaarlijk' WHERE soort = 'Brand';
+DELETE FROM objecten.dreiging_type WHERE naam = 'Brand';
+
+ALTER TABLE objecten.bereikbaarheid DROP CONSTRAINT soort_id_fk;
+ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT bereikbaarheid_soort_fk FOREIGN KEY (soort) REFERENCES objecten.bereikbaarheid_type(naam) ON UPDATE CASCADE;
+
+ALTER TABLE objecten.gebiedsgerichte_aanpak DROP CONSTRAINT soort_id_fk;
+ALTER TABLE objecten.gebiedsgerichte_aanpak ADD CONSTRAINT gebiedsgerichte_aanpak_soort_fk FOREIGN KEY (soort) REFERENCES objecten.gebiedsgerichte_aanpak_type(naam) ON UPDATE CASCADE;
+
+ALTER TABLE objecten.sectoren DROP CONSTRAINT sectoren_soort_id_fk;
+ALTER TABLE objecten.sectoren ADD CONSTRAINT sectoren_soort_fk FOREIGN KEY (soort) REFERENCES objecten.sectoren_type(naam) ON UPDATE CASCADE;
+
+UPDATE objecten.opstelplaats SET soort = 'Foambooster' WHERE soort = 'Foambooster 2';
+DELETE FROM objecten.opstelplaats_type WHERE naam = 'Foambooster 2';
+UPDATE objecten.opstelplaats_type SET symbol_name = 'foambooster' WHERE naam = 'Foambooster';
+UPDATE objecten.opstelplaats_type SET symbol_name = 'dompelpomp_unit' WHERE naam = 'Dompelpomp unit';
+UPDATE objecten.opstelplaats_type SET symbol_name = 'schuim_trailer' WHERE naam = 'Schuim trailer';
+
+UPDATE objecten.opstelplaats_type SET symbol_name = 'osp004' WHERE naam = 'Opstapplaats boot';
+UPDATE objecten.opstelplaats_type SET symbol_name = 'osp008' WHERE naam = 'Opstelplaats WO';
+
+UPDATE objecten.bereikbaarheid_type SET naam = REPLACE(naam, '/', ' of ');
+UPDATE objecten.gebiedsgerichte_aanpak_type SET naam = REPLACE(naam, ':', '');
+UPDATE objecten.gebiedsgerichte_aanpak_type SET naam = REPLACE(naam, '/', ' of ');
+
+UPDATE bluswater.alternatieve SET soort = 'Open water xxx zijde' WHERE soort = 'Open water onbereikbaar';
+DELETE FROM bluswater.alternatieve_type WHERE naam = 'Open water onbereikbaar';
+
+UPDATE algemeen.styles SET soortnaam = REPLACE(soortnaam, '/', ' of ');
+UPDATE algemeen.styles SET soortnaam = REPLACE(soortnaam, ':', '');
+UPDATE algemeen.styles SET soortnaam = REPLACE(soortnaam, '/', ' of ');
+UPDATE algemeen.styles SET soortnaam = REPLACE(soortnaam, ',', '');
+
+ALTER TABLE objecten.scenario_locatie ADD COLUMN soort varchar(50);
+ALTER TABLE objecten.scenario_locatie_type ADD CONSTRAINT scenario_locatie_type_naam_uc UNIQUE (naam);
+ALTER TABLE objecten.scenario_locatie ADD CONSTRAINT scenario_locatie_type_fk FOREIGN KEY (soort) REFERENCES objecten.scenario_locatie_type(naam) ON UPDATE CASCADE;
+UPDATE objecten.scenario_locatie SET soort = 'Scenario locatie';
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;

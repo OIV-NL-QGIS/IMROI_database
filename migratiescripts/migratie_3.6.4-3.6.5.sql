@@ -24,7 +24,7 @@ ALTER TABLE objecten.ingang ADD COLUMN label_positie algemeen.labelposition DEFA
 ALTER TABLE objecten.opstelplaats ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 ALTER TABLE objecten.points_of_interest ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 ALTER TABLE objecten.scenario_locatie ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
-ALTER TABLE objecten.sleutelkluis ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden'
+ALTER TABLE objecten.sleutelkluis ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 ALTER TABLE objecten.veiligh_install ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 ALTER TABLE objecten.veiligh_ruimtelijk ADD COLUMN label_positie algemeen.labelposition DEFAULT 'onder - midden';
 

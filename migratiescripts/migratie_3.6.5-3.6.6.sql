@@ -446,7 +446,7 @@ AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
          SELECT v.id,
             v.geom,
             row_to_json(( SELECT d.*::record AS d
-                   FROM ( SELECT v.toelichting AS handelingsaanwijzing) d)) AS waarden_new,
+                   FROM ( SELECT v.handelingsaanwijzing) d)) AS waarden_new,
             ''::character varying AS operatie,
             'afw_binnendekking'::character varying AS brontabel,
             v.id AS bron_id,
