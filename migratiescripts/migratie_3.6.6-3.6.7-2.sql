@@ -156,7 +156,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 
 ALTER TABLE objecten.dreiging RENAME COLUMN omschrijving TO opmerking;
 
-DROP VIEW objecten.bouwlaag_dreiging;
+DROP VIEW IF EXISTS objecten.bouwlaag_dreiging;
 CREATE OR REPLACE VIEW objecten.bouwlaag_dreiging
 AS SELECT v.id,
     v.geom,
@@ -197,7 +197,7 @@ UPDATE
     ON
     objecten.bouwlaag_dreiging FOR EACH ROW EXECUTE FUNCTION objecten.func_dreiging_upd('bouwlaag');
 
-DROP VIEW objecten.object_dreiging;
+DROP VIEW IF EXISTS objecten.object_dreiging;
 CREATE OR REPLACE VIEW objecten.object_dreiging
 AS SELECT v.id,
     v.geom,
@@ -719,7 +719,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
 ALTER TABLE objecten.ingang ADD COLUMN opmerking text;
 UPDATE objecten.ingang SET opmerking = CONCAT(voorzieningen, CASE WHEN voorzieningen IS NOT NULL THEN CONCAT(CHR(13), CHR(10)) ELSE '' END, belemmering);
 
-DROP VIEW objecten.bouwlaag_ingang;
+DROP VIEW IF EXISTS objecten.bouwlaag_ingang;
 CREATE OR REPLACE VIEW objecten.bouwlaag_ingang
 AS SELECT v.id,
     v.geom,
@@ -760,7 +760,7 @@ UPDATE
     ON
     objecten.bouwlaag_ingang FOR EACH ROW EXECUTE FUNCTION objecten.func_ingang_upd('bouwlaag');
 
-DROP VIEW objecten.object_ingang;
+DROP VIEW IF EXISTS objecten.object_ingang;
 CREATE OR REPLACE VIEW objecten.object_ingang
 AS SELECT v.id,
     v.geom,
@@ -1149,7 +1149,7 @@ AS SELECT b.id,
 
 ALTER TABLE objecten.points_of_interest RENAME COLUMN bijzonderheid TO opmerking;
 
-DROP VIEW objecten.object_points_of_interest;
+DROP VIEW IF EXISTS objecten.object_points_of_interest;
 CREATE OR REPLACE VIEW objecten.object_points_of_interest
 AS SELECT b.id,
     b.geom,
@@ -1271,7 +1271,7 @@ AS $function$
     $function$
 ;
 
-DROP VIEW objecten.view_points_of_interest;
+DROP VIEW IF EXISTS objecten.view_points_of_interest;
 CREATE OR REPLACE VIEW objecten.view_points_of_interest
 AS SELECT b.id,
     b.geom,
@@ -1504,7 +1504,7 @@ AS $function$
     $function$
 ;
 
-DROP VIEW objecten.view_sleutelkluis_bouwlaag;
+DROP VIEW IF EXISTS objecten.view_sleutelkluis_bouwlaag;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_bouwlaag
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -1545,7 +1545,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.sleutelkluis_type st ON d.soort = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
-DROP VIEW objecten.view_sleutelkluis_ruimtelijk;
+DROP VIEW IF EXISTS objecten.view_sleutelkluis_ruimtelijk;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_ruimtelijk
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
@@ -1883,10 +1883,6 @@ AS SELECT DISTINCT b.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
      LEFT JOIN objecten.object_type ot ON part.typeobject::text = ot.naam::text
   WHERE b.self_deleted = 'infinity'::timestamp with time zone;
-
-DROP FUNCTION IF EXISTS objecten.func_veiligh_ruimtelijk_del();
-DROP FUNCTION IF EXISTS objecten.func_veiligh_ruimtelijk_ins();
-DROP FUNCTION IF EXISTS objecten.func_veiligh_ruimtelijk_upd();
 
 ALTER TABLE objecten.scenario_locatie RENAME COLUMN locatie TO opmerking;
 
@@ -2919,7 +2915,7 @@ AS $function$
 ALTER TABLE objecten.ruimten RENAME COLUMN omschrijving TO opmerking;
 ALTER TABLE mobiel.werkvoorraad_vlak ADD COLUMN opmerking TEXT;
 
-DROP VIEW objecten.bouwlaag_ruimten;
+DROP VIEW IF EXISTS objecten.bouwlaag_ruimten;
 CREATE OR REPLACE VIEW objecten.bouwlaag_ruimten
 AS SELECT v.id,
     v.geom,
@@ -3042,7 +3038,9 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.ruimten_type st ON d.soort = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND t.parent_deleted = 'infinity'::timestamp with time zone AND t.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
-DROP VIEW objecten.object_sectoren;
+ALTER TABLE objecten.sectoren RENAME COLUMN omschrijving TO opmerking;
+
+DROP VIEW IF EXISTS objecten.object_sectoren;
 CREATE OR REPLACE VIEW objecten.object_sectoren
 AS SELECT l.id,
     l.geom,

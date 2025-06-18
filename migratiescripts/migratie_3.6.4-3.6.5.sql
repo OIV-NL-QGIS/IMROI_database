@@ -180,7 +180,8 @@ ALTER TABLE objecten.veiligh_ruimtelijk_type ADD COLUMN size_object_groot decima
 
 UPDATE objecten.veiligh_ruimtelijk_type SET size_object_middel = size;
 
-ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat algemeen.formaat;
+ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_bouwlaag algemeen.formaat;
+ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_object algemeen.formaat;
 
 DROP VIEW IF EXISTS objecten.bouwlaag_afw_binnendekking;
 CREATE OR REPLACE VIEW objecten.bouwlaag_afw_binnendekking

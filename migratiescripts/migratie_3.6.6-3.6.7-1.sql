@@ -329,7 +329,7 @@ UPDATE objecten.ingang_type SET naam = 'Nooduitgang', symbol_name='vvz049', symb
 
 INSERT INTO objecten.ingang_type (id, naam, symbol_name, "size", size_object) VALUES(705, 'Deur R', 'tgn004', 3, 6);
 INSERT INTO objecten.ingang_type (id, naam, symbol_name, "size", size_object) VALUES(175, 'Generieke trap', 'tgn005', 5, 10);
-INSERT INTO objecten.ingang_type (id, naam, symbol_name, "size", size_object) VALUES(175, 'SOS toegang', 'tgn015', 5, 10);
+INSERT INTO objecten.ingang_type (id, naam, symbol_name, "size", size_object) VALUES(176, 'SOS toegang', 'tgn015', 5, 10);
 
 UPDATE objecten.ingang_type SET symbol_name = symbol_name_new WHERE symbol_name_new IS NOT NULL;
 ALTER TABLE objecten.ingang_type DROP COLUMN symbol_name_new;
@@ -582,7 +582,7 @@ ALTER TABLE objecten.veiligh_install ADD CONSTRAINT veiligh_install_type_fk FORE
 
 ALTER TABLE objecten.veiligh_install ADD COLUMN object_id int;
 ALTER TABLE objecten.veiligh_install ADD COLUMN formaat_object algemeen.formaat;
-ALTER TABLE objecten.veiligh_install ADD COLUMN bouwlaag_id DROP NOT NULL;
+ALTER TABLE objecten.veiligh_install ALTER COLUMN bouwlaag_id DROP NOT NULL;
 
 ALTER TABLE objecten.veiligh_install ADD CONSTRAINT veiligh_install_object_id_fk FOREIGN KEY (object_id, parent_deleted) REFERENCES objecten.object(id, self_deleted) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -595,8 +595,8 @@ ALTER TABLE objecten.veiligh_install_type ADD COLUMN size_object int;
 ALTER TABLE objecten.veiligh_ruimtelijk DROP CONSTRAINT veiligh_ruimtelijk_type_id_fk;
 ALTER TABLE objecten.veiligh_ruimtelijk ADD CONSTRAINT veiligh_ruimtelijk_type_id_fk FOREIGN KEY (veiligh_ruimtelijk_type_id) REFERENCES objecten.veiligh_ruimtelijk_type(id) ON UPDATE CASCADE;
 
-INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief)
-SELECT id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief_ruimtelijk)
+SELECT id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_name_new, symbol_type, actief_ruimtelijk FROM objecten.veiligh_ruimtelijk_type
 WHERE naam NOT IN (SELECT naam FROM objecten.veiligh_install_type) AND symbol_name_new LIKE 'vvz%';
 
 INSERT INTO objecten.veiligh_install (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
@@ -612,8 +612,8 @@ UPDATE objecten.veiligh_ruimtelijk SET veiligh_ruimtelijk_type_id = 1009 WHERE v
 UPDATE objecten.veiligh_ruimtelijk_type SET naam = 'Restaurant' WHERE naam = 'restaurant';
 DELETE FROM objecten.veiligh_ruimtelijk_type WHERE id = 2006;
 
-INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief)
-SELECT id, naam, symbol_name_new, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+INSERT INTO objecten.points_of_interest_type (id, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief_ruimtelijk)
+SELECT id, naam, symbol_name_new, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief_ruimtelijk FROM objecten.veiligh_ruimtelijk_type
 WHERE naam NOT IN (SELECT naam FROM objecten.points_of_interest_type) AND symbol_name_new LIKE 'poi%';
 
 INSERT INTO objecten.points_of_interest (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)
@@ -708,8 +708,8 @@ WHERE veiligh_install_type.id = sub.id;
 
 UPDATE objecten.veiligh_install_type SET "size_object" = 6 WHERE "size_object" IS NULL;
 
-INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief)
-SELECT id+7000, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief FROM objecten.veiligh_ruimtelijk_type
+INSERT INTO objecten.veiligh_install_type (id, naam, symbol_name, "size_object", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief_ruimtelijk)
+SELECT id+7000, naam, symbol_name, "size", size_object_klein, size_object_middel, size_object_groot, symbol_type, actief_ruimtelijk FROM objecten.veiligh_ruimtelijk_type
 WHERE symbol_name_new IS NULL;
 
 INSERT INTO objecten.veiligh_install (geom, datum_aangemaakt, datum_gewijzigd, soort, "label", object_id, rotatie, fotografie_id, bijzonderheid, parent_deleted, self_deleted, label_positie, formaat_object)

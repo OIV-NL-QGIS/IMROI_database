@@ -1,7 +1,8 @@
 SET ROLE oiv_admin;
 
 ALTER TABLE objecten.gevaarlijkestof_schade_cirkel ADD CONSTRAINT gevaarlijkestof_id_fk FOREIGN KEY (gevaarlijkestof_id, parent_deleted) REFERENCES objecten.gevaarlijkestof(id, self_deleted) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE objecten.gevaarlijkestof_schade_cirkel DROP CONSTRAINT gevaarlijkestof_schade_cirkel_pkey;
+ALTER TABLE objecten.gevaarlijkestof_schade_cirkel DROP CONSTRAINT IF EXISTS  gevaarlijkestof_schade_cirkel_pkey;
+ALTER TABLE objecten.gevaarlijkestof_schade_cirkel DROP CONSTRAINT IF EXISTS  schade_cirkel_pkey;
 ALTER TABLE objecten.gevaarlijkestof_schade_cirkel ADD CONSTRAINT gevaarlijkestof_schade_cirkel_pkey PRIMARY KEY (id, self_deleted);
 
 CREATE OR REPLACE VIEW objecten."_gevaarlijkestof_schade_cirkel"
@@ -17,6 +18,8 @@ CREATE RULE gevaarlijkestof_schade_cirkel_ins AS
 CREATE RULE gevaarlijkestof_schade_cirkel_del AS
     ON DELETE TO objecten._gevaarlijkestof_schade_cirkel DO INSTEAD  DELETE FROM objecten.gevaarlijkestof_schade_cirkel
   WHERE (gevaarlijkestof_schade_cirkel.id = old.id);
+
+DROP VIEW IF EXISTS mobiel.labels;
 
 ALTER TABLE objecten.afw_binnendekking_type DROP COLUMN "size";
 ALTER TABLE objecten.dreiging_type DROP COLUMN "size";

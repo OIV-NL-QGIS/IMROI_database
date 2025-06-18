@@ -5,6 +5,10 @@ ALTER TABLE objecten.sleutelkluis DROP CONSTRAINT sleutelkluis_ingang_id_fk;
 ALTER TABLE objecten.sleutelkluis ADD COLUMN bouwlaag_id integer;
 ALTER TABLE objecten.sleutelkluis ADD COLUMN object_id integer;
 
+ALTER TABLE mobiel.werkvoorraad_punt DROP COLUMN formaat;
+ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_bouwlaag algemeen.formaat;
+ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_object algemeen.formaat;
+
 UPDATE objecten.sleutelkluis SET bouwlaag_id = sub.bouwlaag_id, parent_deleted = sub.parent_deleted
 FROM
 ( 
@@ -304,6 +308,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      LEFT JOIN objecten.sleuteldoel_type dd ON d.sleuteldoel_type_id = dd.id
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone;
 
+DROP VIEW mobiel.symbolen;
 CREATE OR REPLACE VIEW mobiel.symbolen
 AS SELECT concat(sub.brontabel, '_', sub.id::character varying) AS id,
     sub.geom,
