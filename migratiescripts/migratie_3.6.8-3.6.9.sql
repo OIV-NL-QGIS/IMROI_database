@@ -35,6 +35,9 @@ ALTER TABLE objecten.sleutelkluis_type DROP CONSTRAINT sleutelkluis_type_volgnum
 ALTER TABLE objecten.veiligh_bouwk_type DROP CONSTRAINT veiligh_bouwk_type_volgnummer_uc;
 ALTER TABLE objecten.veiligh_install_type DROP CONSTRAINT veiligh_install_type_volgnummer_uc;
 
+UPDATE objecten.dreiging_type SET symbol_type = 'a';
+ALTER TABLE objecten.dreiging_type ALTER COLUMN symbol_type SET DEFAULT 'a';
+
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
