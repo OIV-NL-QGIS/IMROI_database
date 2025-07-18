@@ -91,30 +91,6 @@ ALTER TABLE bluswater.alternatieve_type ADD COLUMN actief_ruimtelijk boolean DEF
 ALTER TABLE bluswater.alternatieve_type ADD COLUMN snap boolean DEFAULT false;
 ALTER TABLE bluswater.alternatieve_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
 
-UPDATE objecten.points_of_interest SET geom = 
-	ST_Transform(ST_Project(ST_Transform(geom, 4326)::GEOGRAPHY, 0.7, RADIANS(106))::GEOMETRY, 28992);
-UPDATE objecten.points_of_interest SET geom = 
-	ST_Transform(ST_Project(ST_Transform(geom, 4326)::GEOGRAPHY, 1, RADIANS(135))::GEOMETRY, 28992);
-
-UPDATE objecten.ingang SET geom = 
-	ST_Transform(ST_Project(ST_Transform(sub.geom, 4326)::GEOGRAPHY, sub.deltaX, RADIANS(sub.rotatie))::GEOMETRY, 28992)
-FROM 
-(
-	SELECT i.id, geom,
-    CASE
-	    WHEN i.formaat_bouwlaag = 'klein' THEN -0.5*st.size_bouwlaag_klein
-	    WHEN i.formaat_bouwlaag = 'middel' THEN -0.5*st.size_bouwlaag_middel
-	    WHEN i.formaat_bouwlaag = 'groot' THEN -0.5*st.size_bouwlaag_groot
-	    WHEN i.formaat_object = 'klein' THEN -0.5*st.size_object_klein
-	    WHEN i.formaat_object = 'middel' THEN -0.5*st.size_object_middel
-	    WHEN i.formaat_object = 'groot' THEN -0.5*st.size_object_groot
-	END AS deltaX,
-	coalesce(rotatie,0) as rotatie
-	FROM objecten.ingang i
-	INNER JOIN objecten.ingang_type st ON i.ingang_type_id = st.id
-	WHERE ingang_type_id IN (32, 47, 301, 1011)
-) sub WHERE ingang.id = sub.id;
-
 ALTER TABLE objecten.afw_binnendekking DROP CONSTRAINT soort_id_fk;
 ALTER TABLE objecten.afw_binnendekking ADD CONSTRAINT afw_binnendekking_type_fk FOREIGN KEY (soort) REFERENCES objecten.afw_binnendekking_type(naam) ON UPDATE CASCADE;
 
