@@ -9,6 +9,8 @@ ALTER TABLE mobiel.werkvoorraad_punt DROP COLUMN formaat;
 ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_bouwlaag algemeen.formaat;
 ALTER TABLE mobiel.werkvoorraad_punt ADD COLUMN formaat_object algemeen.formaat;
 
+ALTER TABLE objecten.sleutelkluis DISABLE TRIGGER trg_set_delete_after_parent;
+
 UPDATE objecten.sleutelkluis SET bouwlaag_id = sub.bouwlaag_id, parent_deleted = sub.parent_deleted
 FROM
 ( 
@@ -22,6 +24,8 @@ FROM
 	SELECT object_id, id as ingang_id, parent_deleted FROM objecten.ingang WHERE object_id IS NOT NULL
 ) sub
 WHERE sleutelkluis.ingang_id = sub.ingang_id;
+
+ALTER TABLE objecten.sleutelkluis ENABLE TRIGGER trg_set_delete_after_parent;
 
 ALTER TABLE objecten.sleutelkluis ADD CONSTRAINT sleutelkluis_bouwlaag_id_fk FOREIGN KEY (bouwlaag_id, parent_deleted) REFERENCES objecten.bouwlagen(id, self_deleted) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE objecten.sleutelkluis ADD CONSTRAINT sleutelkluis_object_id_fk FOREIGN KEY (object_id, parent_deleted) REFERENCES objecten.object(id, self_deleted) ON UPDATE CASCADE ON DELETE CASCADE;
