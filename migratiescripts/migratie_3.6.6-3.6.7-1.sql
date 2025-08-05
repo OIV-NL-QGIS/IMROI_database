@@ -48,7 +48,7 @@ ALTER TABLE objecten.points_of_interest_type ADD COLUMN symbol_name_new varchar(
 ALTER TABLE objecten.points_of_interest_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
 ALTER TABLE objecten.points_of_interest_type ADD COLUMN actief_ruimtelijk boolean DEFAULT true;
 ALTER TABLE objecten.points_of_interest_type ADD COLUMN snap boolean DEFAULT false;
-ALTER TABLE objecten.points_of_interest_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center';
+ALTER TABLE objecten.points_of_interest_type ADD COLUMN anchorpoint algemeen.anchorpoint DEFAULT 'center'; 
 
 ALTER TABLE objecten.scenario_locatie_type ADD COLUMN symbol_name_new varchar(15);
 ALTER TABLE objecten.scenario_locatie_type ADD COLUMN symbol_type algemeen.symb_type DEFAULT 'c';
