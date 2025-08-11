@@ -84,6 +84,8 @@ ALTER TABLE info_of_interest.lines_of_interest_type ADD volgnummer int;
 ALTER TABLE info_of_interest.labels_of_interest_type ADD actief_ruimtelijk BOOLEAN DEFAULT true;
 ALTER TABLE info_of_interest.lines_of_interest_type ADD actief_ruimtelijk BOOLEAN DEFAULT true;
 
+ALTER TABLE info_of_interest.points_of_interest RENAME datum_deleted TO self_deleted;
+UPDATE info_of_interest.points_of_interest SET self_deleted = 'infinity' WHERE self_deleted IS NULL;
 ALTER TABLE info_of_interest.points_of_interest ALTER self_deleted SET DEFAULT 'infinity'::timestamp with time zone;
 ALTER TABLE info_of_interest.labels_of_interest RENAME datum_deleted TO self_deleted;
 UPDATE info_of_interest.labels_of_interest SET self_deleted = 'infinity' WHERE self_deleted IS NULL;
@@ -94,8 +96,6 @@ ALTER TABLE info_of_interest.points_of_interest ALTER self_deleted SET DEFAULT '
 ALTER TABLE info_of_interest.labels_of_interest ALTER self_deleted SET DEFAULT 'infinity'::timestamp with time zone;
 ALTER TABLE info_of_interest.lines_of_interest ALTER self_deleted SET DEFAULT 'infinity'::timestamp with time zone;
 
-WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM info_of_interest.points_of_interest_type)
-	UPDATE info_of_interest.points_of_interest_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = points_of_interest_type.naam);
 WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM info_of_interest.labels_of_interest_type)
 	UPDATE info_of_interest.labels_of_interest_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = labels_of_interest_type.naam);
 WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM info_of_interest.lines_of_interest_type)
@@ -330,6 +330,10 @@ CREATE TRIGGER lines_of_interest_del INSTEAD OF
 DELETE
     ON
     info_of_interest.vw_lines_of_interest FOR EACH ROW EXECUTE FUNCTION info_of_interest.func_lines_of_interest_del();
+
+ALTER TABLE bluswater.alternatieve_type ADD volgnummer int;
+WITH cte AS (SELECT naam, ROW_NUMBER() OVER(order by naam) AS rn FROM bluswater.alternatieve_type)
+	UPDATE bluswater.alternatieve_type SET volgnummer = (SELECT rn FROM cte WHERE cte.naam = alternatieve_type.naam);
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
