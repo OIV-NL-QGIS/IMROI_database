@@ -454,9 +454,11 @@ AS $function$
 		  objectid integer := NULL;
     BEGIN
 		IF new.bouwlaag_object = 'bouwlaag' THEN
-        	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
+      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                      WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
 		ELSE
-			objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
+			objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                      WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
 		END IF;
 		INSERT INTO mobiel.werkvoorraad_punt (geom, operatie, brontabel, bron_id, bouwlaag_id, object_id, rotatie, symbol_name,
             		bouwlaag, accepted, bouwlaag_object, opmerking, label, label_positie, formaat_bouwlaag, formaat_object)
@@ -479,11 +481,13 @@ AS $function$
 		objectid integer := NULL;
     BEGIN
 		IF new.bouwlaag_object != old.bouwlaag_object THEN
-			IF new.bouwlaag_object = 'bouwlaag' THEN
-	        	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-			ELSE
-				objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-			END IF;
+      IF new.bouwlaag_object = 'bouwlaag' THEN
+        bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                        WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      ELSE
+        objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                        WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      END IF;
 		ELSE
 			bouwlaagid = new.bouwlaag_id;
 			objectid = new.object_id;
@@ -599,14 +603,16 @@ SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag_id,
     sub.omschrijving,
     sub.rotatie,
-	sub.SIZE,
+	  sub.SIZE,
     sub.symbol_name,
     sub.bouwlaag,
     sub.bron,
     sub.datum_aangemaakt,
     sub.datum_gewijzigd,
     sub.bouwlaag_object,
-    sub.opmerking
+    sub.opmerking,
+    sub.formaat,
+    sub.id AS orig_id
    FROM ( SELECT w.id,
             w.geom,
             w.operatie,
@@ -633,7 +639,7 @@ SELECT row_number() OVER (ORDER BY sub.id) AS id,
             CASE 
 	            WHEN w.object_id IS NOT NULL THEN w.formaat_object 
 	            ELSE w.formaat_bouwlaag
-            END,
+            END as formaat,
             w.opmerking
            FROM mobiel.werkvoorraad_label w
            JOIN objecten.label_type vt ON w.symbol_name = vt.naam
@@ -700,11 +706,13 @@ AS $function$
       bouwlaagid integer := NULL;
 		  objectid integer := NULL;
     BEGIN
-		IF new.bouwlaag_object = 'bouwlaag' THEN
-      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-		ELSE
-			objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-		END IF;
+    IF new.bouwlaag_object = 'bouwlaag' THEN
+      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                      WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    ELSE
+      objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                      WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    END IF;
 		INSERT INTO mobiel.werkvoorraad_label (geom, operatie, brontabel, bron_id, bouwlaag_id, object_id, omschrijving, rotatie, symbol_name,
             		bouwlaag, accepted, bouwlaag_object, opmerking, formaat_bouwlaag, formaat_object)
 		VALUES (new.geom, 'INSERT'::character varying, new.brontabel, new.bron_id, bouwlaagid, objectid, new.omschrijving, new.rotatie, new.symbol_name, 
@@ -726,11 +734,13 @@ AS $function$
 		objectid integer := NULL;
     BEGIN
 		IF new.bouwlaag_object != old.bouwlaag_object THEN
-			IF new.bouwlaag_object = 'bouwlaag' THEN
-	        	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-			ELSE
-				objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-			END IF;
+      IF new.bouwlaag_object = 'bouwlaag' THEN
+        bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                        WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      ELSE
+        objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                        WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      END IF;
 		ELSE
 			bouwlaagid = new.bouwlaag_id;
 			objectid = new.object_id;
@@ -816,11 +826,11 @@ AS SELECT row_number() OVER (ORDER BY sub.naam) AS id,
           WHERE actief_ruimtelijk = true
         UNION ALL
          SELECT naam, 'Gebiedsgerichte aanpak'::text AS categorie, 'object'::text AS bouwlaag_object, 'gebiedsgerichte_aanpak'::text AS brontabel
-          FROM objecten.label_type
+          FROM objecten.gebiedsgerichte_aanpak_type
           WHERE actief_ruimtelijk = true
         UNION ALL
          SELECT naam, 'Veiligheidsvoorziening bouwkundig'::text AS categorie, 'bouwlaag'::text AS bouwlaag_object, 'veiligh_bouwk'::text AS brontabel
-          FROM objecten.label_type
+          FROM objecten.veiligh_bouwk_type
           WHERE actief_bouwlaag = true          
         ) sub;
 
@@ -839,7 +849,8 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag_object,
     sub.opmerking,
     sub.datum_aangemaakt,
-    sub.datum_gewijzigd
+    sub.datum_gewijzigd,
+    sub.id AS orig_id
    FROM ( SELECT w.id,
             w.geom,
             w.operatie,
@@ -919,12 +930,13 @@ AS $function$
       bouwlaagid integer := NULL;
 	  objectid integer := NULL;
     BEGIN
-		IF new.bouwlaag_object = 'bouwlaag' THEN
-      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b
-			                WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-		ELSE
-			objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-		END IF;
+    IF new.bouwlaag_object = 'bouwlaag' THEN
+      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                      WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    ELSE
+      objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                      WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    END IF;
 		INSERT INTO mobiel.werkvoorraad_lijn (geom, operatie, brontabel, bron_id, bouwlaag_id, object_id, symbol_name,
             		bouwlaag, accepted, bouwlaag_object, opmerking)
 		VALUES (new.geom, 'INSERT'::character varying, new.brontabel, new.bron_id, bouwlaagid, objectid, new.symbol_name, 
@@ -944,11 +956,13 @@ AS $function$
 	  objectid integer := NULL;
     BEGIN
 		IF new.bouwlaag_object != old.bouwlaag_object THEN
-			IF new.bouwlaag_object = 'bouwlaag' THEN
-	        	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-			ELSE
-				objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-			END IF;
+      IF new.bouwlaag_object = 'bouwlaag' THEN
+        bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                        WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      ELSE
+        objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                        WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      END IF;
 		ELSE
 			bouwlaagid = new.bouwlaag_id;
 			objectid = new.object_id;
@@ -1048,7 +1062,8 @@ AS SELECT row_number() OVER (ORDER BY sub.id) AS id,
     sub.bouwlaag,
     sub.bron,
     sub.bouwlaag_object,
-    sub.opmerking
+    sub.opmerking,
+    sub.id AS orig_id
    FROM ( SELECT w.id,
             w.geom,
             w.operatie,
@@ -1108,12 +1123,13 @@ AS $function$
       bouwlaagid integer := NULL;
 	  objectid integer := NULL;
     BEGIN
-		IF new.bouwlaag_object = 'bouwlaag' THEN
-      		bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b
-			                WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-		ELSE
-			objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-		END IF;
+    IF new.bouwlaag_object = 'bouwlaag' THEN
+      bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                      WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    ELSE
+      objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                      WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+    END IF;
 		INSERT INTO mobiel.werkvoorraad_vlak (geom, operatie, brontabel, bron_id, bouwlaag_id, object_id, symbol_name,
             		bouwlaag, accepted, bouwlaag_object, opmerking)
 		VALUES (new.geom, 'INSERT'::character varying, new.brontabel, new.bron_id, bouwlaagid, objectid, new.symbol_name, 
@@ -1133,11 +1149,13 @@ AS $function$
 	  objectid integer := NULL;
     BEGIN
 		IF new.bouwlaag_object != old.bouwlaag_object THEN
-			IF new.bouwlaag_object = 'bouwlaag' THEN
-	        	bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b WHERE b.bouwlaag = new.bouwlaag ORDER BY dist LIMIT 1) b);
-			ELSE
-				objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b ORDER BY dist LIMIT 1) b);
-			END IF;
+      IF new.bouwlaag_object = 'bouwlaag' THEN
+        bouwlaagid := (SELECT b.bouwlaag_id FROM (SELECT b.id AS bouwlaag_id, b.geom <-> new.geom AS dist FROM objecten.bouwlagen b 
+                        WHERE b.bouwlaag = new.bouwlaag AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      ELSE
+        objectid := (SELECT b.object_id FROM (SELECT b.object_id, b.geom <-> new.geom AS dist FROM objecten.terrein b
+                        WHERE parent_deleted = 'infinity' AND self_deleted = 'infinity' ORDER BY dist LIMIT 1) b);
+      END IF;
 		ELSE
 			bouwlaagid = new.bouwlaag_id;
 			objectid = new.object_id;
@@ -1209,6 +1227,64 @@ DELETE
     ON
     mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel.func_werkvoorraad_vlak_del();
 
+DROP VIEW IF EXISTS mobiel.categorie_punten;
+CREATE OR REPLACE VIEW mobiel.categorie_symbols
+AS 
+  SELECT row_number() OVER (ORDER BY sub.categorie) AS id, sub.* 
+  FROM (
+   SELECT DISTINCT  
+	s.categorie,
+    s.brontabel,
+    s.bouwlaag_object
+   FROM mobiel.symbol_types s
+  ) sub;
+
+DROP VIEW IF EXISTS mobiel.categorie_labels;
+CREATE OR REPLACE VIEW mobiel.categorie_labels
+AS 
+  SELECT row_number() OVER (ORDER BY sub.categorie) AS id, sub.* 
+  FROM (
+   SELECT DISTINCT  
+	l.categorie,
+    l.brontabel,
+    l.bouwlaag_object
+   FROM mobiel.label_types l
+  ) sub;
+
+DROP VIEW IF EXISTS mobiel.categorie_lijnen;
+CREATE OR REPLACE VIEW mobiel.categorie_lijnen
+AS 
+  SELECT row_number() OVER (ORDER BY sub.categorie) AS id, sub.* 
+  FROM (
+   SELECT DISTINCT  
+	l.categorie,
+    l.brontabel,
+    l.bouwlaag_object
+   FROM mobiel.lijn_types l
+  ) sub;
+
+DROP VIEW IF EXISTS mobiel.categorie_vlakken;
+CREATE OR REPLACE VIEW mobiel.categorie_vlakken
+AS 
+  SELECT row_number() OVER (ORDER BY sub.categorie) AS id, sub.* 
+  FROM (
+   SELECT DISTINCT  
+	v.categorie,
+    v.brontabel,
+    v.bouwlaag_object
+   FROM mobiel.vlak_types v
+  ) sub;
+
+DROP TABLE IF EXISTS mobiel.lijnen_type;
+DROP TABLE IF EXISTS mobiel.label_type;
+DROP TABLE IF EXISTS mobiel.punten_type;
+DROP TABLE IF EXISTS mobiel.vlakken_type;
+DROP TABLE IF EXISTS mobiel.punten_ruimtelijk_type;
+
+CREATE TRIGGER trg_set_insert BEFORE
+INSERT
+    ON
+    mobiel.log_werkvoorraad FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_aangemaakt');
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
