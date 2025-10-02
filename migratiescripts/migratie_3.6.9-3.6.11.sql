@@ -74,6 +74,8 @@ UPDATE mobiel.werkvoorraad_punt SET label_positie = 'onder - midden' WHERE label
 UPDATE mobiel.werkvoorraad_punt SET formaat_bouwlaag = 'middel' WHERE bouwlaag_id IS NOT NULL;
 UPDATE mobiel.werkvoorraad_punt SET formaat_object = 'middel' WHERE object_id IS NOT NULL;
 
+ALTER TABLE mobiel.werkvoorraad_label ADD COLUMN formaat_bouwlaag algemeen.formaat DEFAULT 'middel';
+ALTER TABLE mobiel.werkvoorraad_label ADD COLUMN formaat_object algemeen.formaat DEFAULT 'middel';
 UPDATE mobiel.werkvoorraad_label SET formaat_bouwlaag = 'middel' WHERE bouwlaag_id IS NOT NULL;
 UPDATE mobiel.werkvoorraad_label SET formaat_object = 'middel' WHERE object_id IS NOT NULL;
 
@@ -557,7 +559,7 @@ UPDATE
     mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel.func_werkvoorraad_punt_upd();
 
 DROP TRIGGER trg_after_insert ON mobiel.werkvoorraad_punt;
-DROP TRIGGER trg_set_upd ON mobiel.werkvoorraad_punt;
+DROP TRIGGER IF EXISTS trg_set_upd ON mobiel.werkvoorraad_punt;
 DROP FUNCTION mobiel.complement_record_punt();
 
 CREATE OR REPLACE VIEW mobiel.label_types
@@ -811,9 +813,13 @@ DELETE
     ON
     mobiel.labels FOR EACH ROW EXECUTE FUNCTION mobiel.func_werkvoorraad_label_del();
 
-DROP FUNCTION IF EXISTS mobiel.complement_record_label();
 DROP TRIGGER IF EXISTS trg_after_insert ON mobiel.werkvoorraad_label;
-ALTER TRIGGER trg_set_upd ON mobiel.werkvoorraad_label RENAME TO trg_set_mutatie;
+DROP FUNCTION IF EXISTS mobiel.complement_record_label();
+DROP TRIGGER IF EXISTS trg_set_upd ON mobiel.werkvoorraad_label;
+CREATE TRIGGER trg_set_mutatie BEFORE
+UPDATE
+    ON
+    mobiel.werkvoorraad_label FOR EACH ROW EXECUTE FUNCTION objecten.set_timestamp('datum_gewijzigd');
 
 CREATE OR REPLACE VIEW mobiel.lijn_types
 AS SELECT row_number() OVER (ORDER BY sub.naam) AS id,
