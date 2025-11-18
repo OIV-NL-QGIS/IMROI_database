@@ -24,6 +24,7 @@ AS SELECT l.id,
                   GROUP BY historie.object_id) hist ON h.object_id = hist.object_id AND h.datum_aangemaakt = hist.maxdatetime) part ON b.id = part.object_id
   WHERE l.parent_deleted = 'infinity'::timestamp with time zone AND l.self_deleted = 'infinity'::timestamp with time zone;
 
+ALTER TABLE objecten.object_type ADD COLUMN size integer;
 UPDATE objecten.object SET size = 8 WHERE size = 0;
 
   -- Update versie van de applicatie
