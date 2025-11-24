@@ -25,7 +25,7 @@ AS SELECT l.id,
   WHERE l.parent_deleted = 'infinity'::timestamp with time zone AND l.self_deleted = 'infinity'::timestamp with time zone;
 
 ALTER TABLE objecten.object_type ADD COLUMN IF NOT EXISTS size integer;
-UPDATE objecten.object SET size = 8 WHERE size = 0;
+UPDATE objecten.object_type SET size = 8 WHERE size = 0;
 
   -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 6;
