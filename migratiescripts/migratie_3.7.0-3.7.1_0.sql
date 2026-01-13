@@ -38,8 +38,8 @@ AS WITH base AS (
     jsonb_build_object('style', jsonb_build_array(COALESCE(solids -> 0, '{}'::jsonb), COALESCE(solids -> 1, '{}'::jsonb), COALESCE(special, '{}'::jsonb))) AS styles
    FROM grouped;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_bereikbaarheid;
-CREATE MATERIALIZED VIEW objecten.mview_bereikbaarheid
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_bereikbaarheid_new;
+CREATE MATERIALIZED VIEW objecten.mview_bereikbaarheid_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -68,12 +68,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_bereikbaarheid_geom_idx ON objecten.mview_bereikbaarheid USING gist (geom);
-CREATE UNIQUE INDEX mview_bereikbaarheid_gid_idx ON objecten.mview_bereikbaarheid USING btree (gid);
-CREATE INDEX mview_bereikbaarheid_object_id_idx ON objecten.mview_bereikbaarheid USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_bereikbaarheid;
-CREATE VIEW objecten.view_bereikbaarheid
+DROP VIEW IF EXISTS objecten.view_bereikbaarheid_new;
+CREATE VIEW objecten.view_bereikbaarheid_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -101,8 +97,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON st.naam::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_bouwlagen;
-CREATE MATERIALIZED VIEW objecten.mview_bouwlagen
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_bouwlagen_new;
+CREATE MATERIALIZED VIEW objecten.mview_bouwlagen_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -138,13 +134,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_bouwlagen_bouwlaag_idx ON objecten.mview_bouwlagen USING btree (bouwlaag);
-CREATE INDEX mview_bouwlagen_geom_idx ON objecten.mview_bouwlagen USING gist (geom);
-CREATE UNIQUE INDEX mview_bouwlagen_gid_idx ON objecten.mview_bouwlagen USING btree (gid);
-CREATE INDEX mview_bouwlagen_object_id_idx ON objecten.mview_bouwlagen USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_bouwlagen;
-CREATE VIEW objecten.view_bouwlagen
+DROP VIEW IF EXISTS objecten.view_bouwlagen_new;
+CREATE VIEW objecten.view_bouwlagen_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -179,8 +170,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     JOIN algemeen.vw_styles_ids vsi ON 'Bouwlagen'::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_gebiedsgerichte_aanpak;
-CREATE MATERIALIZED VIEW objecten.mview_gebiedsgerichte_aanpak
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_gebiedsgerichte_aanpak_new;
+CREATE MATERIALIZED VIEW objecten.mview_gebiedsgerichte_aanpak_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -209,12 +200,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_gebiedsgerichte_aanpak_geom_idx ON objecten.mview_gebiedsgerichte_aanpak USING gist (geom);
-CREATE UNIQUE INDEX mview_gebiedsgerichte_aanpak_gid_idx ON objecten.mview_gebiedsgerichte_aanpak USING btree (gid);
-CREATE INDEX mview_gebiedsgerichte_aanpak_object_id_idx ON objecten.mview_gebiedsgerichte_aanpak USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_gebiedsgerichte_aanpak;
-CREATE VIEW objecten.view_gebiedsgerichte_aanpak
+DROP VIEW IF EXISTS objecten.view_gebiedsgerichte_aanpak_new;
+CREATE VIEW objecten.view_gebiedsgerichte_aanpak_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -242,8 +229,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON b.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_grid;
-CREATE MATERIALIZED VIEW objecten.mview_grid
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_grid_new;
+CREATE MATERIALIZED VIEW objecten.mview_grid_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -276,12 +263,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_grid_geom_idx ON objecten.mview_grid USING gist (geom);
-CREATE UNIQUE INDEX mview_grid_gid_idx ON objecten.mview_grid USING btree (gid);
-CREATE INDEX mview_grid_object_id_idx ON objecten.mview_grid USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_grid;
-CREATE VIEW objecten.view_grid
+DROP VIEW IF EXISTS objecten.view_grid_new;
+CREATE VIEW objecten.view_grid_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -313,8 +296,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON b.type::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_isolijnen;
-CREATE MATERIALIZED VIEW objecten.mview_isolijnen
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_isolijnen_new;
+CREATE MATERIALIZED VIEW objecten.mview_isolijnen_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -341,12 +324,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_isolijnen_geom_idx ON objecten.mview_isolijnen USING gist (geom);
-CREATE UNIQUE INDEX mview_isolijnen_gid_idx ON objecten.mview_isolijnen USING btree (gid);
-CREATE INDEX mview_isolijnen_object_id_idx ON objecten.mview_isolijnen USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_isolijnen;
-CREATE VIEW objecten.view_isolijnen
+DROP VIEW IF EXISTS objecten.view_isolijnen_new;
+CREATE VIEW objecten.view_isolijnen_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -372,8 +351,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON b.hoogte::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_ruimten;
-CREATE MATERIALIZED VIEW objecten.mview_ruimten
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_ruimten_new;
+CREATE MATERIALIZED VIEW objecten.mview_ruimten_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -406,14 +385,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_ruimten_bouwlaag_id_idx ON objecten.mview_ruimten USING btree (bouwlaag_id);
-CREATE INDEX mview_ruimten_bouwlaag_idx ON objecten.mview_ruimten USING btree (bouwlaag);
-CREATE INDEX mview_ruimten_geom_idx ON objecten.mview_ruimten USING gist (geom);
-CREATE UNIQUE INDEX mview_ruimten_gid_idx ON objecten.mview_ruimten USING btree (gid);
-CREATE INDEX mview_ruimten_object_id_idx ON objecten.mview_ruimten USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_ruimten;
-CREATE VIEW objecten.view_ruimten
+DROP VIEW IF EXISTS objecten.view_ruimten_new;
+CREATE VIEW objecten.view_ruimten_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -445,8 +418,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON d.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_schade_cirkel_bouwlaag;
-CREATE MATERIALIZED VIEW objecten.mview_schade_cirkel_bouwlaag
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_schade_cirkel_bouwlaag_new;
+CREATE MATERIALIZED VIEW objecten.mview_schade_cirkel_bouwlaag_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.opslag_id,
@@ -490,14 +463,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_schade_cirkel_bouwlaag_bouwlaag_idx ON objecten.mview_schade_cirkel_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_schade_cirkel_bouwlaag_geom_idx ON objecten.mview_schade_cirkel_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_schade_cirkel_bouwlaag_gid_idx ON objecten.mview_schade_cirkel_bouwlaag USING btree (gid);
-CREATE INDEX mview_schade_cirkel_bouwlaag_id_bouwlaag_idx ON objecten.mview_schade_cirkel_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_schade_cirkel_bouwlaag_object_id_idx ON objecten.mview_schade_cirkel_bouwlaag USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_schade_cirkel_bouwlaag;
-CREATE VIEW objecten.view_schade_cirkel_bouwlaag
+DROP VIEW IF EXISTS objecten.view_schade_cirkel_bouwlaag_new;
+CREATE VIEW objecten.view_schade_cirkel_bouwlaag_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.opslag_id,
@@ -540,8 +507,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON gsc.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_schade_cirkel_ruimtelijk;
-CREATE MATERIALIZED VIEW objecten.mview_schade_cirkel_ruimtelijk
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_schade_cirkel_ruimtelijk_new;
+CREATE MATERIALIZED VIEW objecten.mview_schade_cirkel_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.opslag_id,
@@ -580,12 +547,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_schade_cirkel_ruimtelijk_geom_idx ON objecten.mview_schade_cirkel_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_schade_cirkel_ruimtelijk_gid_idx ON objecten.mview_schade_cirkel_ruimtelijk USING btree (gid);
-CREATE INDEX mview_schade_cirkel_ruimtelijk_object_id_idx ON objecten.mview_schade_cirkel_ruimtelijk USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_schade_cirkel_ruimtelijk;
-CREATE VIEW objecten.view_schade_cirkel_ruimtelijk
+DROP VIEW IF EXISTS objecten.view_schade_cirkel_ruimtelijk_new;
+CREATE VIEW objecten.view_schade_cirkel_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.opslag_id,
@@ -623,8 +586,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON gsc.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_sectoren;
-CREATE MATERIALIZED VIEW objecten.mview_sectoren
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_sectoren_new;
+CREATE MATERIALIZED VIEW objecten.mview_sectoren_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -653,12 +616,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_sectoren_geom_idx ON objecten.mview_sectoren USING gist (geom);
-CREATE UNIQUE INDEX mview_sectoren_gid_idx ON objecten.mview_sectoren USING btree (gid);
-CREATE INDEX mview_sectoren_object_id_idx ON objecten.mview_sectoren USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_sectoren;
-CREATE VIEW objecten.view_sectoren
+DROP VIEW IF EXISTS objecten.view_sectoren_new;
+CREATE VIEW objecten.view_sectoren_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -686,8 +645,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON b.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_veiligh_bouwk;
-CREATE MATERIALIZED VIEW objecten.mview_veiligh_bouwk
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_veiligh_bouwk_new;
+CREATE MATERIALIZED VIEW objecten.mview_veiligh_bouwk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -719,14 +678,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_veiligh_bouwk_bouwlaag_id_idx ON objecten.mview_veiligh_bouwk USING btree (bouwlaag_id);
-CREATE INDEX mview_veiligh_bouwk_bouwlaag_idx ON objecten.mview_veiligh_bouwk USING btree (bouwlaag);
-CREATE INDEX mview_veiligh_bouwk_geom_idx ON objecten.mview_veiligh_bouwk USING gist (geom);
-CREATE UNIQUE INDEX mview_veiligh_bouwk_gid_idx ON objecten.mview_veiligh_bouwk USING btree (gid);
-CREATE INDEX mview_veiligh_bouwk_object_id_idx ON objecten.mview_veiligh_bouwk USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_veiligh_bouwk;
-CREATE VIEW objecten.view_veiligh_bouwk
+DROP VIEW IF EXISTS objecten.view_veiligh_bouwk_new;
+CREATE VIEW objecten.view_veiligh_bouwk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -757,8 +710,8 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON d.soort::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_terrein;
-CREATE MATERIALIZED VIEW objecten.mview_terrein
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_terrein_new;
+CREATE MATERIALIZED VIEW objecten.mview_terrein_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -783,12 +736,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
-CREATE INDEX mview_terrein_geom_idx ON objecten.mview_terrein USING gist (geom);
-CREATE UNIQUE INDEX mview_terrein_gid_idx ON objecten.mview_terrein USING btree (gid);
-CREATE INDEX mview_terrein_object_id_idx ON objecten.mview_terrein USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_terrein;
-CREATE OR REPLACE VIEW objecten.view_terrein
+DROP VIEW IF EXISTS objecten.view_terrein_new;
+CREATE OR REPLACE VIEW objecten.view_terrein_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
     b.id,
     b.geom,
@@ -812,8 +761,8 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
      JOIN algemeen.vw_styles_ids vsi ON 'Object terrein'::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_label_ruimtelijk;
-CREATE MATERIALIZED VIEW objecten.mview_label_ruimtelijk
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_label_ruimtelijk_new;
+CREATE MATERIALIZED VIEW objecten.mview_label_ruimtelijk_new
 AS 
   WITH base AS (
       SELECT 
@@ -885,12 +834,8 @@ AS
   JOIN label_boxes lb USING (id)
 WITH DATA;
 
-CREATE INDEX mview_label_ruimtelijk_geom_idx ON objecten.mview_label_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_label_ruimtelijk_gid_idx ON objecten.mview_label_ruimtelijk USING btree (gid);
-CREATE INDEX mview_label_ruimtelijk_object_id_idx ON objecten.mview_label_ruimtelijk USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_label_ruimtelijk;
-CREATE VIEW objecten.view_label_ruimtelijk
+DROP VIEW IF EXISTS objecten.view_label_ruimtelijk_new;
+CREATE VIEW objecten.view_label_ruimtelijk_new
 AS 
   WITH base AS (
       SELECT 
@@ -961,8 +906,8 @@ AS
   SELECT base.*, lb.label_box FROM base
   JOIN label_boxes lb USING (id);
 
-DROP MATERIALIZED VIEW IF EXISTS objecten.mview_label_bouwlaag;
-CREATE MATERIALIZED VIEW objecten.mview_label_bouwlaag
+DROP MATERIALIZED VIEW IF EXISTS objecten.mview_label_bouwlaag_new;
+CREATE MATERIALIZED VIEW objecten.mview_label_bouwlaag_new
 AS 
   WITH base AS (
       SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -1032,14 +977,8 @@ AS
   JOIN label_boxes lb USING (id)
 WITH DATA;
 
-CREATE INDEX mview_label_bouwlaag_bouwlaag_idx ON objecten.mview_label_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_label_bouwlaag_geom_idx ON objecten.mview_label_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_label_bouwlaag_gid_idx ON objecten.mview_label_bouwlaag USING btree (gid);
-CREATE INDEX mview_label_bouwlaag_id_bouwlaag_idx ON objecten.mview_label_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_label_bouwlaag_object_id_idx ON objecten.mview_label_bouwlaag USING btree (object_id);
-
-DROP VIEW IF EXISTS objecten.view_label_bouwlaag;
-CREATE VIEW objecten.view_label_bouwlaag
+DROP VIEW IF EXISTS objecten.view_label_bouwlaag_new;
+CREATE VIEW objecten.view_label_bouwlaag_new
 AS 
   WITH base AS (
       SELECT row_number() OVER (ORDER BY d.id) AS gid,
