@@ -117,12 +117,6 @@ CREATE MATERIALIZED VIEW objecten.mview_afw_binnendekking_new AS
     WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND last_hist.status = 'in gebruik'
 WITH DATA;
 
-CREATE INDEX mview_afw_binnendekking_bouwlaag_id_idx ON objecten.mview_afw_binnendekking USING btree (bouwlaag_id);
-CREATE INDEX mview_afw_binnendekking_bouwlaag_idx ON objecten.mview_afw_binnendekking USING btree (bouwlaag);
-CREATE INDEX mview_afw_binnendekking_geom_idx ON objecten.mview_afw_binnendekking USING gist (geom);
-CREATE UNIQUE INDEX mview_afw_binnendekking_gid_idx ON objecten.mview_afw_binnendekking USING btree (gid);
-CREATE INDEX mview_afw_binnendekking_object_id_idx ON objecten.mview_afw_binnendekking USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_dreiging_bouwlaag_new;
 CREATE OR REPLACE VIEW objecten.view_dreiging_bouwlaag_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -241,12 +235,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) 
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_dreiging_bouwlaag_bouwlaag_idx ON objecten.mview_dreiging_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_dreiging_bouwlaag_geom_idx ON objecten.mview_dreiging_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_dreiging_bouwlaag_gid_idx ON objecten.mview_dreiging_bouwlaag USING btree (gid);
-CREATE INDEX mview_dreiging_bouwlaag_id_bouwlaag_idx ON objecten.mview_dreiging_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_dreiging_bouwlaag_object_id_idx ON objecten.mview_dreiging_bouwlaag USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_dreiging_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_dreiging_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
@@ -356,10 +344,6 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
          LIMIT 1) last_hist ON true
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) 
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::TEXT;
-
-CREATE INDEX mview_dreiging_ruimtelijk_geom_idx ON objecten.mview_dreiging_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_dreiging_ruimtelijk_gid_idx ON objecten.mview_dreiging_ruimtelijk USING btree (gid);
-CREATE INDEX mview_dreiging_ruimtelijk_object_id_idx ON objecten.mview_dreiging_ruimtelijk USING btree (object_id);
 
 DROP VIEW IF EXISTS objecten.view_gevaarlijkestof_bouwlaag_new;
 CREATE OR REPLACE VIEW objecten.view_gevaarlijkestof_bouwlaag_new
@@ -491,12 +475,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_gevaarlijkestof_bouwlaag_bouwlaag_idx ON objecten.mview_gevaarlijkestof_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_gevaarlijkestof_bouwlaag_geom_idx ON objecten.mview_gevaarlijkestof_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_gevaarlijkestof_bouwlaag_gid_idx ON objecten.mview_gevaarlijkestof_bouwlaag USING btree (gid);
-CREATE INDEX mview_gevaarlijkestof_bouwlaag_id_bouwlaag_idx ON objecten.mview_gevaarlijkestof_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_gevaarlijkestof_bouwlaag_object_id_idx ON objecten.mview_gevaarlijkestof_bouwlaag USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_gevaarlijkestof_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_gevaarlijkestof_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -617,10 +595,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_gevaarlijkestof_ruimtelijk_geom_idx ON objecten.mview_gevaarlijkestof_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_gevaarlijkestof_ruimtelijk_gid_idx ON objecten.mview_gevaarlijkestof_ruimtelijk USING btree (gid);
-CREATE INDEX mview_gevaarlijkestof_ruimtelijk_object_id_idx ON objecten.mview_gevaarlijkestof_ruimtelijk USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_ingang_bouwlaag_new;
 CREATE OR REPLACE VIEW objecten.view_ingang_bouwlaag_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -739,12 +713,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_ingang_bouwlaag_bouwlaag_idx ON objecten.mview_ingang_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_ingang_bouwlaag_geom_idx ON objecten.mview_ingang_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_ingang_bouwlaag_gid_idx ON objecten.mview_ingang_bouwlaag USING btree (gid);
-CREATE INDEX mview_ingang_bouwlaag_id_bouwlaag_idx ON objecten.mview_ingang_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_ingang_bouwlaag_object_id_idx ON objecten.mview_ingang_bouwlaag USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_ingang_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_ingang_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
@@ -852,10 +820,6 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
          LIMIT 1) last_hist ON true
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
-
-CREATE INDEX mview_ingang_ruimtelijk_geom_idx ON objecten.mview_ingang_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_ingang_ruimtelijk_gid_idx ON objecten.mview_ingang_ruimtelijk USING btree (gid);
-CREATE INDEX mview_ingang_ruimtelijk_object_id_idx ON objecten.mview_ingang_ruimtelijk USING btree (object_id);
 
 DROP VIEW IF EXISTS objecten.view_opstelplaats_new;
 CREATE OR REPLACE VIEW objecten.view_opstelplaats_new
@@ -965,10 +929,6 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_opstelplaats_geom_idx ON objecten.mview_opstelplaats USING gist (geom);
-CREATE UNIQUE INDEX mview_opstelplaats_gid_idx ON objecten.mview_opstelplaats USING btree (gid);
-CREATE INDEX mview_opstelplaats_object_id_idx ON objecten.mview_opstelplaats USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_points_of_interest_new;
 CREATE OR REPLACE VIEW objecten.view_points_of_interest_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
@@ -1076,10 +1036,6 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
          LIMIT 1) last_hist ON TRUE
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
-
-CREATE INDEX mview_points_of_interest_geom_idx ON objecten.mview_points_of_interest USING gist (geom);
-CREATE UNIQUE INDEX mview_points_of_interest_gid_idx ON objecten.mview_points_of_interest USING btree (gid);
-CREATE INDEX mview_points_of_interest_object_id_idx ON objecten.mview_points_of_interest USING btree (object_id);
 
 DROP VIEW IF EXISTS objecten.view_scenario_bouwlaag_new;
 CREATE OR REPLACE VIEW objecten.view_scenario_bouwlaag_new
@@ -1205,12 +1161,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_scenario_bouwlaag_bouwlaag_idx ON objecten.mview_scenario_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_scenario_bouwlaag_geom_idx ON objecten.mview_scenario_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_scenario_bouwlaag_gid_idx ON objecten.mview_scenario_bouwlaag USING btree (gid);
-CREATE INDEX mview_scenario_bouwlaag_id_bouwlaag_idx ON objecten.mview_scenario_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_scenario_bouwlaag_object_id_idx ON objecten.mview_scenario_bouwlaag USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_scenario_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_scenario_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -1326,10 +1276,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      LEFT JOIN algemeen.settings s ON 'scenario_base_url'::text = s.setting_key::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
-
-CREATE INDEX mview_scenario_ruimtelijk_geom_idx ON objecten.mview_scenario_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_scenario_ruimtelijk_gid_idx ON objecten.mview_scenario_ruimtelijk USING btree (gid);
-CREATE INDEX mview_scenario_ruimtelijk_object_id_idx ON objecten.mview_scenario_ruimtelijk USING btree (object_id);
 
 DROP VIEW IF EXISTS objecten.view_sleutelkluis_bouwlaag_new;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_bouwlaag_new
@@ -1451,12 +1397,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_sleutelkluis_bouwlaag_bouwlaag_idx ON objecten.mview_sleutelkluis_bouwlaag USING btree (bouwlaag);
-CREATE INDEX mview_sleutelkluis_bouwlaag_geom_idx ON objecten.mview_sleutelkluis_bouwlaag USING gist (geom);
-CREATE UNIQUE INDEX mview_sleutelkluis_bouwlaag_gid_idx ON objecten.mview_sleutelkluis_bouwlaag USING btree (gid);
-CREATE INDEX mview_sleutelkluis_bouwlaag_id_bouwlaag_idx ON objecten.mview_sleutelkluis_bouwlaag USING btree (bouwlaag_id);
-CREATE INDEX mview_sleutelkluis_bouwlaag_object_id_idx ON objecten.mview_sleutelkluis_bouwlaag USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_sleutelkluis_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_sleutelkluis_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
@@ -1566,10 +1506,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.sleutelkluis_type st ON d.soort::text = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
-
-CREATE INDEX mview_sleutelkluis_ruimtelijk_geom_idx ON objecten.mview_sleutelkluis_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_sleutelkluis_ruimtelijk_gid_idx ON objecten.mview_sleutelkluis_ruimtelijk USING btree (gid);
-CREATE INDEX mview_sleutelkluis_ruimtelijk_object_id_idx ON objecten.mview_sleutelkluis_ruimtelijk USING btree (object_id);
 
 DROP VIEW IF EXISTS objecten.view_veiligh_install_new;
 CREATE OR REPLACE VIEW objecten.view_veiligh_install_new
@@ -1689,12 +1625,6 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_veiligh_install_bouwlaag_id_idx ON objecten.mview_veiligh_install USING btree (bouwlaag_id);
-CREATE INDEX mview_veiligh_install_bouwlaag_idx ON objecten.mview_veiligh_install USING btree (bouwlaag);
-CREATE INDEX mview_veiligh_install_geom_idx ON objecten.mview_veiligh_install USING gist (geom);
-CREATE UNIQUE INDEX mview_veiligh_install_gid_idx ON objecten.mview_veiligh_install USING btree (gid);
-CREATE INDEX mview_veiligh_install_object_id_idx ON objecten.mview_veiligh_install USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_veiligh_ruimtelijk_new;
 CREATE OR REPLACE VIEW objecten.view_veiligh_ruimtelijk_new
 AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
@@ -1803,10 +1733,6 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
-CREATE INDEX mview_veiligh_ruimtelijk_geom_idx ON objecten.mview_veiligh_ruimtelijk USING gist (geom);
-CREATE UNIQUE INDEX mview_veiligh_ruimtelijk_gid_idx ON objecten.mview_veiligh_ruimtelijk USING btree (gid);
-CREATE INDEX mview_veiligh_ruimtelijk_object_id_idx ON objecten.mview_veiligh_ruimtelijk USING btree (object_id);
-
 DROP VIEW IF EXISTS objecten.view_objectgegevens_new;
 CREATE VIEW objecten.view_objectgegevens_new
 AS SELECT row_number() OVER (ORDER BY o.id) AS gid,
@@ -1901,10 +1827,6 @@ AS SELECT row_number() OVER (ORDER BY o.id) AS gid,
      LEFT JOIN objecten.object_type dt ON last_hist.typeobject::text = dt.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
-
-CREATE INDEX mview_objectgegevens_basis_reg_idx ON objecten.mview_objectgegevens USING btree (basisreg_identifier);
-CREATE INDEX mview_objectgegevens_geom_idx ON objecten.mview_objectgegevens USING gist (geom);
-CREATE UNIQUE INDEX mview_objectgegevens_gid_idx ON objecten.mview_objectgegevens USING btree (gid);
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 7;

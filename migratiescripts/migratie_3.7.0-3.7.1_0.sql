@@ -771,7 +771,8 @@ AS
           b.geom,
           b.datum_aangemaakt,
           b.datum_gewijzigd,
-          replace(concat(vt.prefix, b.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving,
+          concat(vt.prefix, b.omschrijving)::character varying(254) AS omschrijving,
+          replace(concat(vt.prefix, b.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving_gs,
           b.opmerking,
           b.rotatie,
           b.bouwlaag_id,
@@ -808,7 +809,7 @@ AS
         AND last_hist.status::text = 'in gebruik'::text
   ),
   split_lines AS (
-      SELECT base.*, unnest(string_to_array(omschrijving, E'\n')) AS line FROM base
+      SELECT base.*, unnest(string_to_array(omschrijving_gs, E'\n')) AS line FROM base
   ),
   line_metrics AS (
       SELECT id, geom, rotatie, size, MAX(char_length(line)) AS max_length, COUNT(*) AS n_lines FROM split_lines
@@ -844,7 +845,8 @@ AS
           b.geom,
           b.datum_aangemaakt,
           b.datum_gewijzigd,
-          replace(concat(vt.prefix, b.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving,
+          concat(vt.prefix, b.omschrijving)::character varying(254) AS omschrijving,
+          replace(concat(vt.prefix, b.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving_gs,
           b.opmerking,
           b.rotatie,
           b.bouwlaag_id,
@@ -881,7 +883,7 @@ AS
         AND last_hist.status::text = 'in gebruik'::text
   ),
   split_lines AS (
-      SELECT base.*, unnest(string_to_array(omschrijving, E'\n')) AS line FROM base
+      SELECT base.*, unnest(string_to_array(omschrijving_gs, E'\n')) AS line FROM base
   ),
   line_metrics AS (
       SELECT id, geom, rotatie, size, MAX(char_length(line)) AS max_length, COUNT(*) AS n_lines FROM split_lines
@@ -916,6 +918,7 @@ AS
     d.datum_aangemaakt,
     d.datum_gewijzigd,
     concat(vt.prefix, d.omschrijving)::character varying(254) AS omschrijving,
+    replace(concat(vt.prefix, d.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving_gs,
     d.opmerking,
     d.soort,
     d.rotatie,
@@ -951,7 +954,7 @@ AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
   ),
   split_lines AS (
-      SELECT base.*, unnest(string_to_array(omschrijving, E'\n')) AS line FROM base
+      SELECT base.*, unnest(string_to_array(omschrijving_gs, E'\n')) AS line FROM base
   ),
   line_metrics AS (
       SELECT id, geom, rotatie, size, MAX(char_length(line)) AS max_length, COUNT(*) AS n_lines FROM split_lines
@@ -987,6 +990,7 @@ AS
     d.datum_aangemaakt,
     d.datum_gewijzigd,
     concat(vt.prefix, d.omschrijving)::character varying(254) AS omschrijving,
+    replace(concat(vt.prefix, d.omschrijving)::character varying(254)::text, '\'::text, E'\n') AS omschrijving_gs,
     d.opmerking,
     d.soort,
     d.rotatie,
@@ -1022,7 +1026,7 @@ AS
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
   ),
   split_lines AS (
-      SELECT base.*, unnest(string_to_array(omschrijving, E'\n')) AS line FROM base
+      SELECT base.*, unnest(string_to_array(omschrijving_gs, E'\n')) AS line FROM base
   ),
   line_metrics AS (
       SELECT id, geom, rotatie, size, MAX(char_length(line)) AS max_length, COUNT(*) AS n_lines FROM split_lines
