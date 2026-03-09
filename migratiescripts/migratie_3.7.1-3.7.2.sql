@@ -99,10 +99,10 @@ DROP MATERIALIZED VIEW IF EXISTS objecten.mview_veiligh_install CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS objecten.mview_veiligh_ruimtelijk CASCADE;
 
 ALTER MATERIALIZED VIEW objecten.mview_afw_binnendekking_new RENAME TO mview_afw_binnendekking;
-ALTER MATERIALIZED VIEW objecten.mview_bedrijfshulpverlening_new RENAME TO mview_bedrijfshulpverlening;
+--ALTER MATERIALIZED VIEW objecten.mview_bedrijfshulpverlening_new RENAME TO mview_bedrijfshulpverlening;
 ALTER MATERIALIZED VIEW objecten.mview_bereikbaarheid_new RENAME TO mview_bereikbaarheid;
 ALTER MATERIALIZED VIEW objecten.mview_bouwlagen_new RENAME TO mview_bouwlagen;
-ALTER MATERIALIZED VIEW objecten.mview_contactpersoon_new RENAME TO mview_contactpersoon;
+--ALTER MATERIALIZED VIEW objecten.mview_contactpersoon_new RENAME TO mview_contactpersoon;
 ALTER MATERIALIZED VIEW objecten.mview_dreiging_bouwlaag_new RENAME TO mview_dreiging_bouwlaag;
 ALTER MATERIALIZED VIEW objecten.mview_dreiging_ruimtelijk_new RENAME TO mview_dreiging_ruimtelijk;
 ALTER MATERIALIZED VIEW objecten.mview_gebiedsgerichte_aanpak_new RENAME TO mview_gebiedsgerichte_aanpak;

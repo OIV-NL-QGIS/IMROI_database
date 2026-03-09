@@ -320,7 +320,7 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
           WHERE h.object_id = o.id AND h.parent_deleted = 'infinity'::timestamp with time zone
           ORDER BY h.datum_aangemaakt DESC
          LIMIT 1) last_hist ON true
-     JOIN algemeen.vw_styles_ids vsi ON b.hoogte::text = vsi.naam::text
+     LEFT JOIN algemeen.vw_styles_ids vsi ON b.hoogte::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text
 WITH DATA;
 
@@ -348,7 +348,7 @@ AS SELECT row_number() OVER (ORDER BY b.id) AS gid,
           WHERE h.object_id = o.id AND h.parent_deleted = 'infinity'::timestamp with time zone
           ORDER BY h.datum_aangemaakt DESC
          LIMIT 1) last_hist ON true
-     JOIN algemeen.vw_styles_ids vsi ON b.hoogte::text = vsi.naam::text
+     LEFT JOIN algemeen.vw_styles_ids vsi ON b.hoogte::text = vsi.naam::text
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL) AND o.self_deleted = 'infinity'::timestamp with time zone AND last_hist.status::text = 'in gebruik'::text;
 
 DROP MATERIALIZED VIEW IF EXISTS objecten.mview_ruimten_new;

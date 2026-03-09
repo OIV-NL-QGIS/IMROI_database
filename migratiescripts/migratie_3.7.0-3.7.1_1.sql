@@ -29,7 +29,7 @@ SELECT
     o.id AS object_id,
     b.bouwlaag,
     b.bouwdeel,
-    concat_ws('_', dt.symbol_name, '_', dt.symbol_type) AS symbol_name,
+    concat_ws('_', dt.symbol_name, dt.symbol_type) AS symbol_name,
     CASE d.formaat_bouwlaag
         WHEN 'klein'::algemeen.formaat THEN dt.size_bouwlaag_klein
         WHEN 'middel'::algemeen.formaat THEN dt.size_bouwlaag_middel
@@ -81,7 +81,7 @@ CREATE MATERIALIZED VIEW objecten.mview_afw_binnendekking_new AS
         o.id AS object_id,
         b.bouwlaag,
         b.bouwdeel,
-        concat_ws('_', dt.symbol_name, '_', dt.symbol_type) AS symbol_name,
+        concat_ws('_', dt.symbol_name, dt.symbol_type) AS symbol_name,
         CASE d.formaat_bouwlaag
             WHEN 'klein'::algemeen.formaat THEN dt.size_bouwlaag_klein
             WHEN 'middel'::algemeen.formaat THEN dt.size_bouwlaag_middel
@@ -136,7 +136,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     o.id AS object_id,
     b.bouwlaag,
     b.bouwdeel,
-    concat_ws('_', dt.symbol_name, '_', dt.symbol_type) AS symbol_name,
+    concat_ws('_', dt.symbol_name, dt.symbol_type) AS symbol_name,
         CASE
             WHEN d.formaat_bouwlaag = 'klein'::algemeen.formaat THEN dt.size_bouwlaag_klein
             WHEN d.formaat_bouwlaag = 'middel'::algemeen.formaat THEN dt.size_bouwlaag_middel
@@ -195,7 +195,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     o.id AS object_id,
     b.bouwlaag,
     b.bouwdeel,
-    concat_ws('_', dt.symbol_name, '_', dt.symbol_type) AS symbol_name,
+    concat_ws('_', dt.symbol_name, dt.symbol_type) AS symbol_name,
         CASE
             WHEN d.formaat_bouwlaag = 'klein'::algemeen.formaat THEN dt.size_bouwlaag_klein
             WHEN d.formaat_bouwlaag = 'middel'::algemeen.formaat THEN dt.size_bouwlaag_middel
@@ -531,7 +531,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone
      JOIN objecten.gevaarlijkestof_vnnr vnnr ON d.gevaarlijkestof_vnnr_id = vnnr.id
-     JOIN objecten.gevaarlijkestof_opslag_type st ON 'Opslag stoffen'::text = st.naam
+     JOIN objecten.gevaarlijkestof_opslag_type st ON op.soort::text = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
@@ -591,7 +591,7 @@ AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
      JOIN objecten.gevaarlijkestof_opslag op ON o.id = op.object_id
      JOIN objecten.gevaarlijkestof d ON op.id = d.opslag_id AND d.parent_deleted = 'infinity'::timestamp with time zone AND d.self_deleted = 'infinity'::timestamp with time zone
      JOIN objecten.gevaarlijkestof_vnnr vnnr ON d.gevaarlijkestof_vnnr_id = vnnr.id
-     JOIN objecten.gevaarlijkestof_opslag_type st ON 'Opslag stoffen'::text = st.naam
+     JOIN objecten.gevaarlijkestof_opslag_type st ON op.soort::text = st.naam
   WHERE (o.datum_geldig_vanaf <= now() OR o.datum_geldig_vanaf IS NULL) AND (o.datum_geldig_tot > now() OR o.datum_geldig_tot IS NULL)
 			AND o.self_deleted = 'infinity'::timestamp with time ZONE AND last_hist.status::text = 'in gebruik'::text;
 
