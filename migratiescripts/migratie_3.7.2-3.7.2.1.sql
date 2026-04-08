@@ -83,7 +83,7 @@ AS $function$
 ;
 
 DROP VIEW IF EXISTS bluswater.view_alternatieve;
-CREATE OR REPLACE VIEW objecten.view_alternatieve
+CREATE OR REPLACE VIEW bluswater.view_alternatieve
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
