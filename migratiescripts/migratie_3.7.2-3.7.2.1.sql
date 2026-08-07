@@ -83,7 +83,7 @@ AS $function$
 ;
 
 DROP VIEW IF EXISTS bluswater.view_alternatieve;
-CREATE OR REPLACE VIEW objecten.view_alternatieve
+CREATE OR REPLACE VIEW bluswater.view_alternatieve
 AS SELECT row_number() OVER (ORDER BY d.id) AS gid,
     d.id,
     d.geom,
@@ -248,3 +248,4 @@ UPDATE algemeen.applicatie SET revisie = 2;
 UPDATE algemeen.applicatie SET db_versie = 3721; -- db versie == versie_sub_revisie
 UPDATE algemeen.applicatie SET omschrijving = '';
 UPDATE algemeen.applicatie SET datum = now();
+
