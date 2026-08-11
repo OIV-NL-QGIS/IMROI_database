@@ -1242,34 +1242,9 @@ AS SELECT DISTINCT o.id,
                    FROM objecten.historie
                   GROUP BY historie.object_id) x ON x.object_id = h_1.object_id AND x.datum_aangemaakt = h_1.datum_aangemaakt) h ON h.object_id = o.id;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.bepaal_hulplijn(p_oude_geom geometry, p_nieuwe_geom geometry)
- RETURNS geometry
- LANGUAGE plpgsql
- IMMUTABLE
-AS $function$
-DECLARE
-    oud_ref geometry(Point);
-    nieuw_ref geometry(Point);
-BEGIN
-
-    -- Geen oude geometrie (INSERT)
-    IF p_oude_geom IS NULL THEN
-        RETURN NULL;
-    END IF;
-
-    -- Geen wijziging
-    IF ST_Equals(p_oude_geom, p_nieuwe_geom) THEN
-        RETURN NULL;
-    END IF;
-
-    oud_ref := mobiel_sync.referentiepunt(p_oude_geom);
-    nieuw_ref := mobiel_sync.referentiepunt(p_nieuwe_geom);
-
-    RETURN ST_MakeLine(oud_ref, nieuw_ref);
-
-END;
-$function$
-;
+CREATE TYPE mobiel_sync.koppeling AS (
+	bouwlaag_id int4,
+	object_id int4);
 
 CREATE OR REPLACE FUNCTION mobiel_sync.bepaal_koppeling(p_geom geometry, p_bouwlaag_object text, p_bouwlaag integer DEFAULT NULL::integer, p_max_afstand_bouwlaag numeric DEFAULT 50, p_max_afstand_object numeric DEFAULT 100)
  RETURNS mobiel_sync.koppeling
@@ -4252,6 +4227,92 @@ END;
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_werkvoorraad_automatisch_check(p_typeobject text, p_brontabel text, p_datum_geldig_vanaf timestamp with time zone, p_datum_geldig_tot timestamp with time zone)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+
+    RETURN EXISTS (
+        SELECT 1
+        FROM mobiel_sync.werkvoorraad_automatisch r
+        WHERE r.actief
+
+          -- Typeobject moet altijd specifiek matchen
+          AND r.typeobject = p_typeobject
+
+          -- Brontabel specifiek of ALL
+          AND (r.brontabel = 'ALL' OR r.brontabel = p_brontabel)
+
+          -- Geldig vanaf
+          AND (r.geldig_vanaf_dagen IS NULL OR p_datum_geldig_vanaf IS NULL OR p_datum_geldig_vanaf <= CURRENT_DATE + r.geldig_vanaf_dagen)
+
+          -- Geldig tot
+          AND (r.geldig_tot_dagen IS NULL OR p_datum_geldig_tot IS NULL OR p_datum_geldig_tot >= CURRENT_DATE - r.geldig_tot_dagen)
+    );
+
+END;
+$function$
+;
+
+CREATE OR REPLACE PROCEDURE mobiel_sync.verwerk_werkvoorraad_automatisch()
+LANGUAGE plpgsql
+AS $procedure$
+DECLARE
+    r record;
+BEGIN
+
+    -- Symbolen
+    FOR r IN
+        SELECT w.id
+        FROM mobiel_sync.werkvoorraad_symbool w
+        JOIN mobiel_sync.objecten_source o ON o.id = w.object_id
+        WHERE w.status = 'OPEN'
+          AND mobiel_sync.verwerk_werkvoorraad_automatisch_check(
+                o.typeobject, w.brontabel, o.datum_geldig_vanaf, o.datum_geldig_tot)
+    LOOP
+        CALL mobiel_sync.verwerk_werkvoorraad('mobiel_sync.werkvoorraad_symbool', r.id, true);
+    END LOOP;
+
+    -- Labels
+    FOR r IN
+        SELECT w.id
+        FROM mobiel_sync.werkvoorraad_label w
+        JOIN mobiel_sync.objecten_source o ON o.id = w.object_id
+        WHERE w.status = 'OPEN'
+          AND mobiel_sync.verwerk_werkvoorraad_automatisch_check(
+                o.typeobject, w.brontabel, o.datum_geldig_vanaf, o.datum_geldig_tot)
+    LOOP
+        CALL mobiel_sync.verwerk_werkvoorraad('mobiel_sync.werkvoorraad_label', r.id, true);
+    END LOOP;
+
+    -- Lijnen
+    FOR r IN
+        SELECT w.id
+        FROM mobiel_sync.werkvoorraad_lijn w
+        JOIN mobiel_sync.objecten_source o ON o.id = w.object_id
+        WHERE w.status = 'OPEN'
+          AND mobiel_sync.verwerk_werkvoorraad_automatisch_check(
+                o.typeobject, w.brontabel, o.datum_geldig_vanaf, o.datum_geldig_tot)
+    LOOP
+        CALL mobiel_sync.verwerk_werkvoorraad('mobiel_sync.werkvoorraad_lijn', r.id, true);
+    END LOOP;
+
+    -- Vlakken
+    FOR r IN
+        SELECT w.id
+        FROM mobiel_sync.werkvoorraad_vlak w
+        JOIN mobiel_sync.objecten_source o ON o.id = w.object_id
+        WHERE w.status = 'OPEN'
+          AND mobiel_sync.verwerk_werkvoorraad_automatisch_check(
+                o.typeobject, w.brontabel, o.datum_geldig_vanaf, o.datum_geldig_tot)
+    LOOP
+        CALL mobiel_sync.verwerk_werkvoorraad('mobiel_sync.werkvoorraad_vlak', r.id, true);
+    END LOOP;
+
+END;
+$procedure$;
+
 CREATE OR REPLACE PROCEDURE mobiel_sync.sync()
  LANGUAGE plpgsql
 AS $procedure$
@@ -4282,6 +4343,9 @@ BEGIN
         CALL mobiel_sync.pull_contactpersoon();
         CALL mobiel_sync.pull_bedrijfshulpverlening();
         CALL mobiel_sync.pull_gebruiksfunctie();
+
+		-- Automatisch toegestane werkvoorraad verwerken 
+		CALL mobiel_sync.verwerk_werkvoorraad_automatisch();
 
         UPDATE mobiel_sync.log
         SET
@@ -4315,6 +4379,90 @@ WHEN OTHERS THEN
 
 END;
 $procedure$
+;
+
+
+CREATE OR REPLACE FUNCTION mobiel_sync.bepaal_koppeling_sql(p_brontabel text, p_bouwlaag_object text, p_bouwlaag_id integer, p_object_id integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_heeft_bouwlaag boolean;
+    v_heeft_object boolean;
+BEGIN
+
+    SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'objecten'
+          AND table_name = p_brontabel
+          AND column_name = 'bouwlaag_id'
+    )
+    INTO v_heeft_bouwlaag;
+
+    SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'objecten'
+          AND table_name = p_brontabel
+          AND column_name = 'object_id'
+    )
+    INTO v_heeft_object;
+
+
+    IF p_bouwlaag_object = 'bouwlaag' THEN
+
+        IF NOT v_heeft_bouwlaag THEN
+            RAISE EXCEPTION
+                'Tabel objecten.% heeft geen bouwlaag_id',
+                p_brontabel;
+        END IF;
+
+        IF v_heeft_object THEN
+            RETURN format(
+                'bouwlaag_id = %L, object_id = NULL',
+                p_bouwlaag_id
+            );
+        ELSE
+            RETURN format(
+                'bouwlaag_id = %L',
+                p_bouwlaag_id
+            );
+        END IF;
+
+
+    ELSIF p_bouwlaag_object = 'object' THEN
+
+        IF NOT v_heeft_object THEN
+            RAISE EXCEPTION
+                'Tabel objecten.% heeft geen object_id',
+                p_brontabel;
+        END IF;
+
+        IF v_heeft_bouwlaag THEN
+            RETURN format(
+                'bouwlaag_id = NULL, object_id = %L',
+                p_object_id
+            );
+        ELSE
+            RETURN format(
+                'object_id = %L',
+                p_object_id
+            );
+        END IF;
+
+
+    ELSE
+
+        RAISE EXCEPTION
+            'Ongeldige waarde bouwlaag_object voor %: %',
+            p_brontabel,
+            p_bouwlaag_object;
+
+    END IF;
+
+END;
+$function$
 ;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_label_delete(p_brontabel text, p_data jsonb)
@@ -4370,53 +4518,62 @@ BEGIN
         (p_data->>'bouwlaag_id')::integer,
         (p_data->>'object_id')::integer,
         p_data->>'opmerking',
-        (p_data->>'formaat')::algemeen.formaat,
-        (p_data->>'formaat')::algemeen.formaat;
+        (p_data->>'formaat_bouwlaag')::algemeen.formaat,
+        (p_data->>'formaat_object')::algemeen.formaat;
 
 END;
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_label_update(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_label_update(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
+    v_koppeling text;
 BEGIN
-	v_sql := format($sql$
-	    UPDATE objecten.%I
-	    SET
-	        geom = ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        soort = (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),
-	        rotatie = $3,
-	        omschrijving = $4,
-	        bouwlaag_id = $5,
-	        object_id = $6,
-	        opmerking = $7,
-	        formaat_bouwlaag = $8,
-	        formaat_object = $9
-	    WHERE id = $10
-		$sql$,
-		p_brontabel,
-		p_brontabel);
+
+    v_koppeling := mobiel_sync.bepaal_koppeling_sql(
+        p_brontabel,
+        p_data->>'bouwlaag_object',
+        (p_data->>'bouwlaag_id')::integer,
+        (p_data->>'object_id')::integer
+    );
+
+    v_sql := format($sql$
+        UPDATE objecten.%I
+        SET
+            geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
+            %s,
+            label = $2,
+            rotatie = $3,
+            opmerking = $4,
+            label_positie = $5,
+            formaat_bouwlaag = $6,
+            formaat_object = $7
+        WHERE id = $8
+    $sql$,
+        p_brontabel,
+        v_koppeling
+    );
 
     EXECUTE v_sql
     USING
         p_data->>'geom',
-        p_data->>'symbol_name',
+        p_data->>'label',
         (p_data->>'rotatie')::integer,
-        p_data->>'omschrijving',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
         p_data->>'opmerking',
-        (p_data->>'formaat')::algemeen.formaat,
-        (p_data->>'formaat')::algemeen.formaat,
+        (p_data->>'label_positie')::algemeen.labelposition,
+        (p_data->>'formaat_bouwlaag')::algemeen.formaat,
+        (p_data->>'formaat_object')::algemeen.formaat,
         (p_data->>'bron_id')::integer;
+
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_delete(p_brontabel text, p_data jsonb)
  RETURNS void
@@ -4431,77 +4588,104 @@ END;
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_insert(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_insert(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
 BEGIN
-	v_sql := format($sql$
-	    INSERT INTO objecten.%I
-	    (
-	        geom,
-	        soort,
-	        bouwlaag_id,
-	        object_id,
-	        opmerking
-	    )
-	    VALUES
-	    (
-	        ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),
-	        $3,$4,$5
-	    )
-	$sql$,
-	p_brontabel,
-	p_brontabel);
 
-    EXECUTE v_sql
-    USING
-        p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
-        p_data->>'opmerking';
+    IF p_data->>'bouwlaag_object' = 'bouwlaag' THEN
 
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, bouwlaag_id, opmerking)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4)
+        $sql$,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'bouwlaag_id')::integer,
+            p_data->>'opmerking';
+
+    ELSIF p_data->>'bouwlaag_object' = 'object' THEN
+
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, object_id, opmerking)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4)
+        $sql$,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'object_id')::integer,
+            p_data->>'opmerking';
+
+    ELSE
+
+        RAISE EXCEPTION
+            'Ongeldige waarde bouwlaag_object voor %: %',
+            p_brontabel,
+            p_data->>'bouwlaag_object';
+    END IF;
 END;
-$function$
-;
+$function$;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_update(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_update(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
+    v_koppeling text;
 BEGIN
-	v_sql := format($sql$
-	    UPDATE objecten.%I
-	    SET
-	        geom = ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        soort = (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),,
-	        bouwlaag_id = $3,
-	        object_id = $4,
-	        opmerking = $5
-	    WHERE id = $6
-		$sql$,
-		p_brontabel,
-		p_brontabel);
+
+    v_koppeling := mobiel_sync.bepaal_koppeling_sql(
+        p_brontabel,
+        p_data->>'bouwlaag_object',
+        (p_data->>'bouwlaag_id')::integer,
+        (p_data->>'object_id')::integer
+    );
+
+    v_sql := format($sql$
+        UPDATE objecten.%I
+        SET
+            geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
+            soort = $2,
+            %s,
+            opmerking = $3
+        WHERE id = $4
+    $sql$,
+        p_brontabel,
+        v_koppeling
+    );
 
     EXECUTE v_sql
     USING
         p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
+        p_data->>'soort',
         p_data->>'opmerking',
         (p_data->>'bron_id')::integer;
+
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_symbool_delete(p_brontabel text, p_data jsonb)
  RETURNS void
@@ -4516,97 +4700,168 @@ END;
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_symbool_insert(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_symbool_insert(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
 BEGIN
-	v_sql := format($sql$
-	    INSERT INTO objecten.%I
-	    (
-	        geom,
-	        soort,
-	        rotatie,
-	        label,
-	        bouwlaag_id,
-	        object_id,
-	        opmerking,
-	        label_positie,
-	        formaat_bouwlaag,
-	        formaat_object
-	    )
-	    VALUES
-	    (
-	        ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),
-	        $3,$4,$5,$6,$7,$8,$9,$10
-	    )
-	$sql$,
-	p_brontabel,
-	p_brontabel);
 
-    EXECUTE v_sql
-    USING
-        p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'rotatie')::integer,
-        p_data->>'label',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
-        p_data->>'opmerking',
-        (p_data->>'label_positie')::algemeen.labelposition,
-        (p_data->>'formaat')::algemeen.formaat,
-        (p_data->>'formaat')::algemeen.formaat;
+    IF p_data->>'bouwlaag_object' = 'bouwlaag' THEN
+
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, rotatie, label, bouwlaag_id, opmerking, label_positie, formaat_bouwlaag)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4, $5, $6, $7, $8)
+        $sql$,
+            p_brontabel,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'rotatie')::integer,
+            p_data->>'label',
+            (p_data->>'bouwlaag_id')::integer,
+            p_data->>'opmerking',
+            (p_data->>'label_positie')::algemeen.labelposition,
+            (p_data->>'formaat_bouwlaag')::algemeen.formaat;
+
+
+    ELSIF p_data->>'bouwlaag_object' = 'object' THEN
+
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, rotatie, label, object_id, opmerking, label_positie, formaat_object)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4, $5, $6, $7, $8)
+        $sql$,
+            p_brontabel,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'rotatie')::integer,
+            p_data->>'label',
+            (p_data->>'object_id')::integer,
+            p_data->>'opmerking',
+            (p_data->>'label_positie')::algemeen.labelposition,
+            (p_data->>'formaat_object')::algemeen.formaat;
+
+    ELSE
+
+        RAISE EXCEPTION
+            'Ongeldige waarde bouwlaag_object voor %: %',
+            p_brontabel,
+            p_data->>'bouwlaag_object';
+
+    END IF;
 
 END;
-$function$
-;
+$function$;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_symbool_update(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_symbool_update(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
+    v_koppeling text;
 BEGIN
-	v_sql := format($sql$
-	    UPDATE objecten.%I
-	    SET
-	        geom = ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        soort = (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),
-	        rotatie = $3,
-	        label = $4,
-	        bouwlaag_id = $5,
-	        object_id = $6,
-	        opmerking = $7,
-	        label_positie = $8,
-	        formaat_bouwlaag = $9,
-	        formaat_object = $10
-	    WHERE id = $11
-	$sql$,
-	p_brontabel,
-	p_brontabel);
 
-    EXECUTE v_sql
-    USING
-        p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'rotatie')::integer,
-        p_data->>'label',
+    v_koppeling := mobiel_sync.bepaal_koppeling_sql(
+        p_brontabel,
+        p_data->>'bouwlaag_object',
         (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
-        p_data->>'opmerking',
-        (p_data->>'label_positie')::algemeen.labelposition,
-        (p_data->>'formaat')::algemeen.formaat,
-        (p_data->>'formaat')::algemeen.formaat,
-        (p_data->>'bron_id')::integer;
+        (p_data->>'object_id')::integer
+    );
+
+    IF p_data->>'bouwlaag_object' = 'bouwlaag' THEN
+
+        v_sql := format($sql$
+            UPDATE objecten.%I
+            SET
+                geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
+                soort = $2,
+                rotatie = $3,
+                label = $4,
+                %s,
+                opmerking = $5,
+                label_positie = $6,
+                formaat_bouwlaag = $7
+            WHERE id = $8
+        $sql$,
+            p_brontabel,
+            v_koppeling
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'rotatie')::integer,
+            p_data->>'label',
+            p_data->>'opmerking',
+            (p_data->>'label_positie')::algemeen.labelposition,
+            (p_data->>'formaat_bouwlaag')::algemeen.formaat,
+            (p_data->>'bron_id')::integer;
+
+
+    ELSIF p_data->>'bouwlaag_object' = 'object' THEN
+
+        v_sql := format($sql$
+            UPDATE objecten.%I
+            SET
+                geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
+                soort = $2,
+                rotatie = $3,
+                label = $4,
+                %s,
+                opmerking = $5,
+                label_positie = $6,
+                formaat_object = $7
+            WHERE id = $8
+        $sql$,
+            p_brontabel,
+            v_koppeling
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'rotatie')::integer,
+            p_data->>'label',
+            p_data->>'opmerking',
+            (p_data->>'label_positie')::algemeen.labelposition,
+            (p_data->>'formaat_object')::algemeen.formaat,
+            (p_data->>'bron_id')::integer;
+
+
+    ELSE
+
+        RAISE EXCEPTION
+            'Ongeldige waarde bouwlaag_object voor %: %',
+            p_brontabel,
+            p_data->>'bouwlaag_object';
+
+    END IF;
+
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_vlak_delete(p_brontabel text, p_data jsonb)
  RETURNS void
@@ -4622,76 +4877,100 @@ $function$
 ;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_vlak_insert(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
 BEGIN
-	v_sql := format($sql$
-	    INSERT INTO objecten.%I
-	    (
-	        geom,
-	        soort,
-	        bouwlaag_id,
-	        object_id,
-	        opmerking
-	    )
-	    VALUES
-	    (
-	        ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),
-	        $3,$4,$5
-	    )
-	$sql$,
-	p_brontabel,
-	p_brontabel);
 
-    EXECUTE v_sql
-    USING
-        p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
-        p_data->>'opmerking';
+    IF p_data->>'bouwlaag_object' = 'bouwlaag' THEN
 
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, bouwlaag_id, opmerking)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4)
+        $sql$,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'bouwlaag_id')::integer,
+            p_data->>'opmerking';
+
+    ELSIF p_data->>'bouwlaag_object' = 'object' THEN
+
+        v_sql := format($sql$
+            INSERT INTO objecten.%I
+            (geom, soort, object_id, opmerking)
+            VALUES
+            (ST_SetSRID(ST_GeomFromGeoJSON($1), 28992), $2, $3, $4)
+        $sql$,
+            p_brontabel
+        );
+
+        EXECUTE v_sql
+        USING
+            p_data->>'geom',
+            p_data->>'soort',
+            (p_data->>'object_id')::integer,
+            p_data->>'opmerking';
+
+    ELSE
+
+        RAISE EXCEPTION
+            'Ongeldige waarde bouwlaag_object voor %: %',
+            p_brontabel,
+            p_data->>'bouwlaag_object';
+    END IF;
 END;
-$function$
-;
+$function$;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_vlak_update(p_brontabel text, p_data jsonb)
- RETURNS void
- LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_vlak_update(
+    p_brontabel text,
+    p_data jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
-    v_type_tabel text;
+    v_koppeling text;
 BEGIN
-	v_sql := format($sql$
-	    UPDATE objecten.%I
-	    SET
-	        geom = ST_SetSRID(ST_GeomFromGeoJSON($1),28992),
-	        soort = (SELECT naam FROM objecten.%I_type WHERE symbol_name = $2),,
-	        bouwlaag_id = $3,
-	        object_id = $4,
-	        opmerking = $5
-	    WHERE id = $6
-		$sql$,
-		p_brontabel,
-		p_brontabel);
+
+    v_koppeling := mobiel_sync.bepaal_koppeling_sql(
+        p_brontabel,
+        p_data->>'bouwlaag_object',
+        (p_data->>'bouwlaag_id')::integer,
+        (p_data->>'object_id')::integer
+    );
+
+    v_sql := format($sql$
+        UPDATE objecten.%I
+        SET
+            geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
+            soort = $2,
+            %s,
+            opmerking = $3
+        WHERE id = $4
+    $sql$,
+        p_brontabel,
+        v_koppeling
+    );
 
     EXECUTE v_sql
     USING
         p_data->>'geom',
-        p_data->>'symbol_name',
-        (p_data->>'bouwlaag_id')::integer,
-        (p_data->>'object_id')::integer,
+        p_data->>'soort',
         p_data->>'opmerking',
         (p_data->>'bron_id')::integer;
+
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE PROCEDURE mobiel_sync.verwerk_werkvoorraad(p_werkvoorraad_tabel regclass, p_id integer, p_accepted boolean, p_conflict_actie text DEFAULT NULL::text)
  LANGUAGE plpgsql
@@ -4839,6 +5118,234 @@ BEGIN
 END;
 $function$
 ;
+
+CREATE TRIGGER trg_werkvoorraad_label_ins BEFORE
+INSERT
+    ON
+    mobiel.labels FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_label_ins();
+CREATE TRIGGER trg_werkvoorraad_label_upd BEFORE
+UPDATE
+    ON
+    mobiel.labels FOR EACH ROW
+    WHEN ((old.* IS DISTINCT
+FROM
+    new.*)) EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_label_upd();
+CREATE TRIGGER trg_werkvoorraad_label_del BEFORE
+DELETE
+    ON
+    mobiel.labels FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_label_del();
+
+CREATE TABLE mobiel.lijn_types (
+	id int4 NOT NULL,
+	naam text NOT NULL,
+	categorie text NOT NULL,
+	bouwlaag_object text NOT NULL,
+	brontabel text NOT NULL,
+	CONSTRAINT lijn_types_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE mobiel.lijnen (
+	id int8 GENERATED BY DEFAULT AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	geom public.geometry(multilinestring, 28992) NULL,
+	brontabel text NOT NULL,
+	bron_id int8 NULL,
+	object_id int8 NULL,
+	bouwlaag_id int8 NULL,
+	symbol_name text NULL,
+	bouwlaag int4 NULL,
+	bouwlaag_object text NULL,
+	bron text DEFAULT 'oiv'::text NULL,
+	oiv_datum_aangemaakt timestamp NULL,
+	oiv_datum_gewijzigd timestamp NULL,
+	opmerking text NULL,
+	sync_status int2 DEFAULT 0 NOT NULL,
+	modified_at timestamp NULL,
+	modified_by text NULL,
+	CONSTRAINT lijnen_pkey PRIMARY KEY (id)
+);
+CREATE INDEX lijnen_bouwlaag_id_idx ON mobiel.lijnen USING btree (bouwlaag_id);
+CREATE INDEX lijnen_bron_id_idx ON mobiel.lijnen USING btree (bron_id);
+CREATE INDEX lijnen_object_id_idx ON mobiel.lijnen USING btree (object_id);
+CREATE INDEX lijnen_sync_status_idx ON mobiel.lijnen USING btree (sync_status);
+
+CREATE TRIGGER trg_werkvoorraad_lijn_ins BEFORE
+INSERT
+    ON
+    mobiel.lijnen FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_lijn_ins();
+CREATE TRIGGER trg_werkvoorraad_lijn_upd BEFORE
+UPDATE
+    ON
+    mobiel.lijnen FOR EACH ROW
+    WHEN ((old.* IS DISTINCT
+FROM
+    new.*)) EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_lijn_upd();
+CREATE TRIGGER trg_werkvoorraad_lijn_del BEFORE
+DELETE
+    ON
+    mobiel.lijnen FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_lijn_del();
+
+CREATE TABLE mobiel.object_type (
+	id int2 NOT NULL,
+	naam varchar(100) NULL,
+	symbol_name text NULL,
+	"size" int4 NULL,
+	symbol_type text DEFAULT 'c'::algemeen.symb_type NULL,
+	actief_ruimtelijk bool DEFAULT true NULL,
+	symbol_svg_png varchar(5) NULL,
+	CONSTRAINT object_type_naam_key UNIQUE (naam),
+	CONSTRAINT object_type_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE mobiel.objecten (
+	id int4 NOT NULL,
+	geom public.geometry(point, 28992) NULL,
+	datum_aangemaakt timestamp NULL,
+	datum_gewijzigd timestamp NULL,
+	basisreg_identifier varchar(254) NULL,
+	formelenaam varchar(255) NULL,
+	bijzonderheden text NULL,
+	pers_max int4 NULL,
+	pers_nietz_max int4 NULL,
+	datum_geldig_tot timestamp NULL,
+	datum_geldig_vanaf timestamp NULL,
+	bron varchar(3) NULL,
+	bron_tabel varchar(25) NULL,
+	fotografie_id int4 NULL,
+	bodemgesteldheid_type_id int4 NULL,
+	min_bouwlaag int4 NULL,
+	max_bouwlaag int4 NULL,
+	typeobject text NULL,
+	"share" bool NULL,
+	symbol_name text NULL,
+	"size" int4 NULL,
+	CONSTRAINT objecten_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE mobiel.styles (
+	id int4 NOT NULL,
+	laagnaam varchar(100) NULL,
+	soortnaam varchar(100) NULL,
+	lijndikte numeric(5, 2) NULL,
+	lijnkleur varchar(9) NULL,
+	lijnstijl text NULL,
+	vulkleur varchar(9) NULL,
+	vulstijl text NULL,
+	verbindingsstijl text NULL,
+	eindstijl text NULL,
+	CONSTRAINT styles_pkey PRIMARY KEY (id),
+	CONSTRAINT styles_soortnaam_key UNIQUE (soortnaam)
+);
+
+CREATE TABLE mobiel.symbol_types (
+	id int4 NOT NULL,
+	naam text NOT NULL,
+	symbol_name text NULL,
+	size_klein numeric NULL,
+	size_middel numeric NULL,
+	size_groot numeric NULL,
+	symbol_type text NULL,
+	anchorpoint text NULL,
+	categorie text NOT NULL,
+	bouwlaag_object text NOT NULL,
+	brontabel text NOT NULL,
+	symbol_svg_png text NULL,
+	CONSTRAINT symbol_types_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE mobiel.symbolen (
+	id int8 GENERATED BY DEFAULT AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	orig_id int8 NULL,
+	geom public.geometry(point, 28992) NULL,
+	brontabel text NOT NULL,
+	bron_id int8 NULL,
+	object_id int8 NULL,
+	bouwlaag_id int8 NULL,
+	symbol_name text NULL,
+	rotatie numeric NULL,
+	"size" numeric NULL,
+	bouwlaag int4 NULL,
+	bouwlaag_object text NULL,
+	bron text DEFAULT 'oiv'::text NULL,
+	oiv_datum_aangemaakt timestamp NULL,
+	oiv_datum_gewijzigd timestamp NULL,
+	opmerking text NULL,
+	formaat text NULL,
+	"label" text NULL,
+	label_positie text NULL,
+	sync_status int2 DEFAULT 0 NOT NULL,
+	modified_at timestamp NULL,
+	modified_by text NULL,
+	CONSTRAINT symbolen_pkey PRIMARY KEY (id)
+);
+CREATE INDEX symbolen_bouwlaag_id_idx ON mobiel.symbolen USING btree (bouwlaag_id);
+CREATE INDEX symbolen_bron_id_idx ON mobiel.symbolen USING btree (bron_id);
+CREATE INDEX symbolen_object_id_idx ON mobiel.symbolen USING btree (object_id);
+CREATE INDEX symbolen_sync_status_idx ON mobiel.symbolen USING btree (sync_status);
+
+CREATE TRIGGER trg_werkvoorraad_symbool_ins BEFORE
+INSERT
+    ON
+    mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_symbool_ins();
+CREATE TRIGGER trg_werkvoorraad_symbool_upd BEFORE
+UPDATE
+    ON
+    mobiel.symbolen FOR EACH ROW
+    WHEN ((old.* IS DISTINCT
+FROM
+    new.*)) EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_symbool_upd();
+CREATE TRIGGER trg_werkvoorraad_symbool_del BEFORE
+DELETE
+    ON
+    mobiel.symbolen FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_symbool_del();
+
+CREATE TABLE mobiel.vlak_types (
+	id int4 NOT NULL,
+	naam text NOT NULL,
+	categorie text NOT NULL,
+	bouwlaag_object text NOT NULL,
+	brontabel text NOT NULL,
+	CONSTRAINT vlak_types_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE mobiel.vlakken (
+	id int8 GENERATED BY DEFAULT AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	geom public.geometry(multipolygon, 28992) NULL,
+	brontabel text NOT NULL,
+	bron_id int8 NULL,
+	object_id int8 NULL,
+	bouwlaag_id int8 NULL,
+	symbol_name text NULL,
+	bouwlaag int4 NULL,
+	bouwlaag_object text NULL,
+	bron text DEFAULT 'oiv'::text NULL,
+	oiv_datum_aangemaakt timestamp NULL,
+	oiv_datum_gewijzigd timestamp NULL,
+	opmerking text NULL,
+	sync_status int2 DEFAULT 0 NOT NULL,
+	modified_at timestamp NULL,
+	modified_by text NULL,
+	CONSTRAINT vlakken_pkey PRIMARY KEY (id)
+);
+CREATE INDEX vlakken_bouwlaag_id_idx ON mobiel.vlakken USING btree (bouwlaag_id);
+CREATE INDEX vlakken_bron_id_idx ON mobiel.vlakken USING btree (bron_id);
+CREATE INDEX vlakken_object_id_idx ON mobiel.vlakken USING btree (object_id);
+CREATE INDEX vlakken_sync_status_idx ON mobiel.vlakken USING btree (sync_status);
+
+CREATE TRIGGER trg_werkvoorraad_vlak_ins BEFORE
+INSERT
+    ON
+    mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_vlak_ins();
+CREATE TRIGGER trg_werkvoorraad_vlak_upd BEFORE
+UPDATE
+    ON
+    mobiel.vlakken FOR EACH ROW
+    WHEN ((old.* IS DISTINCT
+FROM
+    new.*)) EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_vlak_upd();
+CREATE TRIGGER trg_werkvoorraad_vlak_del BEFORE
+DELETE
+    ON
+    mobiel.vlakken FOR EACH ROW EXECUTE FUNCTION mobiel_sync.func_werkvoorraad_vlak_del();
 
 -- Update versie van de applicatie
 UPDATE algemeen.applicatie SET sub = 7;

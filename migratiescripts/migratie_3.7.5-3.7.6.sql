@@ -1087,8 +1087,7 @@ CREATE OR REPLACE FUNCTION objecten.func_afw_binnendekking_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.afw_binnendekking (geom, soort, label, rotatie, opmerking, bouwlaag_id, label_positie, formaat_bouwlaag)
-    VALUES (new.geom, new.soort, new.label, new.rotatie, new.opmerking, new.bouwlaag_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition), COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+    VALUES (new.geom, new.soort, new.label, new.rotatie, new.opmerking, new.bouwlaag_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition), COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
@@ -1122,8 +1121,7 @@ CREATE OR REPLACE FUNCTION objecten.func_bereikbaarheid_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.bereikbaarheid (geom, opmerking, soort, object_id, fotografie_id, label)
-    VALUES (new.geom, new.opmerking, new.soort, new.object_id, new.fotografie_id, new.label)
-    RETURNING * INTO NEW;
+    VALUES (new.geom, new.opmerking, new.soort, new.object_id, new.fotografie_id, new.label);
     RETURN NEW;
 END;
 $function$;
@@ -1157,8 +1155,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.dreiging (geom, soort, label, opmerking, rotatie, bouwlaag_id, object_id, fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.opmerking, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
@@ -1193,8 +1190,7 @@ CREATE OR REPLACE FUNCTION objecten.func_gebiedsgerichte_aanpak_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.gebiedsgerichte_aanpak (geom, soort, label, opmerking, object_id, fotografie_id)
-    VALUES (new.geom, new.soort, new.label, new.opmerking, new.object_id, new.fotografie_id)
-    RETURNING * INTO NEW;        
+    VALUES (new.geom, new.soort, new.label, new.opmerking, new.object_id, new.fotografie_id);        
     RETURN NEW;
 END;
 $function$;
@@ -1228,8 +1224,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.ingang (geom, soort, label, opmerking, rotatie, bouwlaag_id, object_id, fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.opmerking, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;    
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));    
     RETURN NEW;
 END;
 $function$;
@@ -1263,8 +1258,7 @@ CREATE OR REPLACE FUNCTION objecten.func_isolijnen_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.isolijnen (geom, hoogte, opmerking, object_id)
-    VALUES (new.geom, new.hoogte, new.opmerking, new.object_id)
-    RETURNING * INTO NEW;  
+    VALUES (new.geom, new.hoogte, new.opmerking, new.object_id);  
     RETURN NEW;
 END;
 $function$;
@@ -1298,8 +1292,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.label (geom, soort, omschrijving, rotatie, bouwlaag_id, object_id, opmerking, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.soort, new.omschrijving, new.rotatie, new.bouwlaag_id, new.object_id, new.opmerking,
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;  
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));  
     RETURN NEW;
 END;
 $function$;
@@ -1334,8 +1327,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.gevaarlijkestof_opslag (geom, opmerking, bouwlaag_id, object_id, fotografie_id, rotatie, label, soort, label_positie, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.opmerking, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie, new.label, new.soort, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW; 
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat)); 
     RETURN NEW;
 END;
 $function$;
@@ -1370,8 +1362,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.opstelplaats (geom, soort, label, opmerking, rotatie, object_id, fotografie_id, label_positie, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.opmerking, new.rotatie, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+            COALESCE(new.formaat_object, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
@@ -1406,8 +1397,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.points_of_interest (geom, soort, label, opmerking, rotatie, object_id, fotografie_id, label_positie, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.opmerking, new.rotatie, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+            COALESCE(new.formaat_object, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
@@ -1441,8 +1431,7 @@ CREATE OR REPLACE FUNCTION objecten.func_ruimten_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.ruimten (geom, soort, opmerking, bouwlaag_id, fotografie_id)
-    VALUES (new.geom, new.soort, new.opmerking, new.bouwlaag_id, new.fotografie_id)
-    RETURNING * INTO NEW;
+    VALUES (new.geom, new.soort, new.opmerking, new.bouwlaag_id, new.fotografie_id);
     RETURN NEW;
 END;
 $function$;
@@ -1476,8 +1465,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.scenario_locatie (geom, opmerking, bouwlaag_id, object_id, fotografie_id, rotatie, label, label_positie, soort, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.opmerking, new.bouwlaag_id, new.object_id, new.fotografie_id, new.rotatie, new.label, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition), new.soort,
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
@@ -1511,8 +1499,7 @@ CREATE OR REPLACE FUNCTION objecten.func_sectoren_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.sectoren (geom, soort, opmerking, label, object_id, fotografie_id)
-    VALUES (new.geom, new.soort, new.opmerking, new.label, new.object_id, new.fotografie_id)
-    RETURNING * INTO NEW;
+    VALUES (new.geom, new.soort, new.opmerking, new.label, new.object_id, new.fotografie_id);
     RETURN NEW;
 END;
 $function$;
@@ -1547,8 +1534,7 @@ BEGIN
     INSERT INTO objecten.sleutelkluis (geom, soort, label, rotatie, opmerking, sleuteldoel, bouwlaag_id, object_id, 
                                         fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.rotatie, new.opmerking, new.sleuteldoel, new.bouwlaag_id, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;            
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));            
     RETURN NEW;
 END;
 $function$;
@@ -1582,8 +1568,7 @@ CREATE OR REPLACE FUNCTION objecten.func_veiligh_bouwk_ins()
 AS $function$
 BEGIN
     INSERT INTO objecten.veiligh_bouwk (geom, soort, bouwlaag_id, fotografie_id, opmerking)
-    VALUES (new.geom, new.soort, new.bouwlaag_id, new.fotografie_id, new.opmerking)
-    RETURNING * INTO NEW;
+    VALUES (new.geom, new.soort, new.bouwlaag_id, new.fotografie_id, new.opmerking);
     RETURN NEW;
 END;
 $function$;
@@ -1617,8 +1602,7 @@ AS $function$
 BEGIN
     INSERT INTO objecten.veiligh_install (geom, soort, label, opmerking, rotatie, bouwlaag_id, object_id, fotografie_id, label_positie, formaat_bouwlaag, formaat_object)
     VALUES (new.geom, new.soort, new.label, new.opmerking, new.rotatie, new.bouwlaag_id, new.object_id, new.fotografie_id, COALESCE(new.label_positie, 'onder - midden'::algemeen.labelposition),
-            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat))
-    RETURNING * INTO NEW;
+            COALESCE(new.formaat_bouwlaag, 'middel'::algemeen.formaat), COALESCE(new.formaat_object, 'middel'::algemeen.formaat));
     RETURN NEW;
 END;
 $function$;
