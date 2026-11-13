@@ -2,6 +2,10 @@ SET ROLE oiv_admin;
 
 CREATE SCHEMA IF NOT EXISTS mobiel_sync;
 
+GRANT USAGE ON SCHEMA mobiel_sync TO oiv_read;
+GRANT USAGE ON SCHEMA mobiel_sync TO oiv_write;
+GRANT USAGE ON SCHEMA mobiel_sync TO oiv_beheer;
+
 COMMENT ON SCHEMA mobiel_sync IS
 'Procedures en metadata voor het opbouwen en onderhouden van de mobiele OIV database';
 
@@ -198,7 +202,15 @@ AS SELECT annotaties.id,
     annotaties.tekst,
     annotaties.plaatsing,
     annotaties.modified_at,
-    annotaties.modified_by
+    annotaties.modified_by,
+    annotaties.bouwlaag,
+    annotaties.bouwlaag_object,
+    (mobiel_sync.bepaal_koppeling(annotaties.geom, annotaties.bouwlaag_object::text, annotaties.bouwlaag)).bouwlaag_id AS bouwlaag_id,
+    (mobiel_sync.bepaal_koppeling(annotaties.geom, annotaties.bouwlaag_object::text, annotaties.bouwlaag)).object_id AS object_id,
+    ''::text AS operatie,
+    'Annotatie'::text AS soort,
+    'annotatie'::text AS brontabel,
+    'OPEN'::text AS status
    FROM mobiel.annotaties;
 
 CREATE OR REPLACE VIEW mobiel_sync.bedrijfshulpverlening_source
@@ -1136,6 +1148,35 @@ AS SELECT DISTINCT b.id AS bouwlaag_id,
           WHERE werkvoorraad_vlak.bouwlaag_id IS NOT NULL) w
      JOIN objecten.bouwlagen b ON b.id = w.bouwlaag_id;
 
+CREATE OR REPLACE FUNCTION mobiel_sync.bepaal_hulplijn(p_oude_geom geometry, p_nieuwe_geom geometry)
+ RETURNS geometry
+ LANGUAGE plpgsql
+ IMMUTABLE
+AS $function$
+DECLARE
+    oud_ref geometry(Point);
+    nieuw_ref geometry(Point);
+BEGIN
+
+    -- Geen oude geometrie (INSERT)
+    IF p_oude_geom IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    -- Geen wijziging
+    IF ST_Equals(p_oude_geom, p_nieuwe_geom) THEN
+        RETURN NULL;
+    END IF;
+
+    oud_ref := mobiel_sync.referentiepunt(p_oude_geom);
+    nieuw_ref := mobiel_sync.referentiepunt(p_nieuwe_geom);
+
+    RETURN ST_MakeLine(oud_ref, nieuw_ref);
+
+END;
+$function$
+;
+
 CREATE OR REPLACE VIEW mobiel_sync.werkvoorraad_hulplijnen
 AS SELECT sub.id,
     sub.objecttype,
@@ -1214,25 +1255,25 @@ AS SELECT DISTINCT o.id,
            FROM mobiel_sync.werkvoorraad_symbool w_1
              JOIN objecten.bouwlagen b ON b.id = w_1.bouwlaag_id
              JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
-          WHERE w_1.bouwlaag_id IS NOT NULL
+          WHERE w_1.bouwlaag_id IS NOT NULL AND b.self_deleted = 'infinity' AND t.self_deleted = 'infinity'
         UNION ALL
          SELECT t.object_id
            FROM mobiel_sync.werkvoorraad_label w_1
              JOIN objecten.bouwlagen b ON b.id = w_1.bouwlaag_id
              JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
-          WHERE w_1.bouwlaag_id IS NOT NULL
+          WHERE w_1.bouwlaag_id IS NOT NULL AND b.self_deleted = 'infinity' AND t.self_deleted = 'infinity'
         UNION ALL
          SELECT t.object_id
            FROM mobiel_sync.werkvoorraad_lijn w_1
              JOIN objecten.bouwlagen b ON b.id = w_1.bouwlaag_id
              JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
-          WHERE w_1.bouwlaag_id IS NOT NULL
+          WHERE w_1.bouwlaag_id IS NOT NULL AND b.self_deleted = 'infinity' AND t.self_deleted = 'infinity'
         UNION ALL
          SELECT t.object_id
            FROM mobiel_sync.werkvoorraad_vlak w_1
              JOIN objecten.bouwlagen b ON b.id = w_1.bouwlaag_id
              JOIN objecten.terrein t ON st_intersects(b.geom, t.geom)
-          WHERE w_1.bouwlaag_id IS NOT NULL) w
+          WHERE w_1.bouwlaag_id IS NOT NULL AND b.self_deleted = 'infinity' AND t.self_deleted = 'infinity') w
      JOIN objecten.object o ON o.id = w.object_id AND o.self_deleted = 'infinity'::timestamp with time zone
      LEFT JOIN ( SELECT h_1.object_id,
             h_1.typeobject
@@ -1420,23 +1461,24 @@ BEGIN
     END IF;
 
     --------------------------------------------------------------------------
-    -- Nieuw mobiel object
-    -- Geen OIV-identiteit, dus mag nooit door een OIV-pull verdwijnen
+    -- OIV PULL
+    -- PULL mag nooit iets in de werkvoorraad zetten
     --------------------------------------------------------------------------
-    IF OLD.bron_id IS NULL THEN
-        RETURN NULL;
-    END IF;
 
-    --------------------------------------------------------------------------
-    -- OIV verwijdert een object
-    -- Alleen conflict wanneer mobiel nog wijzigingen bevat
-    --------------------------------------------------------------------------
     IF mobiel_sync.context() = 'PULL' THEN
 
-        IF OLD.sync_status = 1 THEN
-            v_status := 'CONFLICT';
+        -- Mobiel-only object: mag nooit door PULL verdwijnen
+        IF OLD.bron_id IS NULL THEN
+            RETURN NULL;
         END IF;
 
+        -- Mobiele wijzigingen aanwezig: PULL mag niet verwijderen
+        IF OLD.sync_status <> 0 THEN
+            RETURN NULL;
+        END IF;
+
+        -- Geen mobiele wijzigingen: OIV-delete mag doorgaan
+        RETURN OLD;
     END IF;
 
     --------------------------------------------------------------------------
@@ -1502,6 +1544,9 @@ BEGIN
             object_id = OLD.object_id,
             bouwlaag_id = OLD.bouwlaag_id,
 			symbol_name = OLD.symbol_name,
+			bouwlaag = OLD.bouwlaag,
+			formaat_bouwlaag = OLD.formaat::algemeen.formaat,
+			formaat_object = OLD.formaat::algemeen.formaat,
 			soort = v_soort
         WHERE id = v_wv_id;
 
@@ -1524,8 +1569,10 @@ BEGIN
             object_id,
             bouwlaag_id,
 			symbol_name,
-			soort,
-            conflict_data
+			bouwlaag,
+			formaat_bouwlaag,
+			formaat_object,
+			soort
         )
         VALUES
         (
@@ -1540,6 +1587,9 @@ BEGIN
             OLD.object_id,
             OLD.bouwlaag_id,
 			OLD.symbol_name,
+			OLD.bouwlaag,
+			OLD.formaat::algemeen.formaat,
+			OLD.formaat::algemeen.formaat,
 			v_soort
         );
 
@@ -1636,20 +1686,20 @@ BEGIN
                 RETURN NEW;
             END IF;
 
-            -- Mobiel gewijzigd en OIV heeft nieuwe versie
-            IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
-                v_status := 'CONFLICT';
-            ELSE
-                RETURN NEW;
-            END IF;
-        ----------------------------------------------------------------------
-        -- Wijziging vanuit Mergin
-        ----------------------------------------------------------------------
-        ELSE
-            NEW.sync_status := 1;
+	        -- Mobiele wijziging aanwezig:
+	        -- OIV wijzigt hetzelfde record -> altijd conflict
+	        v_status := 'CONFLICT';
+
+		ELSE
+	        -- OIV heeft sinds de mobiele versie gewijzigd
+	        IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
+	            v_status := 'CONFLICT';
+	        END IF;
+	
+	        -- Mergin-wijziging blijft een mobiele wijziging
+	        NEW.sync_status := 1;
 
     END CASE;
-
 
     --------------------------------------------------------------------------
     -- Koppeling bepalen indien ruimtelijke relatie gewijzigd kan zijn
@@ -1844,23 +1894,24 @@ BEGIN
     END IF;
 
     --------------------------------------------------------------------------
-    -- Nieuw mobiel object
-    -- Geen OIV-identiteit, dus mag nooit door een OIV-pull verdwijnen
+    -- OIV PULL
+    -- PULL mag nooit iets in de werkvoorraad zetten
     --------------------------------------------------------------------------
-    IF OLD.bron_id IS NULL THEN
-        RETURN NULL;
-    END IF;
 
-    --------------------------------------------------------------------------
-    -- OIV verwijdert een object
-    -- Alleen conflict wanneer mobiel nog wijzigingen bevat
-    --------------------------------------------------------------------------
     IF mobiel_sync.context() = 'PULL' THEN
 
-        IF OLD.sync_status = 1 THEN
-            v_status := 'CONFLICT';
+        -- Mobiel-only object: mag nooit door PULL verdwijnen
+        IF OLD.bron_id IS NULL THEN
+            RETURN NULL;
         END IF;
 
+        -- Mobiele wijzigingen aanwezig: PULL mag niet verwijderen
+        IF OLD.sync_status <> 0 THEN
+            RETURN NULL;
+        END IF;
+
+        -- Geen mobiele wijzigingen: OIV-delete mag doorgaan
+        RETURN OLD;
     END IF;
 
     --------------------------------------------------------------------------
@@ -1923,6 +1974,7 @@ BEGIN
             object_id = OLD.object_id,
             bouwlaag_id = OLD.bouwlaag_id,
 			symbol_name = OLD.symbol_name,
+			bouwlaag = OLD.bouwlaag,
 			soort = v_soort
         WHERE id = v_wv_id;
 
@@ -1944,6 +1996,7 @@ BEGIN
             object_id,
             bouwlaag_id,
 			symbol_name,
+			bouwlaag,
 			soort
         )
         VALUES
@@ -1959,6 +2012,7 @@ BEGIN
             OLD.object_id,
             OLD.bouwlaag_id,
 			OLD.symbol_name,
+			OLD.bouwlaag,
 			v_soort
         );
 
@@ -2041,20 +2095,20 @@ BEGIN
                 RETURN NEW;
             END IF;
 
-            -- Mobiel gewijzigd en OIV heeft nieuwe versie
-            IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
-                v_status := 'CONFLICT';
-            ELSE
-                RETURN NEW;
-            END IF;
-        ----------------------------------------------------------------------
-        -- Wijziging vanuit Mergin
-        ----------------------------------------------------------------------
-        ELSE
-            NEW.sync_status := 1;
+	        -- Mobiele wijziging aanwezig:
+	        -- OIV wijzigt hetzelfde record -> altijd conflict
+	        v_status := 'CONFLICT';
+
+		ELSE
+	        -- OIV heeft sinds de mobiele versie gewijzigd
+	        IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
+	            v_status := 'CONFLICT';
+	        END IF;
+	
+	        -- Mergin-wijziging blijft een mobiele wijziging
+	        NEW.sync_status := 1;
 
     END CASE;
-
 
     --------------------------------------------------------------------------
     -- Koppeling bepalen indien ruimtelijke relatie gewijzigd kan zijn
@@ -2226,24 +2280,24 @@ BEGIN
     END IF;
 
     --------------------------------------------------------------------------
-    -- Nieuw mobiel object
-    -- Geen OIV-identiteit, dus mag nooit door een OIV-pull verdwijnen
+    -- OIV PULL
+    -- PULL mag nooit iets in de werkvoorraad zetten
     --------------------------------------------------------------------------
-    IF OLD.bron_id IS NULL THEN
-        RETURN NULL;
-    END IF;
 
-
-    --------------------------------------------------------------------------
-    -- OIV verwijdert een object
-    -- Alleen conflict wanneer mobiel nog wijzigingen bevat
-    --------------------------------------------------------------------------
     IF mobiel_sync.context() = 'PULL' THEN
 
-        IF OLD.sync_status = 1 THEN
-            v_status := 'CONFLICT';
+        -- Mobiel-only object: mag nooit door PULL verdwijnen
+        IF OLD.bron_id IS NULL THEN
+            RETURN NULL;
         END IF;
 
+        -- Mobiele wijzigingen aanwezig: PULL mag niet verwijderen
+        IF OLD.sync_status <> 0 THEN
+            RETURN NULL;
+        END IF;
+
+        -- Geen mobiele wijzigingen: OIV-delete mag doorgaan
+        RETURN OLD;
     END IF;
 
 
@@ -2272,7 +2326,7 @@ BEGIN
 	
 	    SELECT operatie
 	    INTO v_operatie
-	    FROM mobiel_sync.werkvoorraad_label
+	    FROM mobiel_sync.werkvoorraad_symbool
 	    WHERE id = v_wv_id;
 	
 	
@@ -2310,6 +2364,9 @@ BEGIN
             object_id = OLD.object_id,
             bouwlaag_id = OLD.bouwlaag_id,
 			symbol_name = OLD.symbol_name,
+			bouwlaag = OLD.bouwlaag,
+			formaat_bouwlaag = OLD.formaat::algemeen.formaat,
+			formaat_object = OLD.formaat::algemeen.formaat,
 			soort = v_soort
         WHERE id = v_wv_id;
 
@@ -2331,6 +2388,9 @@ BEGIN
             object_id,
             bouwlaag_id,
 			symbol_name,
+			bouwlaag,
+			formaat_bouwlaag,
+			formaat_object,
 			soort
         )
         VALUES
@@ -2346,6 +2406,9 @@ BEGIN
             OLD.object_id,
             OLD.bouwlaag_id,
 			OLD.symbol_name,
+			OLD.bouwlaag,
+			OLD.formaat::algemeen.formaat,
+			OLD.formaat::algemeen.formaat,
 			v_soort
         );
 
@@ -2428,7 +2491,6 @@ BEGIN
     -- Contextafhandeling
     --------------------------------------------------------------------------
     CASE mobiel_sync.context()
-
         ----------------------------------------------------------------------
         -- OIV-plugin verwerkt werkvoorraad
         ----------------------------------------------------------------------
@@ -2438,26 +2500,25 @@ BEGIN
         -- Pull vanuit OIV
         ----------------------------------------------------------------------
         WHEN 'PULL' THEN
-
             -- Geen mobiele wijziging aanwezig
             IF OLD.sync_status = 0 THEN
                 RETURN NEW;
             END IF;
 
-            -- Mobiel gewijzigd en OIV heeft nieuwe versie
-            IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
-                v_status := 'CONFLICT';
-            ELSE
-                RETURN NEW;
-            END IF;
-        ----------------------------------------------------------------------
-        -- Wijziging vanuit Mergin
-        ----------------------------------------------------------------------
-        ELSE
-            NEW.sync_status := 1;
+	        -- Mobiele wijziging aanwezig:
+	        -- OIV wijzigt hetzelfde record -> altijd conflict
+	        v_status := 'CONFLICT';
+
+		ELSE
+	        -- OIV heeft sinds de mobiele versie gewijzigd
+	        IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
+	            v_status := 'CONFLICT';
+	        END IF;
+	
+	        -- Mergin-wijziging blijft een mobiele wijziging
+	        NEW.sync_status := 1;
 
     END CASE;
-
 
     --------------------------------------------------------------------------
     -- Koppeling bepalen indien ruimtelijke relatie gewijzigd kan zijn
@@ -2658,23 +2719,24 @@ BEGIN
     END IF;
 
     --------------------------------------------------------------------------
-    -- Nieuw mobiel object
-    -- Geen OIV-identiteit, dus mag nooit door een OIV-pull verdwijnen
+    -- OIV PULL
+    -- PULL mag nooit iets in de werkvoorraad zetten
     --------------------------------------------------------------------------
-    IF OLD.bron_id IS NULL THEN
-        RETURN NULL;
-    END IF;
 
-    --------------------------------------------------------------------------
-    -- OIV verwijdert een object
-    -- Alleen conflict wanneer mobiel nog wijzigingen bevat
-    --------------------------------------------------------------------------
     IF mobiel_sync.context() = 'PULL' THEN
 
-        IF OLD.sync_status = 1 THEN
-            v_status := 'CONFLICT';
+        -- Mobiel-only object: mag nooit door PULL verdwijnen
+        IF OLD.bron_id IS NULL THEN
+            RETURN NULL;
         END IF;
 
+        -- Mobiele wijzigingen aanwezig: PULL mag niet verwijderen
+        IF OLD.sync_status <> 0 THEN
+            RETURN NULL;
+        END IF;
+
+        -- Geen mobiele wijzigingen: OIV-delete mag doorgaan
+        RETURN OLD;
     END IF;
 
     --------------------------------------------------------------------------
@@ -2737,6 +2799,7 @@ BEGIN
             object_id = OLD.object_id,
             bouwlaag_id = OLD.bouwlaag_id,
 			symbol_name = OLD.symbol_name,
+			bouwlaag = OLD.bouwlaag,
 			soort = v_soort
         WHERE id = v_wv_id;
 
@@ -2758,6 +2821,7 @@ BEGIN
             object_id,
             bouwlaag_id,
 			symbol_name,
+			bouwlaag,
 			soort
         )
         VALUES
@@ -2773,6 +2837,7 @@ BEGIN
             OLD.object_id,
             OLD.bouwlaag_id,
 			OLD.symbol_name,
+			OLD.bouwlaag,
 			v_soort
         );
 
@@ -2855,20 +2920,20 @@ BEGIN
                 RETURN NEW;
             END IF;
 
-            -- Mobiel gewijzigd en OIV heeft nieuwe versie
-            IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
-                v_status := 'CONFLICT';
-            ELSE
-                RETURN NEW;
-            END IF;
-        ----------------------------------------------------------------------
-        -- Wijziging vanuit Mergin
-        ----------------------------------------------------------------------
-        ELSE
-            NEW.sync_status := 1;
+	        -- Mobiele wijziging aanwezig:
+	        -- OIV wijzigt hetzelfde record -> altijd conflict
+	        v_status := 'CONFLICT';
+
+		ELSE
+	        -- OIV heeft sinds de mobiele versie gewijzigd
+	        IF OLD.oiv_datum_gewijzigd IS DISTINCT FROM NEW.oiv_datum_gewijzigd THEN
+	            v_status := 'CONFLICT';
+	        END IF;
+	
+	        -- Mergin-wijziging blijft een mobiele wijziging
+	        NEW.sync_status := 1;
 
     END CASE;
-
 
     --------------------------------------------------------------------------
     -- Koppeling bepalen indien ruimtelijke relatie gewijzigd kan zijn
@@ -3353,13 +3418,20 @@ BEGIN
         s.formaat,
 		0 as sync_status
     FROM mobiel_sync.labels_source s
-    WHERE NOT EXISTS
-    (
-        SELECT 1
-        FROM mobiel.labels m
-        WHERE m.bron_id = s.bron_id
-          AND m.brontabel = s.brontabel
-    );
+	WHERE NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.labels m
+	    WHERE m.bron_id = s.bron_id
+	      AND m.brontabel = s.brontabel
+	)
+	AND NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.werkvoorraad_label w
+	    WHERE w.bron_id = s.bron_id
+	      AND w.brontabel = s.brontabel
+	);
 
     ----------------------------------------------------------------------------
     -- 2. Bestaande labels bijwerken
@@ -3442,13 +3514,20 @@ BEGIN
         s.opmerking,
 		0 as sync_status
     FROM mobiel_sync.lijnen_source s
-    WHERE NOT EXISTS
-    (
-        SELECT 1
-        FROM mobiel.lijnen m
-        WHERE m.bron_id = s.bron_id
-          AND m.brontabel = s.brontabel
-    );
+	WHERE NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.lijnen m
+	    WHERE m.bron_id = s.bron_id
+	      AND m.brontabel = s.brontabel
+	)
+	AND NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.werkvoorraad_lijn w
+	    WHERE w.bron_id = s.bron_id
+	      AND w.brontabel = s.brontabel
+	);
 
     ----------------------------------------------------------------------------
     -- 2. Bestaande lijnen bijwerken
@@ -3604,13 +3683,20 @@ BEGIN
         s.label_positie,
 		0 as sync_status
     FROM mobiel_sync.symbolen_source s
-    WHERE NOT EXISTS
-    (
-        SELECT 1
-        FROM mobiel.symbolen m
-        WHERE m.bron_id = s.bron_id
-          AND m.brontabel = s.brontabel
-    );
+	WHERE NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.symbolen m
+	    WHERE m.bron_id = s.bron_id
+	      AND m.brontabel = s.brontabel
+	)
+	AND NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.werkvoorraad_symbool w
+	    WHERE w.bron_id = s.bron_id
+	      AND w.brontabel = s.brontabel
+	);
 
     ----------------------------------------------------------------------------
     -- 2. Bestaande symbolen bijwerken
@@ -3805,13 +3891,21 @@ BEGIN
         s.opmerking,
 		0 as sync_status
     FROM mobiel_sync.vlakken_source s
-    WHERE NOT EXISTS
-    (
-        SELECT 1
-        FROM mobiel.vlakken m
-        WHERE m.bron_id = s.bron_id
-          AND m.brontabel = s.brontabel
-    );
+	WHERE NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.vlakken m
+	    WHERE m.bron_id = s.bron_id
+	      AND m.brontabel = s.brontabel
+	)
+	AND NOT EXISTS
+	(
+	    SELECT 1
+	    FROM mobiel.werkvoorraad_vlak w
+	    WHERE w.bron_id = s.bron_id
+	      AND w.brontabel = s.brontabel
+	);
+
 
     ----------------------------------------------------------------------------
     -- 2. Bestaande vlakken bijwerken
@@ -4525,12 +4619,9 @@ END;
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_label_update(
-    p_brontabel text,
-    p_data jsonb
-)
-RETURNS void
-LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_label_update(p_brontabel text, p_data jsonb)
+ RETURNS void
+ LANGUAGE plpgsql
 AS $function$
 DECLARE
     v_sql text;
@@ -4549,10 +4640,10 @@ BEGIN
         SET
             geom = ST_SetSRID(ST_GeomFromGeoJSON($1), 28992),
             %s,
-            label = $2,
-            rotatie = $3,
-            opmerking = $4,
-            label_positie = $5,
+            soort = $2,
+			rotatie = $3,
+            omschrijving = $4,
+            opmerking = $5,
             formaat_bouwlaag = $6,
             formaat_object = $7
         WHERE id = $8
@@ -4564,16 +4655,17 @@ BEGIN
     EXECUTE v_sql
     USING
         p_data->>'geom',
-        p_data->>'label',
-        (p_data->>'rotatie')::integer,
+		p_data->>'soort',
+		(p_data->>'rotatie')::integer,
+        p_data->>'omschrijving',
         p_data->>'opmerking',
-        (p_data->>'label_positie')::algemeen.labelposition,
         (p_data->>'formaat_bouwlaag')::algemeen.formaat,
         (p_data->>'formaat_object')::algemeen.formaat,
         (p_data->>'bron_id')::integer;
 
 END;
-$function$;
+$function$
+;
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwerk_lijn_delete(p_brontabel text, p_data jsonb)
  RETURNS void
@@ -4991,33 +5083,38 @@ BEGIN
         RAISE EXCEPTION 'Werkvoorraad record % niet gevonden', p_id;
     END IF;
 
-    IF v_record.status = 'OPEN' THEN
-        v_data := to_jsonb(v_record);
-    ELSIF v_record.status = 'CONFLICT' THEN
-
-        CASE p_conflict_actie
-            WHEN 'OIV' THEN
-                v_data := v_record.conflict_data->'oiv'->'oiv';
-            WHEN 'MOBIEL' THEN
-                v_data := v_record.conflict_data->'oiv'->'mobiel';
-            ELSE
-                RAISE EXCEPTION 'Geen geldige conflict actie';
-        END CASE;
-    ELSE
-        RAISE EXCEPTION 'Onbekende status %', v_record.status;
-    END IF;
-
-    v_type := CASE p_werkvoorraad_tabel::text
-        WHEN 'werkvoorraad_symbool' THEN 'symbool'
-        WHEN 'werkvoorraad_label'   THEN 'label'
-        WHEN 'werkvoorraad_lijn'    THEN 'lijn'
-        WHEN 'werkvoorraad_vlak'    THEN 'vlak'
-        ELSE NULL
-    END;
+	v_type := CASE
+	    WHEN p_werkvoorraad_tabel::text IN ('werkvoorraad_symbool', 'mobiel_sync.werkvoorraad_symbool') THEN 'symbool'
+	    WHEN p_werkvoorraad_tabel::text IN ('werkvoorraad_label', 'mobiel_sync.werkvoorraad_label') THEN 'label'
+	    WHEN p_werkvoorraad_tabel::text IN ('werkvoorraad_lijn', 'mobiel_sync.werkvoorraad_lijn') THEN 'lijn'
+	    WHEN p_werkvoorraad_tabel::text IN ('werkvoorraad_vlak', 'mobiel_sync.werkvoorraad_vlak') THEN 'vlak'
+		WHEN p_werkvoorraad_tabel::text IN ('annotaties', 'mobiel.annotaties') THEN 'annotaties'
+	    ELSE NULL
+	END;
 
     IF v_type IS NULL THEN
         RAISE EXCEPTION 'Onbekend werkvoorraad type %', p_werkvoorraad_tabel;
     END IF;
+
+	IF v_type <> 'annotaties' THEN
+	    IF v_record.status = 'OPEN' THEN
+	        v_data := to_jsonb(v_record);
+	    ELSIF v_record.status = 'CONFLICT' THEN
+	
+	        CASE p_conflict_actie
+	            WHEN 'OIV' THEN
+	                v_data := v_record.conflict_data->'oiv'->'oiv';
+	            WHEN 'MOBIEL' THEN
+	                v_data := v_record.conflict_data->'oiv'->'mobiel';
+	            ELSE
+	                RAISE EXCEPTION 'Geen geldige conflict actie';
+	        END CASE;
+	    ELSE
+	        RAISE EXCEPTION 'Onbekende status %', v_record.status;
+	    END IF;
+	ELSE
+		 v_data := to_jsonb(v_record) || '{"soort": "annotatie"}'::jsonb;
+	END IF;
 
     v_operatie := v_data->>'operatie';
 
@@ -5067,7 +5164,8 @@ BEGIN
 	                WHEN 'DELETE' THEN
 	                    PERFORM mobiel_sync.verwerk_vlak_delete(v_data->>'brontabel', v_data);
 	            END CASE;
-	
+	        ELSE
+            	NULL;
 	    END CASE;
 	END IF;
 
@@ -5076,9 +5174,10 @@ BEGIN
 	    WHEN 'label'   THEN 'labels'
 	    WHEN 'lijn'    THEN 'lijnen'
 	    WHEN 'vlak'    THEN 'vlakken'
+
 	END;
 	-- altijd mobiele status herstellen
-	IF v_operatie <> 'DELETE' THEN
+	IF v_operatie <> 'DELETE' AND v_operatie <> '' THEN
 	
 		PERFORM mobiel_sync.set_context('PULL');
 	    EXECUTE format(
@@ -5088,7 +5187,7 @@ BEGIN
 	        v_mobiel_tabel
 	    )
 	    USING (v_data->>'mobiel_id')::integer;
-		PERFORM mobiel_sync.clear_context();
+		PERFORM mobiel_sync.set_context('');
 
 	END IF;
 
@@ -5098,6 +5197,7 @@ BEGIN
 END;
 $procedure$
 ;
+
 
 CREATE OR REPLACE FUNCTION mobiel_sync.verwijder_werkvoorraad(p_werkvoorraad_tabel regclass, p_id integer)
  RETURNS void
