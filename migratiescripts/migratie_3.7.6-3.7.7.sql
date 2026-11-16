@@ -2,14 +2,14 @@ SET ROLE oiv_admin;
 
 ALTER TABLE algemeen.teamlid ALTER COLUMN id TYPE int USING id::int;
 
-UPDATE objecten.bereikbaarheid SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
+UPDATE objecten.bereikbaarheid SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 2)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
 UPDATE objecten.bouwlagen SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
-UPDATE objecten.gebiedsgerichte_aanpak SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
-UPDATE objecten.isolijnen SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
+UPDATE objecten.gebiedsgerichte_aanpak SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 2)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
+UPDATE objecten.isolijnen SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 2)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
 UPDATE objecten.ruimten SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
 UPDATE objecten.sectoren SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
 UPDATE objecten.terrein SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
-UPDATE objecten.veiligh_bouwk SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 3)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
+UPDATE objecten.veiligh_bouwk SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(geom), 2)) WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);
 
 ALTER TABLE objecten.bereikbaarheid ADD CONSTRAINT enforce_valid_geom CHECK (ST_IsValid(geom));
 ALTER TABLE objecten.bouwlagen ADD CONSTRAINT enforce_valid_geom CHECK (ST_IsValid(geom));
@@ -315,9 +315,9 @@ BEGIN
 END;
 $function$;
 
-DROP TRIGGER bereikbaarheid_del ON objecten.object_bereikbaarheid;
-DROP TRIGGER bereikbaarheid_ins ON objecten.object_bereikbaarheid;
-DROP TRIGGER bereikbaarheid_upd ON objecten.object_bereikbaarheid;
+DROP TRIGGER IF EXISTS bereikbaarheid_del ON objecten.object_bereikbaarheid;
+DROP TRIGGER IF EXISTS bereikbaarheid_ins ON objecten.object_bereikbaarheid;
+DROP TRIGGER IF EXISTS bereikbaarheid_upd ON objecten.object_bereikbaarheid;
 
 DROP FUNCTION objecten.func_bereikbaarheid_del();
 DROP FUNCTION objecten.func_bereikbaarheid_ins();
@@ -459,9 +459,9 @@ EXECUTE FUNCTION objecten.func_dreiging_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_dreiging;
 
-DROP TRIGGER object_dreiging_del ON objecten.object_dreiging;
-DROP TRIGGER object_dreiging_upd ON objecten.object_dreiging;
-DROP TRIGGER object_dreiging_ins ON objecten.object_dreiging;
+DROP TRIGGER IF EXISTS object_dreiging_del ON objecten.object_dreiging;
+DROP TRIGGER IF EXISTS object_dreiging_upd ON objecten.object_dreiging;
+DROP TRIGGER IF EXISTS object_dreiging_ins ON objecten.object_dreiging;
 
 CREATE TRIGGER object_dreiging_ins
 INSTEAD OF INSERT ON objecten.object_dreiging
@@ -535,9 +535,9 @@ BEGIN
 END;
 $function$;
 
-DROP TRIGGER gebiedsgerichte_aanpak_del ON objecten.object_gebiedsgerichte_aanpak;
-DROP TRIGGER gebiedsgerichte_aanpak_ins ON objecten.object_gebiedsgerichte_aanpak;
-DROP TRIGGER gebiedsgerichte_aanpak_upd ON objecten.object_gebiedsgerichte_aanpak;
+DROP TRIGGER IF EXISTS gebiedsgerichte_aanpak_del ON objecten.object_gebiedsgerichte_aanpak;
+DROP TRIGGER IF EXISTS gebiedsgerichte_aanpak_ins ON objecten.object_gebiedsgerichte_aanpak;
+DROP TRIGGER IF EXISTS gebiedsgerichte_aanpak_upd ON objecten.object_gebiedsgerichte_aanpak;
 
 DROP FUNCTION objecten.func_gebiedsgerichte_aanpak_del();
 DROP FUNCTION objecten.func_gebiedsgerichte_aanpak_ins();
@@ -679,9 +679,9 @@ EXECUTE FUNCTION objecten.func_ingang_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_ingang;
 
-DROP TRIGGER object_ingang_del ON objecten.object_ingang;
-DROP TRIGGER object_ingang_upd ON objecten.object_ingang;
-DROP TRIGGER object_ingang_ins ON objecten.object_ingang;
+DROP TRIGGER IF EXISTS object_ingang_del ON objecten.object_ingang;
+DROP TRIGGER IF EXISTS object_ingang_upd ON objecten.object_ingang;
+DROP TRIGGER IF EXISTS object_ingang_ins ON objecten.object_ingang;
 
 CREATE TRIGGER object_ingang_ins
 INSTEAD OF INSERT ON objecten.object_ingang
@@ -749,9 +749,9 @@ BEGIN
 END;
 $function$;
 
-DROP TRIGGER isolijnen_del ON objecten.object_isolijnen;
-DROP TRIGGER isolijnen_ins ON objecten.object_isolijnen;
-DROP TRIGGER isolijnen_upd ON objecten.object_isolijnen;
+DROP TRIGGER IF EXISTS isolijnen_del ON objecten.object_isolijnen;
+DROP TRIGGER IF EXISTS isolijnen_ins ON objecten.object_isolijnen;
+DROP TRIGGER IF EXISTS isolijnen_upd ON objecten.object_isolijnen;
 
 DROP FUNCTION objecten.func_isolijnen_del();
 DROP FUNCTION objecten.func_isolijnen_ins();
@@ -886,9 +886,9 @@ EXECUTE FUNCTION objecten.func_label_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_label;
 
-DROP TRIGGER object_label_del ON objecten.object_label;
-DROP TRIGGER object_label_upd ON objecten.object_label;
-DROP TRIGGER object_label_ins ON objecten.object_label;
+DROP TRIGGER IF EXISTS object_label_del ON objecten.object_label;
+DROP TRIGGER IF EXISTS object_label_upd ON objecten.object_label;
+DROP TRIGGER IF EXISTS object_label_ins ON objecten.object_label;
 
 CREATE TRIGGER object_label_ins
 INSTEAD OF INSERT ON objecten.object_label
@@ -1013,9 +1013,9 @@ EXECUTE FUNCTION objecten.func_opslag_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_opslag;
 
-DROP TRIGGER object_opslag_del ON objecten.object_opslag;
-DROP TRIGGER object_opslag_upd ON objecten.object_opslag;
-DROP TRIGGER object_opslag_ins ON objecten.object_opslag;
+DROP TRIGGER IF EXISTS object_opslag_del ON objecten.object_opslag;
+DROP TRIGGER IF EXISTS object_opslag_upd ON objecten.object_opslag;
+DROP TRIGGER IF EXISTS object_opslag_ins ON objecten.object_opslag;
 
 CREATE TRIGGER object_opslag_ins
 INSTEAD OF INSERT ON objecten.object_opslag
@@ -1356,9 +1356,9 @@ EXECUTE FUNCTION objecten.func_scenario_locatie_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_scenario_locatie;
 
-DROP TRIGGER object_scenario_locatie_del ON objecten.object_scenario_locatie;
-DROP TRIGGER object_scenario_locatie_upd ON objecten.object_scenario_locatie;
-DROP TRIGGER object_scenario_locatie_ins ON objecten.object_scenario_locatie;
+DROP TRIGGER IF EXISTS object_scenario_locatie_del ON objecten.object_scenario_locatie;
+DROP TRIGGER IF EXISTS object_scenario_locatie_upd ON objecten.object_scenario_locatie;
+DROP TRIGGER IF EXISTS object_scenario_locatie_ins ON objecten.object_scenario_locatie;
 
 CREATE TRIGGER object_scenario_locatie_ins
 INSTEAD OF INSERT ON objecten.object_scenario_locatie
@@ -1551,9 +1551,9 @@ EXECUTE FUNCTION objecten.func_sleutelkluis_sync();
 
 DROP VIEW IF EXISTS objecten.bouwlaag_sleutelkluis;
 
-DROP TRIGGER object_sleutelkluis_del ON objecten.object_sleutelkluis;
-DROP TRIGGER object_sleutelkluis_upd ON objecten.object_sleutelkluis;
-DROP TRIGGER object_sleutelkluis_ins ON objecten.object_sleutelkluis;
+DROP TRIGGER IF EXISTS object_sleutelkluis_del ON objecten.object_sleutelkluis;
+DROP TRIGGER IF EXISTS object_sleutelkluis_upd ON objecten.object_sleutelkluis;
+DROP TRIGGER IF EXISTS object_sleutelkluis_ins ON objecten.object_sleutelkluis;
 
 CREATE TRIGGER object_sleutelkluis_ins
 INSTEAD OF INSERT ON objecten.object_sleutelkluis
@@ -1845,7 +1845,6 @@ INSTEAD OF DELETE ON objecten.object_terrein
 FOR EACH ROW
 EXECUTE FUNCTION objecten.func_terrein_sync();
 
-SET ROLE oiv_admin;
 
 CREATE OR REPLACE FUNCTION objecten.func_object_objecten_sync()
 RETURNS trigger
@@ -2447,7 +2446,7 @@ DELETE
 
 
 INSERT INTO objecten.veiligh_install_type
-(id, naam, symbol_name, size_bouwlaag_klein, size_bouwlaag_middel, size_bouwlaag_groot, size_object_klein, size_object_middel, size_object_groot,
+(id, naam, symbol_name, size_verdieping_klein, size_verdieping_middel, size_verdieping_groot, size_object_klein, size_object_middel, size_object_groot,
 	symbol_type, actief_bouwlaag, actief_ruimtelijk, snap, anchorpoint, tabbladen, volgnummer, symbol_svg_png)
 SELECT (SELECT max(id)+1 FROM objecten.veiligh_install_type), naam, symbol_name, size_object_klein, size_object_middel, size_object_groot, size_object_klein, size_object_middel, size_object_groot,
 	symbol_type, actief_ruimtelijk, actief_ruimtelijk, snap, anchorpoint, tabbladen, (SELECT max(volgnummer)+1 FROM objecten.veiligh_install_type), symbol_svg_png
@@ -2455,7 +2454,7 @@ FROM objecten.points_of_interest_type p
 WHERE symbol_name = 'poi040' AND NOT EXISTS (SELECT 1 FROM objecten.veiligh_install_type v WHERE v.symbol_name = p.symbol_name);
 
 INSERT INTO objecten.veiligh_install_type
-(id, naam, symbol_name, size_bouwlaag_klein, size_bouwlaag_middel, size_bouwlaag_groot, size_object_klein, size_object_middel, size_object_groot,
+(id, naam, symbol_name, size_verdieping_klein, size_verdieping_middel, size_verdieping_groot, size_object_klein, size_object_middel, size_object_groot,
 	symbol_type, actief_bouwlaag, actief_ruimtelijk, snap, anchorpoint, tabbladen, volgnummer, symbol_svg_png)
 SELECT (SELECT max(id)+1 FROM objecten.veiligh_install_type), naam, symbol_name, size_object_klein, size_object_middel, size_object_groot, size_object_klein, size_object_middel, size_object_groot,
 	symbol_type, actief_ruimtelijk, actief_ruimtelijk, snap, anchorpoint, tabbladen, (SELECT max(volgnummer)+1 FROM objecten.veiligh_install_type), symbol_svg_png
@@ -2560,33 +2559,6 @@ BEGIN
 
 END;
 $procedure$;
-
-CREATE OR REPLACE VIEW objecten.bouwlaag_ingang
-AS SELECT v.id,
-    v.geom,
-    v.soort,
-    v.label,
-    v.opmerking,
-    v.fotografie_id,
-    v.bouwlaag_id,
-    v.object_id,
-    b.verdieping AS bouwlaag,
-    v.rotatie,
-    concat_ws('_', st.symbol_name, st.symbol_type) AS symbol_name,
-        CASE
-            WHEN v.formaat_bouwlaag = 'klein'::algemeen.formaat THEN st.size_bouwlaag_klein
-            WHEN v.formaat_bouwlaag = 'middel'::algemeen.formaat THEN st.size_bouwlaag_middel
-            WHEN v.formaat_bouwlaag = 'groot'::algemeen.formaat THEN st.size_bouwlaag_groot
-            ELSE NULL::numeric
-        END AS size,
-    v.label_positie,
-    v.formaat_bouwlaag,
-    v.formaat_object
-   FROM objecten.ingang v
-     JOIN objecten.verdiepingen b ON v.bouwlaag_id = b.id
-     JOIN objecten.ingang_type st ON v.soort::text = st.naam
-  WHERE v.parent_deleted = 'infinity'::timestamp with time zone AND v.self_deleted = 'infinity'::timestamp with time zone;
-
 
 DO $$
 DECLARE
